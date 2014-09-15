@@ -68,12 +68,12 @@ for filename in files:
 	if not diary.has_key(filename):
 		filesToCompile.append(filename)
 	else:
-		stamp = int(os.stat(filename).st_time)
+		stamp = int(os.stat(filename).st_mtime)
 		if diary[filename] != stamp:
 			filesToCompiler.append(filename)
 
 for filename in filesToCompile:
-	stamp = int(os.stat(filename).st_time)
+	stamp = int(os.stat(filename).st_mtime)
 	cmd = compile_line
 	cmd = cmd.replace("${CPP_FILE}", filename)
 	objfile = "build-%s/" % target + filename[:-4].replace("/", "__") + ".o"
