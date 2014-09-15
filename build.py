@@ -72,7 +72,7 @@ except:
 filesToCompile = []
 objectFiles = []
 for filename in files:
-	objectFile.append("build-%s/" % target + filename[:-4].replace("/", "__") + ".o")
+	objectFiles.append("build-%s/" % target + filename[:-4].replace("/", "__") + ".o")
 	if not diary.has_key(filename):
 		filesToCompile.append(filename)
 	else:
