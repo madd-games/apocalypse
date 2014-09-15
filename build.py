@@ -34,6 +34,7 @@ if len(sys.argv) > 1:
 	target = sys.argv[1]
 
 compile_line = "g++ -c ${CPP_FILE} -o ${OBJECT_FILE} -D%s -I." % (target.upper())
+link_line = "g++ ${OBJECT_FILES} -o out/%s" % target
 
 files = []
 def listfiles(dirname):
@@ -45,8 +46,13 @@ def listfiles(dirname):
 			files.append(path)
 
 listfiles("Apoc")
+if os.path.isdir("Game"):
+	listfiles("Game")
+else:
+	print "!There is no Game directory! See the manual for more details."
 
 os.system("mkdir -p build-%s" % target)
+os.system("mkdir -p out")
 
 diary = {}
 try:
@@ -72,6 +78,7 @@ for filename in files:
 		if diary[filename] != stamp:
 			filesToCompiler.append(filename)
 
+objectFiles = []
 for filename in filesToCompile:
 	stamp = int(os.stat(filename).st_mtime)
 	cmd = compile_line
@@ -82,6 +89,7 @@ for filename in filesToCompile:
 	if os.system(cmd) != 0:
 		print "!Compilation of " + filename + " failed"
 	diary[filename] = stamp
+	objectFiles.append(objfile)
 
 try:
 	f = open("build-%s/diary" % target, "wb")
@@ -90,5 +98,10 @@ try:
 	f.close()
 except:
 	pass
+
+print ">Link out/%s" % target
+cmd = link_cmd.replace("${OBJECT_FILES}", " ".join(objectFiles))
+if os.system(cmd) != 0:
+	print "!Linking out/%s failed" % target
 
 print "The project is now up-to-date."
