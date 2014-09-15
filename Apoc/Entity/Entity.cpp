@@ -26,6 +26,14 @@
 
 #include <Apoc/Entity/Entity.h>
 
-Entity::Entity() : x(0.0), y(0.0), z(0.0)
+Entity::Entity()
+{
+};
+
+Entity::~Entity()
+{
+};
+
+void Entity::update()
 {
 };
