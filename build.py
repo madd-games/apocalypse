@@ -100,7 +100,7 @@ except:
 	pass
 
 print ">Link out/%s" % target
-cmd = link_cmd.replace("${OBJECT_FILES}", " ".join(objectFiles))
+cmd = link_line.replace("${OBJECT_FILES}", " ".join(objectFiles))
 if os.system(cmd) != 0:
 	print "!Linking out/%s failed" % target
 
