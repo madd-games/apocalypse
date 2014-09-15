@@ -33,7 +33,7 @@ target = "client"
 if len(sys.argv) > 1:
 	target = sys.argv[1]
 
-compile_line = "g++ -c ${CPP_FILE} -o ${OBJECT_FILE} -D%s" % (target.upper())
+compile_line = "g++ -c ${CPP_FILE} -o ${OBJECT_FILE} -D%s -I." % (target.upper())
 
 files = []
 def listfiles(dirname):
@@ -74,8 +74,21 @@ for filename in files:
 
 for filename in filesToCompile:
 	stamp = int(os.stat(filename).st_time)
-	diary[filename] = stamp
 	cmd = compile_line
 	cmd = cmd.replace("${CPP_FILE}", filename)
-	objfile = filename[:-4].replace("/", "__") + ".o"
+	objfile = "build-%s/" % target + filename[:-4].replace("/", "__") + ".o"
 	cmd = cmd.replace("${OBJECT_FILE}", objfile)
+	print ">Compile " + filename
+	if os.system(cmd) != 0:
+		print "!Compilation of " + filename + " failed"
+	diary[filename] = stamp
+
+try:
+	f = open("build-%s/diary" % target, "wb")
+	for name, stamp in diary.items():
+		f.write("%s %d\n" % (name, stamp))
+	f.close()
+except:
+	pass
+
+print "The project is now up-to-date."
