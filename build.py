@@ -70,15 +70,16 @@ except:
 	pass
 
 filesToCompile = []
+objectFiles = []
 for filename in files:
+	objectFile.append("build-%s/" % target + filename[:-4].replace("/", "__") + ".o")
 	if not diary.has_key(filename):
 		filesToCompile.append(filename)
 	else:
 		stamp = int(os.stat(filename).st_mtime)
 		if diary[filename] != stamp:
-			filesToCompiler.append(filename)
+			filesToCompile.append(filename)
 
-objectFiles = []
 for filename in filesToCompile:
 	stamp = int(os.stat(filename).st_mtime)
 	cmd = compile_line
@@ -89,7 +90,6 @@ for filename in filesToCompile:
 	if os.system(cmd) != 0:
 		print "!Compilation of " + filename + " failed"
 	diary[filename] = stamp
-	objectFiles.append(objfile)
 
 try:
 	f = open("build-%s/diary" % target, "wb")
