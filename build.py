@@ -41,7 +41,7 @@ def listfiles(dirname):
 		path = dirname + "/" + name
 		if os.path.isdir(path):
 			listfiles(path)
-		else if path.endswith(".cpp"):
+		elif path.endswith(".cpp"):
 			files.append(path)
 
 listfiles("Apoc")
