@@ -23,3 +23,33 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef APOC_ENTITY_ENTITY_H
+#define APOC_ENTITY_ENTITY_H
+
+/**
+ * \brief Base class for all entities.
+ */
+class Entity
+{
+public:
+	/**
+	 * \brief Default constructor for entities.
+	 */
+	Entity();
+	
+	/**
+	 * \brief Virtual destructor.
+	 */
+	virtual ~Entity();
+	
+	/**
+	 * \brief Called to update the entity.
+	 * 
+	 * This function is called in an infinite loop while an entity is in the scene.
+	 * It does nothing by default.
+	 */
+	virtual void update();
+};
+
+#endif
