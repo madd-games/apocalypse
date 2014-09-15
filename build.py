@@ -27,3 +27,55 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+import sys, os
+
+target = "client"
+if len(sys.argv) > 1:
+	target = sys.argv[1]
+
+compile_line = "g++ -c ${CPP_FILE} -o ${OBJECT_FILE} -D%s" % (target.upper())
+
+files = []
+def listfiles(dirname):
+	for name in os.listdir(dirname):
+		path = dirname + "/" + name
+		if os.path.isdir(path):
+			listfiles(path)
+		else if path.endswith(".cpp"):
+			files.append(path)
+
+listfiles("Apoc")
+
+os.system("mkdir -p build-%s" % target)
+
+diary = {}
+try:
+	f = open("build-%s/diary" % target, "rb")
+	data = f.read().split("\n")
+	f.close()
+	
+	for line in data:
+		try:
+			filename, stamp = line.rsplit(" ", 1)
+			diary[filename] = int(stamp)
+		except:
+			pass
+except:
+	pass
+
+filesToCompile = []
+for filename in files:
+	if not diary.has_key(filename):
+		filesToCompile.append(filename)
+	else:
+		stamp = int(os.stat(filename).st_time)
+		if diary[filename] != stamp:
+			filesToCompiler.append(filename)
+
+for filename in filesToCompile:
+	stamp = int(os.stat(filename).st_time)
+	diary[filename] = stamp
+	cmd = compile_line
+	cmd = cmd.replace("${CPP_FILE}", filename)
+	objfile = filename[:-4].replace("/", "__") + ".o"
+	cmd = cmd.replace("${OBJECT_FILE}", objfile)
