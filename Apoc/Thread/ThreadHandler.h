@@ -27,4 +27,22 @@
 #ifndef APOC_THREAD_THREAD_HANDLER_H
 #define APOC_THREAD_THREAD_HANDLER_H
 
+class Thread;
+
+/**
+ * \brief Base class for thread handlers.
+ *
+ * When a thread is created, the startThread method of the specified ThreadHandler
+ * class is called in the new thread.
+ * 
+ * You must include Apoc/Thread/Thread.h after this header.
+ */
+class ThreadHandler
+{
+	/**
+	 * \brief Called when the thread is started.
+	 */
+	virtual void startThread(Thread *thisThread) = 0;
+};
+
 #endif
