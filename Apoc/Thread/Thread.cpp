@@ -23,3 +23,54 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <Apoc/Thread/Thread.h>
+#include <stdlib.h>
+
+struct ThreadInfo
+{
+	ThreadHandler *handler;
+	Thread *thread;
+};
+
+#ifdef _WIN32
+DWORD ApocThreadProc(LPVOID pHandler)
+#else
+void* ApocThreadProc(void *pHandler)
+#endif
+{
+	ThreadInfo *info = reinterpret_cast<ThreadInfo*>(pHandler);
+	ThreadHandler *handler = info->handler;
+	Thread *thread = info->thread;
+	delete info;
+	handler->startThread(thread);
+	
+#ifdef _WIN32
+	return 0;
+#else
+	return NULL;
+#endif
+};
+
+Thread::Thread(ThreadHandler *handler)
+{
+	threadHandler = handler;
+	
+	ThreadInfo *info = new ThreadInfo;
+	info->handler = handler;
+	info->thread = this;
+	
+#ifdef _WIN32
+	sysThread = CreateThread(NULL, 0, ApocThreadProc, reinterpret_cast<LPVOID>(info), 0, NULL);
+#else
+	pthread_create(&sysThread, NULL, ApocThreadProc, reinterpret_cast<LPVOID>(info));
+#endif
+};
+
+Thread::~Thread()
+{
+#ifdef _WIN32
+	CloseHandle(sysThread);
+#else
+	
+};
