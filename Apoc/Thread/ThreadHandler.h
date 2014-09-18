@@ -43,6 +43,8 @@ class ThreadHandler
 	 * \brief Called when the thread is started.
 	 */
 	virtual void startThread(Thread *thisThread) = 0;
+	
+	virtual ~ThreadHandler();
 };
 
 #endif
