@@ -23,3 +23,44 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef APOC_THREAD_THREAD_H
+#define APOC_THREAD_THREAD_H
+
+#include <Apoc/Thread/ThreadHandler.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <pthread.h>
+#endif
+
+/**
+ * \brief A class representing running threads.
+ */
+class Thread
+{
+private:
+#ifdef _WIN32
+	HANDLE sysThread;
+#else
+	pthread_t *sysThread;
+#endif
+	ThreadHandler *threadHandler;
+	
+public:
+	/**
+	 * \brief Constructor, creates a new thread.
+	 * \param handler The thread handler - this is automatically deleted when the thread is deleted.
+	 */
+	Thread(ThreadHandler *handler);
+	
+	/**
+	 * \brief Destructor.
+	 * 
+	 * The thread is terminated and the threadHandler is deleted.
+	 */
+	virtual ~Thread();
+};
+
+#endif
