@@ -23,3 +23,29 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <Apoc/Math/Vector.h>
+
+Vector::Vector() : Vector(0.0, 0.0, 0.0, 1.0)
+{
+	
+};
+
+Vector::Vector(float x, float y) : Vector(x, y, 0.0, 1.0)
+{
+	
+};
+
+Vector::Vector(float x, float y, float z) : Vector(x, y, z, 1.0)
+{
+	
+};
+
+Vector::Vector(float x, float y, float z, float w)
+{
+	coords[0] = x;
+	coords[1] = y;
+	coords[2] = z;
+	coords[3] = w;
+};
+
