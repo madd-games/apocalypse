@@ -27,6 +27,10 @@
 #include <Apoc/Thread/Thread.h>
 #include <stdlib.h>
 
+#ifndef _WIN32
+#include <signal.h>
+#endif
+
 struct ThreadInfo
 {
 	ThreadHandler *handler;
@@ -70,7 +74,21 @@ Thread::Thread(ThreadHandler *handler)
 Thread::~Thread()
 {
 #ifdef _WIN32
-	CloseHandle(sysThread);
+	TerminateThread(sysThread, 0);
 #else
-	
+	pthread_kill(sysThread, SIGKILL);
+#endif
+
+	join();
+	delete threadHandler;
+};
+
+void Thread::join()
+{
+#ifdef _WIN32
+	WaitForSingleObject(sysThread, INFINITE);
+	CloseHandler(sysThread);
+#else
+	pthread_join(sysThread, NULL);
+#endif
 };
