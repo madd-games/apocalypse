@@ -23,3 +23,24 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef APOC_MATH_VECTOR_H
+#define APOC_MATH_VECTOR_H
+
+/**
+ * \brief 4D homogenous vector class.
+ */
+class Vector
+{
+public:
+	float coords[4];
+
+	Vector();
+	Vector(float x, float y);
+	Vector(float x, float y, float z);
+	Vector(float x, float y, float z, float w);
+
+	
+};
+
+#endif
