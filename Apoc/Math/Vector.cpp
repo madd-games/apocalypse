@@ -176,3 +176,9 @@ Vector Vector::cross(Vector b)
 	out[3] = 1.0;						// W, is this right?
 	return out;
 };
+
+ostream& operator<<(ostream &os, Vector vec)
+{
+	os << "(" << vec.x() << ", " << vec.y() << ", " << vec.z() << ", " << vec.w() << ")";
+	return os;
+};
