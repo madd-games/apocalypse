@@ -67,3 +67,20 @@ Matrix Matrix::transpose()
 		};
 	};
 };
+
+Matrix Matrix::operator*(Matrix b)
+{
+	Matrix a = transpose();
+	Matrix out;
+	
+	int i, j;
+	for (i=0; i<4; i++)
+	{
+		for (j=0; j<4; j++)
+		{
+			out[i][j] = a[j].dot(b[i]);
+		};
+	};
+	
+	return out;
+};
