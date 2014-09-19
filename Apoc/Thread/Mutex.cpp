@@ -57,4 +57,5 @@ void Mutex::unlock()
 	ReleaseMutex(sysMutex);
 #else
 	pthread_mutex_unlock(&sysMutex);
+#endif
 };
