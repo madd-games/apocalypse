@@ -27,6 +27,10 @@
 #ifndef APOC_MATH_VECTOR_H
 #define APOC_MATH_VECTOR_H
 
+#include <iostream>
+
+using namespace std;
+
 /**
  * \brief 4D homogenous vector class.
  */
@@ -64,6 +68,10 @@ public:
 	 * \brief Returns the cross product of this vector and vector B.
 	 */
 	Vector cross(Vector b);
+	
+	friend ostream& operator<<(ostream &os, Vector vec);
 };
+
+ostream& operator<<(ostream &os, Vector vec);
 
 #endif
