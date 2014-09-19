@@ -26,19 +26,28 @@
 
 #include <Apoc/Math/Vector.h>
 
-Vector::Vector() : Vector(0.0, 0.0, 0.0, 1.0)
+Vector::Vector()
 {
-	
+	coords[0] = 0.0;
+	coords[1] = 0.0;
+	coords[2] = 0.0;
+	coords[3] = 1.0;
 };
 
-Vector::Vector(float x, float y) : Vector(x, y, 0.0, 1.0)
+Vector::Vector(float x, float y)
 {
-	
+	coords[0] = x;
+	coords[1] = y;
+	coords[2] = 0.0;
+	coords[3] = 1.0;
 };
 
-Vector::Vector(float x, float y, float z) : Vector(x, y, z, 1.0)
+Vector::Vector(float x, float y, float z)
 {
-	
+	coords[0] = x;
+	coords[1] = y;
+	coords[2] = z;
+	coords[3] = 1.0;
 };
 
 Vector::Vector(float x, float y, float z, float w)
