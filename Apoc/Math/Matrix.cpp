@@ -66,6 +66,8 @@ Matrix Matrix::transpose()
 			out[i][j] = columns[j][i];
 		};
 	};
+	
+	return out;
 };
 
 Matrix Matrix::operator*(Matrix b)
