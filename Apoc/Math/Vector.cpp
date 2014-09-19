@@ -58,3 +58,27 @@ Vector::Vector(float x, float y, float z, float w)
 	coords[3] = w;
 };
 
+float& Vector::x()
+{
+	return coords[0];
+};
+
+float& Vector::y()
+{
+	return coords[1];
+};
+
+float& Vector::z()
+{
+	return coords[2];
+};
+
+float& Vector::w()
+{
+	return coords[3];
+};
+
+float& Vector::operator[](int i)
+{
+	return coords[i];
+};
