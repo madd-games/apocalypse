@@ -87,7 +87,7 @@ void Thread::join()
 {
 #ifdef _WIN32
 	WaitForSingleObject(sysThread, INFINITE);
-	CloseHandler(sysThread);
+	CloseHandle(sysThread);
 #else
 	pthread_join(sysThread, NULL);
 #endif
