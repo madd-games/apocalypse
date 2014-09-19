@@ -43,6 +43,7 @@ public:
 	Matrix& operator=(Matrix mat);
 	Vector& operator[](int i);
 	Matrix transpose();
+	Matrix operator*(Matrix b);
 };
 
 #endif
