@@ -1,4 +1,4 @@
-/* The standard CSS for doxygen 1.8.6 */
+/* CSS for Apocalypse documentation by Doxygen. */
 
 body, table, div, p, dl {
 	font: 400 14px/22px Roboto,sans-serif;
@@ -257,8 +257,8 @@ div.groupText {
 }
 
 body {
-	background-color: white;
-	color: black;
+	background-color: black;
+	color: white;
         margin: 0;
 }
 
