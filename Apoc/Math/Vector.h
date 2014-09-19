@@ -53,6 +53,16 @@ public:
 	Vector operator-(Vector b);
 	Vector operator*(Vector b);
 	Vector operator/(Vector b);
+	
+	/**
+	 * \brief Returns the dot product of this vector and vector B.
+	 */
+	float dot(Vector b);
+	
+	/**
+	 * \brief Returns the cross product of this vector and vector B.
+	 */
+	Vector cross(Vector b);
 };
 
 #endif
