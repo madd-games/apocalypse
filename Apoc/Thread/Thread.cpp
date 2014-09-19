@@ -67,7 +67,7 @@ Thread::Thread(ThreadHandler *handler)
 #ifdef _WIN32
 	sysThread = CreateThread(NULL, 0, ApocThreadProc, reinterpret_cast<LPVOID>(info), 0, NULL);
 #else
-	pthread_create(&sysThread, NULL, ApocThreadProc, reinterpret_cast<LPVOID>(info));
+	pthread_create(&sysThread, NULL, ApocThreadProc, reinterpret_cast<void*>(info));
 #endif
 };
 
