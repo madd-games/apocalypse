@@ -34,7 +34,7 @@ if len(sys.argv) > 1:
 	target = sys.argv[1]
 
 compile_line = "g++ -c ${CPP_FILE} -o ${OBJECT_FILE} -D%s -I." % (target.upper())
-link_line = "g++ ${OBJECT_FILES} -o out/%s" % target
+link_line = "g++ ${OBJECT_FILES} -o out/%s -lpthread" % target
 
 files = []
 def listfiles(dirname):
