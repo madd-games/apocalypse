@@ -58,6 +58,15 @@ Vector::Vector(float x, float y, float z, float w)
 	coords[3] = w;
 };
 
+Vector::Vector(const Vector &vec)
+{
+	int i;
+	for (i=0; i<4; i++)
+	{
+		coords[i] = vec[i];
+	};
+};
+
 float& Vector::x()
 {
 	return coords[0];
@@ -81,4 +90,67 @@ float& Vector::w()
 float& Vector::operator[](int i)
 {
 	return coords[i];
+};
+
+Vector& Vector::operator=(Vector vec)
+{
+	int i;
+	for (i=0; i<4; i++)
+	{
+		coords[i] = vec[i];
+	};
+	
+	return *this;
+};
+
+Vector Vector::operator+(Vector b)
+{
+	Vector out;
+	
+	int i;
+	for (i=0; i<4; i++)
+	{
+		out[i] = coords[i] + b[i];
+	};
+	
+	return out;
+};
+
+Vector Vector::operator-(Vector b)
+{
+	Vector out;
+	
+	int i;
+	for (i=0; i<4; i++)
+	{
+		out[i] = coords[i] - b[i];
+	};
+	
+	return out;
+};
+
+Vector Vector::operator*(Vector b)
+{
+	Vector out;
+	
+	int i;
+	for (i=0; i<4; i++)
+	{
+		out[i] = coords[i] * b[i];
+	};
+	
+	return out;
+};
+
+Vector Vector::operator/(Vector b)
+{
+	Vector out;
+	
+	int i;
+	for (i=0; i<4; i++)
+	{
+		out[i] = coords[i] / b[i];
+	};
+	
+	return out;
 };
