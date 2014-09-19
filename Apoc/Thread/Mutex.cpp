@@ -23,3 +23,38 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <Apoc/Thread/Mutex.h>
+
+Mutex::Mutex()
+{
+#ifdef _WIN32
+	sysMutex = CreateMutex(NULL, FALSE, NULL);
+#else
+	pthread_mutex_init(&sysMutex, NULL);
+#endif
+};
+
+Mutex::~Mutex()
+{
+#ifdef _WIN32
+	CloseHandle(sysMutex);
+#endif
+};
+
+void Mutex::lock()
+{
+#ifdef _WIN32
+	WaitForSingleObject(sysMutex, INFINITE);
+#else
+	pthread_mutex_lock(&sysMutex);
+#endif
+};
+
+void Mutex::unlock()
+{
+#ifdef _WIN32
+	ReleaseMutex(sysMutex);
+#else
+	pthread_mutex_unlock(&sysMutex);
+};
