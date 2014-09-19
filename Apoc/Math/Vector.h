@@ -32,9 +32,10 @@
  */
 class Vector
 {
-public:
+private:
 	float coords[4];
-
+	
+public:
 	Vector();
 	Vector(float x, float y);
 	Vector(float x, float y, float z);
