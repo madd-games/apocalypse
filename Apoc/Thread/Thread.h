@@ -60,7 +60,14 @@ public:
 	 * 
 	 * The thread is terminated and the threadHandler is deleted.
 	 */
-	virtual ~Thread();
+	~Thread();
+	
+	/**
+	 * \brief Join the thread.
+	 * 
+	 * This function waits until the thread terminates.
+	 */
+	void join();
 };
 
 #endif
