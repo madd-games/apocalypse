@@ -154,3 +154,25 @@ Vector Vector::operator/(Vector b)
 	
 	return out;
 };
+
+float Vector::dot(Vector b)
+{
+	float out = 0.0;
+	int i;
+	for (i=0; i<4; i++)
+	{
+		out += coords[i] * b[i];
+	};
+
+	return out;
+};
+
+Vector Vector::cross(Vector b)
+{
+	Vector out;
+	out[0] = coords[0]*b[2] - coords[2]*b[1];		// X
+	out[1] = coords[2]*b[0] - coords[0]*b[2];		// Y
+	out[2] = coords[0]*b[1] - coords[1]*b[0];		// Z
+	out[3] = 1.0;						// W, is this right?
+	return out;
+};
