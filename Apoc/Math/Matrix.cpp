@@ -84,3 +84,14 @@ Matrix Matrix::operator*(Matrix b)
 	
 	return out;
 };
+
+Vector Matrix::operator*(Vector vec)
+{
+	Vector out;
+	int i;
+	for (i=0; i<4; i++)
+	{
+		out[i] = columns[i].dot(vec);
+	};
+	return out;
+};
