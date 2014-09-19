@@ -63,7 +63,7 @@ Vector::Vector(const Vector &vec)
 	int i;
 	for (i=0; i<4; i++)
 	{
-		coords[i] = vec[i];
+		coords[i] = vec.coords[i];
 	};
 };
 
