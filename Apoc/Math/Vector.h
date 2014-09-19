@@ -39,13 +39,20 @@ public:
 	Vector(float x, float y);
 	Vector(float x, float y, float z);
 	Vector(float x, float y, float z, float w);
-
+	Vector(const Vector &vec);
+	
 	float& x();
 	float& y();
 	float& z();
 	float& w();
 	
 	float& operator[](int i);
+	Vector& operator=(Vector vec);
+	
+	Vector operator+(Vector b);
+	Vector operator-(Vector b);
+	Vector operator*(Vector b);
+	Vector operator/(Vector b);
 };
 
 #endif
