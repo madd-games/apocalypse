@@ -44,6 +44,7 @@ public:
 	Vector& operator[](int i);
 	Matrix transpose();
 	Matrix operator*(Matrix b);
+	Vector operator*(Vector vec);
 };
 
 #endif
