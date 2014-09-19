@@ -89,6 +89,7 @@ for filename in filesToCompile:
 	print ">Compile " + filename
 	if os.system(cmd) != 0:
 		print "!Compilation of " + filename + " failed"
+		sys.exit(1)
 	diary[filename] = stamp
 
 try:
@@ -103,5 +104,6 @@ print ">Link out/%s" % target
 cmd = link_line.replace("${OBJECT_FILES}", " ".join(objectFiles))
 if os.system(cmd) != 0:
 	print "!Linking out/%s failed" % target
+	sys.exit(1)
 
 print "The project is now up-to-date."
