@@ -40,7 +40,12 @@ public:
 	Vector(float x, float y, float z);
 	Vector(float x, float y, float z, float w);
 
+	float& x();
+	float& y();
+	float& z();
+	float& w();
 	
+	float& operator[](int i);
 };
 
 #endif
