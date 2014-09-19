@@ -39,6 +39,7 @@ class Thread;
  */
 class ThreadHandler
 {
+public:
 	/**
 	 * \brief Called when the thread is started.
 	 */
