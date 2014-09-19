@@ -95,3 +95,25 @@ Vector Matrix::operator*(Vector vec)
 	};
 	return out;
 };
+
+Matrix Matrix::Identity()
+{
+	Matrix out;
+	int i, j;
+	for (i=0; i<4; i++)
+	{
+		for (j=0; j<4; j++)
+		{
+			if (i == j)
+			{
+				out[i][j] = 1;
+			}
+			else
+			{
+				out[i][j] = 0;
+			};
+		};
+	};
+	
+	return out;
+};
