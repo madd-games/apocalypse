@@ -33,3 +33,26 @@
 #include <pthread.h>
 #endif
 
+/**
+ * \brief Mutual exclusion lock.
+ * 
+ * Instances must only be created on the heap.
+ */
+class Mutex
+{
+private:
+#ifdef _WIN32
+	HANDLE sysMutex;
+#else
+	pthread_mutex_t sysMutex;
+#endif
+
+public:
+	Mutex();
+	~Mutex();
+	
+	void lock();
+	void unlock();
+};
+
+#endif
