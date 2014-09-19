@@ -28,6 +28,9 @@
 #define APOC_MATH_MATRIX_H
 
 #include <Apoc/Math/Vector.h>
+#include <iostream>
+
+using namespace std;
 
 /**
  * \brief 4x4 matrix class.
@@ -45,6 +48,12 @@ public:
 	Matrix transpose();
 	Matrix operator*(Matrix b);
 	Vector operator*(Vector vec);
+	
+	static Matrix Identity();
+	
+	friend ostream& operator<<(ostream &os, Matrix mat);
 };
+
+ostream& operator<<(ostream &os, Matrix mat);
 
 #endif
