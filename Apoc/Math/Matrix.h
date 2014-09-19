@@ -23,3 +23,26 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef APOC_MATH_MATRIX_H
+#define APOC_MATH_MATRIX_H
+
+#include <Apoc/Math/Vector.h>
+
+/**
+ * \brief 4x4 matrix class.
+ */
+class Matrix
+{
+private:
+	Vector columns[4];
+	
+public:
+	Matrix();
+	Matrix(const Matrix &mat);
+	Matrix& operator=(Matrix &mat);
+	Vector& operator[](int i);
+	Matrix transpose();
+};
+
+#endif
