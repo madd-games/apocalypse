@@ -23,3 +23,47 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <Apoc/Math/Matrix.h>
+
+Matrix::Matrix()
+{
+};
+
+Matrix::Matrix(const Matrix &mat)
+{
+	int i;
+	for (i=0; i<4; i++)
+	{
+		columns[i] = mat.columns[i];
+	};
+};
+
+Matrix& Matrix::operator=(Matrix mat)
+{
+	int i;
+	for (i=0; i<4; i++)
+	{
+		columns[i] = mat[i];
+	};
+	
+	return *this;
+};
+
+Vector& Matrix::operator[](int i)
+{
+	return columns[i];
+};
+
+Matrix Matrix::transpose()
+{
+	Matrix out;
+	int i, j;
+	for (i=0; i<4; i++)
+	{
+		for (j=0; j<4; j++)
+		{
+			out[i][j] = columns[j][i];
+		};
+	};
+};
