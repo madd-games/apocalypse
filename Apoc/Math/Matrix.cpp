@@ -117,3 +117,21 @@ Matrix Matrix::Identity()
 	
 	return out;
 };
+
+ostream& operator<<(ostream &os, Matrix mat)
+{
+	int i, j;
+	for (j=0; j<4; j++)
+	{
+		os << "[";
+		
+		for (i=0; i<4; i++)
+		{
+			os << mat[i][j] << "\t";
+		};
+		
+		os << "]" << endl;
+	};
+	
+	return os;
+};
