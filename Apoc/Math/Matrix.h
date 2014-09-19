@@ -40,7 +40,7 @@ private:
 public:
 	Matrix();
 	Matrix(const Matrix &mat);
-	Matrix& operator=(Matrix &mat);
+	Matrix& operator=(Matrix mat);
 	Vector& operator[](int i);
 	Matrix transpose();
 };
