@@ -44,7 +44,7 @@ private:
 #ifdef _WIN32
 	HANDLE sysThread;
 #else
-	pthread_t *sysThread;
+	pthread_t sysThread;
 #endif
 	ThreadHandler *threadHandler;
 	
