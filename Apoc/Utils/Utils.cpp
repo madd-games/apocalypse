@@ -23,3 +23,14 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <Apoc/Utils/Utils.h>
+#include <Apoc/Video/OpenGL.h>
+#include <stdlib.h>
+
+void ApocFail(string msg)
+{
+	cerr << msg << endl;
+	SDL_Quit();
+	exit(1);
+};
