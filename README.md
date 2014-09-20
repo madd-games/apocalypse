@@ -1,7 +1,7 @@
 Madd Apocalypse
 ===============
 
-A simple engine for first-person shooters.
+An advanced engine for first-person shooters.
 
 Features
 ========
