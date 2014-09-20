@@ -23,3 +23,25 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef APOC_ENTITY_MODEL_H
+#define APOC_ENTITY_MODEL_H
+
+/**
+ * \brief A class for storing models.
+ */
+class Model
+{
+public:
+	/**
+	 * \brief A structure that represents a vertex.
+	 */
+	struct Vertex
+	{
+		float x, y, z, w;
+		float tx, ty;
+		float nx, ny, nz;
+	};
+};
+
+#endif
