@@ -23,3 +23,15 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef APOC_UTILS_UTILS_H
+#define APOC_UTILS_UTILS_H
+
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+void ApocFail(string msg);
+
+#endif
