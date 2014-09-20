@@ -25,6 +25,7 @@
 */
 
 #include <Apoc/Video/OpenGL.h>
+#include <Apoc/Utils/Utils.h>
 #include <string>
 #include <iostream>
 
@@ -33,15 +34,9 @@ using namespace std;
 SDL_Window *apocWindow;
 SDL_GLContext apocContext;
 
-void ApocFail(string msg)
-{
-	cerr << msg << endl;
-	SDL_Quit();
-	exit(1);
-};
-
 int main()
 {
+#ifdef CLIENT
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		ApocFail("Cannot initialize SDL!");
@@ -87,5 +82,6 @@ int main()
 	
 	SDL_GL_DeleteContext(apocContext);
 	SDL_Quit();
+#endif
 	return 0;
 };
