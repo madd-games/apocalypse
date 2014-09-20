@@ -185,7 +185,9 @@ Vector Vector::cross(Vector b)
 
 Vector Vector::normalize()
 {
-	return (*this) * (1.0/length());
+	// Don't calculate the length 3 times!
+	float l = length();
+	return Vector(x()/l, y()/l, z()/l, 0.0);
 };
 
 float Vector::length()
