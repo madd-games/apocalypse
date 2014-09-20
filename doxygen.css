@@ -451,7 +451,8 @@ table.memberdecls {
 .mdescLeft, .mdescRight,
 .memItemLeft, .memItemRight,
 .memTemplItemLeft, .memTemplItemRight, .memTemplParams {
-	background-color: #F9FAFC;
+	/*background-color: #F9FAFC;*/
+	background-color: #101010;
 	border: none;
 	margin: 4px;
 	padding: 1px 0 0 8px;
