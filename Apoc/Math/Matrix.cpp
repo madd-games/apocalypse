@@ -120,6 +120,28 @@ Matrix Matrix::Identity()
 	return out;
 };
 
+Matrix Matrix::Scale(float x, float y, float z)
+{
+	Matrix mat;
+	mat[0] = Vector(x, 0.0, 0.0, 0.0);
+	mat[1] = Vector(0.0, y, 0.0, 0.0);
+	mat[2] = Vector(0.0, 0.0, z, 0.0);
+	mat[3] = Vector(0.0, 0.0, 0.0, 1.0);
+	return mat;
+};
+
+Matrix Matrix::Translate(float x, float y, float z)
+{
+	Matrix mat = Identity();
+	mat[3] = Vector(x, y, z, 1.0);
+	return mat;
+};
+
+Matrix Matrix::LookAt(Vector eye, Vector up, Vector ref)
+{
+	
+};
+
 ostream& operator<<(ostream &os, Matrix mat)
 {
 	int i, j;
