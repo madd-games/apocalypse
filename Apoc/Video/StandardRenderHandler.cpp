@@ -27,7 +27,7 @@
 #include <Apoc/Video/StandardRenderHandler.h>
 
 const char *stdVertexShader = "\
-#version 300\n\
+#version 150\n\
 uniform mat4 uModelMatrix;\n\
 uniform mat4 uViewMatrix;\n\
 uniform mat4 uProjectionMatrix;\n\
@@ -47,7 +47,7 @@ void main()\n\
 };";
 
 const char *stdFragmentShader = "\
-#version 300\n\
+#version 150\n\
 uniform sampler2D uSampler;\n\
 \n\
 in vec2 passTexCoords;\n\
