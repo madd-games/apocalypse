@@ -65,7 +65,7 @@ StandardRenderHandler::StandardRenderHandler()
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 };
 
-StandardRenderHandler::render(World *world)
+void StandardRenderHandler::render(World *world)
 {
 	
 };
