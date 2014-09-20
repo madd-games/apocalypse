@@ -77,12 +77,12 @@ GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
 	glAttachShader(program, fragmentShader);
 	glLinkProgram(program);
 	
-	glGetProgram(program, GL_LINK_STATUS, &status);
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
 	if (!status)
 	{
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logSize);
 		char *buffer = new char[logSize];
-		glGetProgramInfoLog(program, program, logSize, NULL, buffer);
+		glGetProgramInfoLog(program, logSize, NULL, buffer);
 		
 		stringstream ss;
 		ss << "Linking the shader program failed:" << endl;
