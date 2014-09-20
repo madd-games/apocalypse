@@ -23,3 +23,22 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#ifndef APOC_VIDEO_RENDER_HANDLER_H
+#define APOC_VIDEO_RENDER_HANDLER_H
+
+#include <Apoc/Video/OpenGL.h>
+
+/**
+ * \brief Base class for render handlers.
+ * 
+ * You can create a custom render handler in the `Game` directory to apply custom effects
+ * etc. to the rendered scene.
+ */
+class RenderHandler
+{
+private:
+	GLuint sceneProgram;
+};
+
+#endif
