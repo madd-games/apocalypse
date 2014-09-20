@@ -25,6 +25,7 @@
 */
 
 #include <Apoc/Math/Vector.h>
+#include <math.h>
 
 Vector::Vector()
 {
@@ -180,6 +181,16 @@ Vector Vector::cross(Vector b)
 	out[2] = coords[0]*b[1] - coords[1]*b[0];		// Z
 	out[3] = 1.0;						// W, is this right?
 	return out;
+};
+
+Vector Vector::normalize()
+{
+	return (*this) * (1.0/length());
+};
+
+float Vector::length()
+{
+	return sqrt(x()*x()/w() + y()*y()/w() + z()*z()/w());
 };
 
 ostream& operator<<(ostream &os, Vector vec)
