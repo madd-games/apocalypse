@@ -96,3 +96,7 @@ GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
 RenderHandler::RenderHandler()
 {
 };
+
+RenderHandler::~RenderHandler()
+{
+};
