@@ -23,3 +23,76 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <Apoc/Video/RenderHandler.h>
+#include <Apoc/Utils/Utils.h>
+
+#include <stdlib.h>
+#include <sstream>
+
+using namespace std;
+
+GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
+{
+	GLuint program = glCreateProgram();
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	
+	const GLchar *codeVertex = (const GLchar*) glslVertex.c_str();
+	const GLchar *codeFragment = (const GLchar*) glslFragment.c_str();
+	
+	glShaderSource(vertexShader, 1, &codeVertex, NULL);
+	glShaderSource(fragmentShader, 1, &codeFragment, NULL);
+	
+	glCompileShader(vertexShader);
+	GLint status, logSize;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
+	if (!status)
+	{
+		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &logSize);
+		char *buffer = new char[logSize];
+		glGetShaderInfoLog(vertexShader, logSize, NULL, buffer);
+		
+		stringstream ss;
+		ss << "Compilation of the vertex shader failed:" << endl;
+		ss << buffer;
+		ApocFail(ss.str());
+	};
+	
+	glCompileShader(fragmentShader);
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
+	if (!status)
+	{
+		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &logSize);
+		char *buffer = new char[logSize];
+		glGetShaderInfoLog(fragmentShader, logSize, NULL, buffer);
+		
+		stringstream ss;
+		ss << "Compilation of the fragment shader failed:" << endl;
+		ss << buffer;
+		ApocFail(ss.str());
+	};
+	
+	glAttachShader(program, vertexShader);
+	glAttachShader(program, fragmentShader);
+	glLinkProgram(program);
+	
+	glGetProgram(program, GL_LINK_STATUS, &status);
+	if (!status)
+	{
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logSize);
+		char *buffer = new char[logSize];
+		glGetProgramInfoLog(program, program, logSize, NULL, buffer);
+		
+		stringstream ss;
+		ss << "Linking the shader program failed:" << endl;
+		ss << buffer;
+		ApocFail(ss.str());
+	};
+	
+	return program;
+};
+
+RenderHandler::RenderHandler()
+{
+};
