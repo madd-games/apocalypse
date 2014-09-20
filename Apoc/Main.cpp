@@ -36,6 +36,7 @@ SDL_GLContext apocContext;
 void ApocFail(string msg)
 {
 	cerr << msg << endl;
+	SDL_Quit();
 	exit(1);
 };
 
@@ -54,6 +55,12 @@ int main()
 			800, 600, SDL_WINDOW_OPENGL);
 			
 	apocContext = SDL_GL_CreateContext(apocWindow);
+	
+	glewExperimental = true;
+	if (glewInit() != GLEW_OK)
+	{
+		ApocFail("Cannot initialise GLEW!");
+	};
 	
 	SDL_Event event;
 	bool quit = false;
