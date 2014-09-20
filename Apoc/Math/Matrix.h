@@ -72,6 +72,16 @@ public:
 	 */
 	static Matrix LookAt(Vector eye, Vector up, Vector ref);
 	
+	/**
+	 * \brief Returns a perspective projection matrix.
+	 * \param width The screen width.
+	 * \param height The screen height.
+	 * \param zNear The near Z value (so close that we can't see).
+	 * \param zFar The far Z value (so far that we can't see).
+	 * \param fov The field of view (in radians).
+	 */
+	static Matrix Perspective(float width, float height, float zNear, float zFar, float fov);
+
 	friend ostream& operator<<(ostream &os, Matrix mat);
 };
 
