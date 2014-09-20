@@ -1376,6 +1376,6 @@ tr.heading h2 {
 }
 
 ::selection {
-    color: red; 
+    color: white; 
     background: #661111;
 }
