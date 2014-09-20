@@ -1372,10 +1372,10 @@ tr.heading h2 {
 
 ::-moz-selection { /* Code for Firefox */
     color: white;
-    background: #661111;
+    background: #AA1111;
 }
 
 ::selection {
     color: white; 
-    background: #661111;
+    background: #AA1111;
 }
