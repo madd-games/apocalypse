@@ -79,6 +79,9 @@ int main()
 			};
 		};
 		
+		glClearColor(0.5, 0.6, 0.7, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		
 		SDL_GL_SwapWindow(apocWindow);
 	};
 	
