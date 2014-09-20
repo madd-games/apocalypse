@@ -49,7 +49,28 @@ public:
 	Matrix operator*(Matrix b);
 	Vector operator*(Vector vec);
 	
+	/**
+	 * \brief Returns the identity matrix.
+	 */
 	static Matrix Identity();
+	
+	/**
+	 * \brief Returns a scaling transformation matrix.
+	 */
+	static Matrix Scale(float x, float y, float z);
+	
+	/**
+	 * \brief Returns a translating transformation matrix.
+	 */
+	static Matrix Translate(float x, float y, float z);
+	
+	/**
+	 * \brief Returns a look-at matrix.
+	 * \param eye The position of the eye.
+	 * \param up The up vector (which direction is up). w must be 0.
+	 * \param ref The point of reference, which the eye is looking directly at.
+	 */
+	static Matrix LookAt(Vector eye, Vector up, Vector ref);
 	
 	friend ostream& operator<<(ostream &os, Matrix mat);
 };
