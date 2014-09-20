@@ -70,6 +70,17 @@ public:
 	 */
 	Vector cross(Vector b);
 	
+	/**
+	 * \brief Normalizes the vector.
+	 * \return A vector with the same direction as this one, but a magnitude of 1.
+	 */
+	Vector normalize();
+	
+	/**
+	 * \brief Retrurns the length (magnitude) of this vector.
+	 */
+	float length();
+	
 	friend ostream& operator<<(ostream &os, Vector vec);
 };
 
