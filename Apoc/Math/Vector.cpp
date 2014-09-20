@@ -155,6 +155,11 @@ Vector Vector::operator/(Vector b)
 	return out;
 };
 
+Vector Vector::operator*(float x)
+{
+	return Vector(coords[0]*x, coords[1]*x, coords[2]*x, 1.0);
+};
+
 float Vector::dot(Vector b)
 {
 	float out = 0.0;
