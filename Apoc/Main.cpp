@@ -24,7 +24,58 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <Apoc/Video/OpenGL.h>
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+SDL_Window *apocWindow;
+SDL_GLContext apocContext;
+
+void ApocFail(string msg)
+{
+	cerr << msg << endl;
+	exit(1);
+};
+
 int main()
 {
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		ApocFail("Cannot initialize SDL!");
+	};
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+
+	apocWindow = SDL_CreateWindow("Apocalypse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			800, 600, SDL_WINDOW_OPENGL);
+			
+	apocContext = SDL_GL_CreateContext(apocWindow);
 	
+	SDL_Event event;
+	bool quit = false;
+	while (!quit)
+	{
+		if (SDL_PollEvent(&event))
+		{
+			if (event.type == SDL_QUIT)
+			{
+				quit = true;
+			};
+			
+			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE)
+			{
+				quit = true;
+			};
+		};
+		
+		SDL_GL_SwapWindow(apocWindow);
+	};
+	
+	SDL_GL_DeleteContext(apocContext);
+	SDL_Quit();
+	return 0;
 };
