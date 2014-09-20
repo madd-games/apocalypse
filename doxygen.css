@@ -715,7 +715,8 @@ div.directory {
 
 .directory tr.even {
 	padding-left: 6px;
-	background-color: #F7F8FB;
+	/*background-color: #F7F8FB;*/
+	background-color: #222233;
 }
 
 .directory img {
