@@ -444,7 +444,7 @@ table.memberdecls {
 }
 
 .memberdecls td.glow, .fieldtable tr.glow {
-	background-color: cyan;
+	background-color: black;
 	box-shadow: 0 0 15px cyan;
 }
 
