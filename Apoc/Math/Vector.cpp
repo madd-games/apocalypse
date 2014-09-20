@@ -192,7 +192,7 @@ Vector Vector::normalize()
 
 float Vector::length()
 {
-	return sqrt(x()*x()/w() + y()*y()/w() + z()*z()/w());
+	return sqrt(x()*x() + y()*y() + z()*z());
 };
 
 ostream& operator<<(ostream &os, Vector vec)
