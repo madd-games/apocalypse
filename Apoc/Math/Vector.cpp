@@ -157,7 +157,7 @@ Vector Vector::operator/(Vector b)
 
 Vector Vector::operator*(float x)
 {
-	return Vector(coords[0]*x, coords[1]*x, coords[2]*x, 1.0);
+	return Vector(coords[0]*x, coords[1]*x, coords[2]*x, coords[3]*x);
 };
 
 float Vector::dot(Vector b)
