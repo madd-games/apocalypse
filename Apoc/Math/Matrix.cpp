@@ -139,7 +139,16 @@ Matrix Matrix::Translate(float x, float y, float z)
 
 Matrix Matrix::LookAt(Vector eye, Vector up, Vector ref)
 {
+	Vector forward = (ref - eye).normalize();
+	Vector side = forward.cross(up).normalize();
+	up = up.normalize();				// because some people are stupid :)
 	
+	Matrix mat;
+	mat[0] = side;
+	mat[1] = up;
+	mat[2] = forward;
+	mat[3] = eye;
+	return mat;
 };
 
 ostream& operator<<(ostream &os, Matrix mat)
