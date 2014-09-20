@@ -1370,3 +1370,7 @@ tr.heading h2 {
   }
 }
 
+::-moz-selection, ::selection {
+    color: white;
+    background: #661111;
+}
