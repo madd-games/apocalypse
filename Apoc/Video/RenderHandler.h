@@ -32,6 +32,8 @@
 
 using namespace std;
 
+class World;
+
 /**
  * \brief Base class for render handlers.
  * 
@@ -59,10 +61,17 @@ protected:
 public:
 	/**
 	 * \brief Constructor.
-	 * 
-	 * Creates the render program and attaches the vertex and fragment shaders.
 	 */
 	RenderHandler();
+	virtual ~RenderHandler();
+	
+	/**
+	 * \brief Render the world.
+	 * 
+	 * This function is called in a loop on the client.
+	 * \param world The world to render.
+	 */
+	virtual render(World *world) = 0;
 };
 
 #endif
