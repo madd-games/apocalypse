@@ -71,7 +71,7 @@ public:
 	 * This function is called in a loop on the client.
 	 * \param world The world to render.
 	 */
-	virtual render(World *world) = 0;
+	virtual void render(World *world) = 0;
 };
 
 #endif
