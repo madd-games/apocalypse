@@ -29,3 +29,20 @@
 
 #include <Apoc/Video/RenderHandler.h>
 
+/**
+ * \brief The standard render handler.
+ * 
+ * Renders the world without any special effects. This is used by default if no RenderHandler
+ * is defined the game.
+ */
+class StandardRenderHandler : public RenderHandler
+{
+private:
+	GLuint renderProgram;
+	
+public:
+	StandardRenderHandler();
+	void render(World *world);
+};
+
+#endif
