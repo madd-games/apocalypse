@@ -158,8 +158,8 @@ Matrix Matrix::Perspective(float width, float height, float zNear, float zFar, f
 	float fac = 1.0/(ar*tanf(fov/2.0));
 	
 	Matrix out;
-	out[0] = Vector(factor, 0.0, 0.0, 0.0);
-	out[1] = Vector(0.0, factor, 0.0, 0.0);
+	out[0] = Vector(fac, 0.0, 0.0, 0.0);
+	out[1] = Vector(0.0, fac, 0.0, 0.0);
 	out[2] = Vector(0.0, 0.0, (-zNear-zFar)/(zNear-zFar), 1.0);
 	out[3] = Vector(0.0, 0.0, (2*zFar*zNear)/(zNear-zFar), 0.0);
 	
