@@ -33,8 +33,8 @@ target = "client"
 if len(sys.argv) > 1:
 	target = sys.argv[1]
 
-compile_line = "g++ -c ${CPP_FILE} -o ${OBJECT_FILE} -D%s -I." % (target.upper())
-link_line = "g++ ${OBJECT_FILES} -o out/%s -lpthread -lm" % target
+compile_line = "g++ -c ${CPP_FILE} -o ${OBJECT_FILE} -D%s -I. -I/usr/local/include/SDL2 -D_REENTRANT" % (target.upper())
+link_line = "g++ ${OBJECT_FILES} -o out/%s -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread -lm -ldl -lrt -lGLEW -lGL" % target
 
 files = []
 def listfiles(dirname):
