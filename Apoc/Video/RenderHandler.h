@@ -28,6 +28,9 @@
 #define APOC_VIDEO_RENDER_HANDLER_H
 
 #include <Apoc/Video/OpenGL.h>
+#include <string>
+
+using namespace std;
 
 /**
  * \brief Base class for render handlers.
@@ -38,7 +41,28 @@
 class RenderHandler
 {
 private:
-	GLuint sceneProgram;
+
+protected:
+	/**
+	 * \brief Creates an OpenGL program.
+	 * 
+	 * This function can be used by child classes to help create OpenGL programs
+	 * more easily. If the compilation or linking of the shaders fails, the engine
+	 * terminates with an ApocFail.
+	 * 
+	 * \param glslVertex The GLSL Vertex Shader code.
+	 * \param glslFragment The GLSL Fragment Shader code.
+	 * \return The OpenGL program object.
+	 */
+	GLuint createProgram(string glslVertex, string glslFragment);
+	
+public:
+	/**
+	 * \brief Constructor.
+	 * 
+	 * Creates the render program and attaches the vertex and fragment shaders.
+	 */
+	RenderHandler();
 };
 
 #endif
