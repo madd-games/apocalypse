@@ -26,6 +26,8 @@
 
 #include <Apoc/Video/OpenGL.h>
 #include <Apoc/Utils/Utils.h>
+#include <Apoc/Video/StandardRenderHandler.h>
+
 #include <string>
 #include <iostream>
 
@@ -33,6 +35,7 @@ using namespace std;
 
 SDL_Window *apocWindow;
 SDL_GLContext apocContext;
+RenderHandler *apocRenderHandler;
 
 int main()
 {
@@ -57,6 +60,8 @@ int main()
 		ApocFail("Cannot initialise GLEW!");
 	};
 	
+	apocRenderHandler = new StandardRenderHandler();
+	
 	SDL_Event event;
 	bool quit = false;
 	while (!quit)
@@ -74,8 +79,10 @@ int main()
 			};
 		};
 		
-		glClearColor(0.5, 0.6, 0.7, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		apocRenderHandler->render(NULL);
 		
 		SDL_GL_SwapWindow(apocWindow);
 	};
