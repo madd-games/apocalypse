@@ -23,3 +23,49 @@
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <Apoc/Video/StandardRenderHandler.h>
+
+const char *stdVertexShader = "\
+#version 300\n\
+uniform mat4 uModelMatrix;\n\
+uniform mat4 uViewMatrix;\n\
+uniform mat4 uProjectionMatrix;\n\
+\n\
+in vec4 inVertex;\n\
+in vec2 inTexCoords;\n\
+in vec3 inNormal;\n\
+\n\
+out vec2 passTexCoords;\n\
+out vec3 passNormal;\n\
+\n\
+void main()\n\
+{\n\
+	passTexCoords = inTexCoords;\n\
+	passNormal = inNormal;\n\
+	gl_Position = uModelMatrix * uViewMatrix * uProjectionMatrix * inVertex;\n\
+};";
+
+const char *stdFragmentShader = "\
+#version 300\n\
+uniform sampler2D uSampler;\n\
+\n\
+in vec2 passTexCoords;\n\
+in vec3 passNormal;\n\
+\n\
+out vec4 outColor;\n\
+\n\
+void main()\n\
+{\n\
+	outColor = texture(uSampler, passTexCoords);\n\
+};";
+
+StandardRenderHandler::StandardRenderHandler()
+{
+	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
+};
+
+StandardRenderHandler::render(World *world)
+{
+	
+};
