@@ -72,6 +72,22 @@ public:
 	 * \param world The world to render.
 	 */
 	virtual void render(World *world) = 0;
+
+	/**
+	 * \brief Get attribute locations.
+	 * \param attrVertex Return the attribute that stores the vertex position (vec4).
+	 * \param attrTexCoords Return the attribute that stores the texture coordinates (vec2).
+	 * \param attrNormal Return the attribute that stores the normal (vec3).
+	 */
+	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal) = 0;
+
+	/**
+	 * \brief Get the location of a uniform variable.
+	 * \param name The name of the uniform variable.
+	 * \return The location of the uniform variable.
+	 */
+	virtual GLint getUniformLocation(const char *name) = 0;
+	virtual void bindProgram() = 0;
 };
 
 #endif

@@ -27,7 +27,10 @@
 #include <Apoc/Video/OpenGL.h>
 #include <Apoc/Utils/Utils.h>
 #include <Apoc/Video/StandardRenderHandler.h>
+#include <Apoc/Entity/Model.h>
+#include <Apoc/Math/Matrix.h>
 
+#include <math.h>
 #include <string>
 #include <iostream>
 
@@ -36,6 +39,9 @@ using namespace std;
 SDL_Window *apocWindow;
 SDL_GLContext apocContext;
 RenderHandler *apocRenderHandler;
+
+extern "C" const Model::Vertex modVertices_test[];
+extern "C" const int modCount_test;
 
 int main()
 {
@@ -61,7 +67,26 @@ int main()
 	};
 	
 	apocRenderHandler = new StandardRenderHandler();
-	
+	apocRenderHandler->bindProgram();
+
+	Model *model = new Model(modVertices_test, modCount_test);
+
+	GLint uModelMatrix = apocRenderHandler->getUniformLocation("uModelMatrix");
+	GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
+	GLint uProjectionMatrix = apocRenderHandler->getUniformLocation("uProjectionMatrix");
+
+	Matrix matModel = Matrix::Identity();
+	Matrix matView = Matrix::LookAt(
+		Vector(0.0, -10.0, 0.0, 1.0),
+		Vector(0.0, 0.0, 1.0, 0.0),
+		Vector(0.0, 0.0, 0.0, 1.0)
+	);
+	Matrix matProj = Matrix::Perspective(800.0, 600.0, 0.1, 64.0, 45.0*M_PI/180.0);
+
+	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &matModel[0][0]);
+	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
+	glUniformMatrix4fv(uProjectionMatrix, 1, GL_FALSE, &matProj[0][0]);
+
 	SDL_Event event;
 	bool quit = false;
 	while (!quit)
@@ -82,11 +107,14 @@ int main()
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		apocRenderHandler->render(NULL);
-		
+		//apocRenderHandler->render(NULL);
+
+		model->draw();
+		glFlush();
 		SDL_GL_SwapWindow(apocWindow);
 	};
-	
+
+	delete model;
 	SDL_GL_DeleteContext(apocContext);
 	SDL_Quit();
 #endif

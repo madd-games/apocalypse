@@ -38,7 +38,9 @@ extern RenderHandler *apocRenderHandler;
 class Model
 {
 private:
-	
+	GLuint vao, vbo;
+	int vertexCount;
+
 public:
 	/**
 	 * \brief A structure that represents a vertex.
@@ -54,9 +56,25 @@ public:
 	 * \brief Constructor.
 	 * 
 	 * Given a list of vertices and the size, this will create the VAO and VBO to store
-	 * the model on the GPU.
+	 * the model on the GPU. The vertices array may be deleted after the Model object is
+	 * constructed.
 	 */
-	Model(Vertex *vertices, int count);
+	Model(const Vertex *vertices, const int count);
+
+	/**
+	 * \brief Destructor.
+	 *
+	 * Deletes all the VAO and VBO.
+	 */
+	~Model();
+
+	/**
+	 * \brief Draw the model.
+	 *
+	 * This function will call glDrawArrays() with the VAO and VBO bound, but without modifying the
+	 * shader uniforms. It is up to the RenderHandler to set the uniforms as appropriate.
+	 */
+	void draw();
 };
 
 #endif

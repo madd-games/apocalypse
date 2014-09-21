@@ -57,7 +57,8 @@ out vec4 outColor;\n\
 \n\
 void main()\n\
 {\n\
-	outColor = texture(uSampler, passTexCoords);\n\
+	//outColor = texture(uSampler, passTexCoords);\n\
+	outColor = vec4(1.0, 0.0, 0.0, 1.0);\n\
 };";
 
 StandardRenderHandler::StandardRenderHandler()
@@ -68,4 +69,21 @@ StandardRenderHandler::StandardRenderHandler()
 void StandardRenderHandler::render(World *world)
 {
 	
+};
+
+void StandardRenderHandler::getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal)
+{
+	attrVertex = glGetAttribLocation(renderProgram, "inVertex");
+	attrTexCoords = glGetAttribLocation(renderProgram, "inTexCoords");
+	attrNormal = glGetAttribLocation(renderProgram, "inNormal");
+};
+
+GLint StandardRenderHandler::getUniformLocation(const char *name)
+{
+	return glGetUniformLocation(renderProgram, name);
+};
+
+void StandardRenderHandler::bindProgram()
+{
+	glUseProgram(renderProgram);
 };

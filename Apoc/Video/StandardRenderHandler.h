@@ -33,7 +33,7 @@
  * \brief The standard render handler.
  * 
  * Renders the world without any special effects. This is used by default if no RenderHandler
- * is defined the game.
+ * is defined by the game.
  */
 class StandardRenderHandler : public RenderHandler
 {
@@ -43,6 +43,9 @@ private:
 public:
 	StandardRenderHandler();
 	void render(World *world);
+	void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
+	GLint getUniformLocation(const char *name);
+	void bindProgram();
 };
 
 #endif

@@ -25,5 +25,53 @@
 */
 
 #include <Apoc/Entity/Model.h>
+#include <Apoc/Utils/Utils.h>
 
-Model::Model()
+Model::Model(const Model::Vertex *vertices, const int count) : vertexCount(count)
+{
+	if (count == 0)
+	{
+		ApocFail("Empty model specified!");
+	};
+
+	if ((count % 3) != 0)
+	{
+		ApocFail("The specified model is not triangulated!");
+	};
+
+	GLint attrVertex, attrTexCoords, attrNormal;
+	apocRenderHandler->getAttrLocations(attrVertex, attrTexCoords, attrNormal);
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Model::Vertex)*count, vertices, GL_DYNAMIC_DRAW);
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glEnableVertexAttribArray(attrVertex);
+	glEnableVertexAttribArray(attrTexCoords);
+	glEnableVertexAttribArray(attrNormal);
+
+	glVertexAttribPointer(attrVertex, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, pos));
+	glVertexAttribPointer(attrTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, texCoords));
+	glVertexAttribPointer(attrNormal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, normal));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+};
+
+Model::~Model()
+{
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+};
+
+void Model::draw()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+};

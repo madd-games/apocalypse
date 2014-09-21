@@ -1373,11 +1373,11 @@ tr.heading h2 {
 }
 
 ::-moz-selection { /* Code for Firefox */
-    color: white;
-    background: #CC1111;
+    color: black;
+    background: #FF5555;
 }
 
 ::selection {
-    color: white; 
-    background: #CC1111;
+    color: black; 
+    background: #FF5555;
 }
