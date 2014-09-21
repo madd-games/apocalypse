@@ -96,5 +96,5 @@ for vi, ti, ni in faces:
 	f.write("\t\tVector(%f, %f, %f, 0.0)\n" % normal)
 	f.write("\t},\n")
 f.write("};\n")
-f.write("const int modCount_%s = %d;\n" % (modelName, len(faces))
+f.write("const int modCount_%s = %d;\n" % (modelName, len(faces)))
 f.close()
