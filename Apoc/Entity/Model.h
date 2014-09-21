@@ -27,6 +27,8 @@
 #ifndef APOC_ENTITY_MODEL_H
 #define APOC_ENTITY_MODEL_H
 
+#include <Apoc/Math/Vector.h>
+
 /**
  * \brief A class for storing models.
  */
@@ -38,9 +40,9 @@ public:
 	 */
 	struct Vertex
 	{
-		float x, y, z, w;
-		float tx, ty;
-		float nx, ny, nz;
+		Vector pos;
+		Vector texCoords;
+		Vector normal;
 	};
 };
 
