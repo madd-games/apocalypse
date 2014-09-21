@@ -77,11 +77,11 @@ int main()
 
 	Matrix matModel = Matrix::Identity();
 	Matrix matView = Matrix::LookAt(
-		Vector(0.0, -10.0, 0.0, 1.0),
-		Vector(0.0, 0.0, 1.0, 0.0),
+		Vector(0.0, 0.0, -10.0, 1.0),
+		Vector(0.0, 1.0, 0.0, 0.0),
 		Vector(0.0, 0.0, 0.0, 1.0)
 	);
-	Matrix matProj = Matrix::Perspective(800.0, 600.0, 0.1, 64.0, 45.0*M_PI/180.0);
+	Matrix matProj = Matrix::Perspective(800.0, 600.0, 1.0, 1000.0, 60.0*M_PI/180.0);
 
 	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &matModel[0][0]);
 	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);

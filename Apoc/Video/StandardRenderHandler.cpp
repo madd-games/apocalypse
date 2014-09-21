@@ -43,7 +43,7 @@ void main()\n\
 {\n\
 	passTexCoords = inTexCoords;\n\
 	passNormal = inNormal;\n\
-	gl_Position = uModelMatrix * uViewMatrix * uProjectionMatrix * inVertex;\n\
+	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * inVertex;\n\
 };";
 
 const char *stdFragmentShader = "\

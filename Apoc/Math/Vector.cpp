@@ -176,10 +176,10 @@ float Vector::dot(Vector b)
 Vector Vector::cross(Vector b)
 {
 	Vector out;
-	out[0] = coords[0]*b[2] - coords[2]*b[1];		// X
+	out[0] = coords[1]*b[2] - coords[2]*b[1];		// X
 	out[1] = coords[2]*b[0] - coords[0]*b[2];		// Y
 	out[2] = coords[0]*b[1] - coords[1]*b[0];		// Z
-	out[3] = 1.0;						// W, is this right?
+	out[3] = 0.0;						// W, is this right?
 	return out;
 };
 
@@ -193,6 +193,12 @@ Vector Vector::normalize()
 float Vector::length()
 {
 	return sqrt(x()*x() + y()*y() + z()*z());
+};
+
+Vector Vector::project()
+{
+	if (w() == 0) return *this;
+	return Vector(x()/w(), y()/w(), z()/w(), 1.0);
 };
 
 ostream& operator<<(ostream &os, Vector vec)

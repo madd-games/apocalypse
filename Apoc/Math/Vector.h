@@ -80,6 +80,11 @@ public:
 	 * \brief Retrurns the length (magnitude) of this vector.
 	 */
 	float length();
+
+	/**
+	 * \brief Performs the projection divide (divide by w) and returns the result.
+	 */
+	Vector project();
 	
 	friend ostream& operator<<(ostream &os, Vector vec);
 };
