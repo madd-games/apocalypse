@@ -80,7 +80,7 @@ for vi, ti, ni in faces:
 	tex = texCoords[ti]
 	normal = normals[ni]
 	
-	f.write("\t{\n\")
+	f.write("\t{\n")
 	f.write("\t\tVector(%f, %f, %f, %f),\n" % vertex)
 	f.write("\t\tVector(%f, %f, %f, 0.0),\n" % tex)
 	f.write("\t\tVector(%f, %f, %f, 0.0)\n" % normal)
