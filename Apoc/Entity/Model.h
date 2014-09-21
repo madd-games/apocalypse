@@ -28,12 +28,17 @@
 #define APOC_ENTITY_MODEL_H
 
 #include <Apoc/Math/Vector.h>
+#include <Apoc/Video/RenderHandler.h>
+
+extern RenderHandler *apocRenderHandler;
 
 /**
  * \brief A class for storing models.
  */
 class Model
 {
+private:
+	
 public:
 	/**
 	 * \brief A structure that represents a vertex.
@@ -44,6 +49,14 @@ public:
 		Vector texCoords;
 		Vector normal;
 	};
+	
+	/**
+	 * \brief Constructor.
+	 * 
+	 * Given a list of vertices and the size, this will create the VAO and VBO to store
+	 * the model on the GPU.
+	 */
+	Model(Vertex *vertices, int count);
 };
 
 #endif
