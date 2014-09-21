@@ -5,3 +5,7 @@
 inFileName = sys.argv[1]
 outFileName = sys.argv[2]
 
+vertices = []
+texCoords = []
+
+f = open(inFileName, "r")
