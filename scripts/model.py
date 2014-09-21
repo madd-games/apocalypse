@@ -77,8 +77,17 @@ f.write("\n")
 f.write("const Model::Vertex[] vertices = {\n") 
 for vi, ti, ni in faces:
 	vertex = vertices[vi]
-	tex = texCoords[ti]
-	normal = normals[ni]
+	tex = (0.0, 0.0, 0.0)
+	normal = (0.0, 0.0, 0.0)
+	try:
+		tex = texCoords[ti]
+	except IndexError:
+		pass
+	
+	try:
+		normal = normals[ni]
+	except IndexError:
+		pass
 	
 	f.write("\t{\n")
 	f.write("\t\tVector(%f, %f, %f, %f),\n" % vertex)
