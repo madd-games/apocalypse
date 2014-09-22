@@ -54,56 +54,43 @@ else:
 os.system("mkdir -p build-%s" % target)
 os.system("mkdir -p out")
 
-diary = {}
-try:
-	f = open("build-%s/diary" % target, "rb")
-	data = f.read().split("\n")
-	f.close()
-	
-	for line in data:
-		try:
-			filename, stamp = line.rsplit(" ", 1)
-			diary[filename] = int(stamp)
-		except:
-			pass
-except:
-	pass
+f = open("build.rule", "rb")
+rule = f.read()
+f.close()
 
-filesToCompile = []
 objectFiles = []
+depFiles = []
+rules = []
+
+def makeRule(cppfile):
+	objfile = "build-%s/%s.o" % (target, cppfile.replace("/", "__")[:-4])
+	depfile = objfile[:-2] + ".d"
+	objectFiles.append(objfile)
+	depFiles.append(depfile)
+
+	out = rule
+	out = out.replace("%DEPFILE%", depfile)
+	out = out.replace("%OBJFILE%", objfile)
+	out = out.replace("%CPPFILE%", cppfile)
+	rules.append(out)
+
 for filename in files:
-	objectFiles.append("build-%s/" % target + filename[:-4].replace("/", "__") + ".o")
-	if not diary.has_key(filename):
-		filesToCompile.append(filename)
-	else:
-		stamp = int(os.stat(filename).st_mtime)
-		if diary[filename] != stamp:
-			filesToCompile.append(filename)
+	makeRule(filename)
 
-for filename in filesToCompile:
-	stamp = int(os.stat(filename).st_mtime)
-	cmd = compile_line
-	cmd = cmd.replace("${CPP_FILE}", filename)
-	objfile = "build-%s/" % target + filename[:-4].replace("/", "__") + ".o"
-	cmd = cmd.replace("${OBJECT_FILE}", objfile)
-	print ">Compile " + filename
-	if os.system(cmd) != 0:
-		print "!Compilation of " + filename + " failed"
-		sys.exit(1)
-	diary[filename] = stamp
+f = open("build.mk", "wb")
+f.write("CFLAGS=-D%s -I. -I/usr/local/include/SDL2 -D_REENTRANT\n" % target.upper())
+f.write("LDFLAGS=-L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread -lm -ldl -lrt -lGLEW -lGL\n")
+f.write("DEPFILES=%s\n" % " ".join(depFiles))
+f.write("OBJFILES=%s\n" % " ".join(objectFiles))
+f.write("\n")
+f.write(".PHONY: all\n")
+f.write("all: out/%s\n" % target)
+f.write("-include $(DEPFILES)\n")
+f.write("\n")
+f.write("out/%s: $(OBJFILES)\n" % target)
+f.write("\t@echo \">Link $@\"\n")
+f.write("\t@$(CXX) -o $@ $(OBJFILES) $(LDFLAGS)\n")
+f.write("\n".join(rules))
+f.close()
 
-try:
-	f = open("build-%s/diary" % target, "wb")
-	for name, stamp in diary.items():
-		f.write("%s %d\n" % (name, stamp))
-	f.close()
-except:
-	pass
-
-print ">Link out/%s" % target
-cmd = link_line.replace("${OBJECT_FILES}", " ".join(objectFiles))
-if os.system(cmd) != 0:
-	print "!Linking out/%s failed" % target
-	sys.exit(1)
-
-print "The project is now up-to-date."
+sys.exit(os.system("make -f build.mk"))

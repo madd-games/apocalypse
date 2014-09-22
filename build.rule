@@ -1,0 +1,10 @@
+%DEPFILE%: %CPPFILE%
+	@echo ">Parse $<"
+	@set -e; rm -f $@; \
+	$(CXX) -M $(CFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,%OBJFILE% $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+%OBJFILE%: %CPPFILE%
+	@echo ">Compile $<"
+	@$(CXX) -c $< -o $@ $(CFLAGS)
