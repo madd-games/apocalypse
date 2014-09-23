@@ -29,6 +29,7 @@
 #include <Apoc/Video/StandardRenderHandler.h>
 #include <Apoc/Entity/Model.h>
 #include <Apoc/Math/Matrix.h>
+#include <Apoc/Entity/Texture.h>
 
 #include <math.h>
 #include <string>
@@ -42,6 +43,9 @@ RenderHandler *apocRenderHandler;
 
 extern "C" const Model::Vertex modVertices_test[];
 extern "C" const int modCount_test;
+extern "C" const int imgWidth_test;
+extern "C" const int imgHeight_test;
+extern "C" const Texture::Texel imgTexels_test[];
 
 int main()
 {
@@ -65,11 +69,14 @@ int main()
 	{
 		ApocFail("Cannot initialise GLEW!");
 	};
+
+	glEnable(GL_DEPTH_TEST);
 	
 	apocRenderHandler = new StandardRenderHandler();
 	apocRenderHandler->bindProgram();
 
 	Model *model = new Model(modVertices_test, modCount_test);
+	Texture *tex = new Texture(imgWidth_test, imgHeight_test, imgTexels_test);
 
 	GLint uModelMatrix = apocRenderHandler->getUniformLocation("uModelMatrix");
 	GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
@@ -89,6 +96,8 @@ int main()
 
 	SDL_Event event;
 	bool quit = false;
+	unsigned long lastTicks = SDL_GetTicks();
+	float angle;
 	while (!quit)
 	{
 		if (SDL_PollEvent(&event))
@@ -103,17 +112,34 @@ int main()
 				quit = true;
 			};
 		};
-		
+
+		if ((SDL_GetTicks()-lastTicks) > 10)
+		{
+			lastTicks = SDL_GetTicks();
+			angle += M_PI/180.0;
+		};
+
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//apocRenderHandler->render(NULL);
 
+		matView = Matrix::LookAt(
+			Vector(10*sin(angle), 5.0, 10*cos(angle), 1.0),
+			Vector(0.0, 1.0, 0.0, 0.0),
+			Vector(0.0, 0.0, 0.0, 1.0)
+		);
+		cout << matView << endl;
+		glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
+
+		tex->bind();
 		model->draw();
+
 		glFlush();
 		SDL_GL_SwapWindow(apocWindow);
 	};
 
+	delete tex;
 	delete model;
 	SDL_GL_DeleteContext(apocContext);
 	SDL_Quit();

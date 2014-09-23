@@ -26,6 +26,9 @@
 
 #include <Apoc/Math/Matrix.h>
 #include <math.h>
+#include <iostream>
+
+using namespace std;
 
 Matrix::Matrix()
 {
@@ -145,13 +148,13 @@ Matrix Matrix::LookAt(Vector eye, Vector up, Vector ref)
 	Vector right = up.cross(forward).normalize();
 	up = forward.cross(right);
 	
-	Matrix matOrient;
-	matOrient[0] = right;
-	matOrient[1] = up;
-	matOrient[2] = forward;
-	matOrient[3] = Vector(0, 0, 0, 1);
+	Matrix mat;
+	mat[0] = Vector(right[0], up[0], forward[0], 0.0);
+	mat[1] = Vector(right[1], up[1], forward[1], 0.0);
+	mat[2] = Vector(right[2], up[2], forward[2], 0.0);
+	mat[3] = Vector(right.dot(eye * -1), up.dot(eye * -1), forward.dot(eye * -1), 1);
 
-	return matOrient * Translate(-eye.x(), -eye.y(), -eye.z());
+	return mat;
 };
 
 Matrix Matrix::Perspective(float width, float height, float zNear, float zFar, float fov)

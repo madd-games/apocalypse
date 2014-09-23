@@ -57,8 +57,7 @@ out vec4 outColor;\n\
 \n\
 void main()\n\
 {\n\
-	//outColor = texture(uSampler, passTexCoords);\n\
-	outColor = vec4(1.0, 0.0, 0.0, 1.0);\n\
+	outColor = texture(uSampler, passTexCoords);\n\
 };";
 
 StandardRenderHandler::StandardRenderHandler()
