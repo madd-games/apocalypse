@@ -152,9 +152,9 @@ Matrix Matrix::LookAt(Vector eye, Vector up, Vector ref)
 	mat[0] = Vector(right[0], up[0], forward[0], 0.0);
 	mat[1] = Vector(right[1], up[1], forward[1], 0.0);
 	mat[2] = Vector(right[2], up[2], forward[2], 0.0);
-	mat[3] = Vector(right.dot(eye * -1), up.dot(eye * -1), forward.dot(eye * -1), 1);
+	mat[3] = Vector(0, 0, 0, 1);
 
-	return mat;
+	return Translate(-eye.x(), -eye.y(), -eye.z()) * mat;
 };
 
 Matrix Matrix::Perspective(float width, float height, float zNear, float zFar, float fov)

@@ -26,6 +26,31 @@
 
 #include <Apoc/Entity/Texture.h>
 #include <Apoc/Video/OpenGL.h>
+#include <Apoc/Utils/Utils.h>
+
+map<string, Texture*> Texture::texMap;
+
+extern Texture::Map apocTextureMap[];
+
+void Texture::Init()
+{
+	Texture::Map *iter = apocTextureMap;
+	while (iter->name != NULL)
+	{
+		string name(iter->name);
+		texMap[name] = new Texture(iter->width, iter->height, iter->data);
+		iter++;
+	};
+};
+
+Texture* Texture::Get(string name)
+{
+	if (texMap.count(name) == 0)
+	{
+		ApocFail("No such texture: " + name);
+	};
+	return texMap[name];
+};
 
 Texture::Texture(const int width, const int height, const Texture::Texel *data)
 {

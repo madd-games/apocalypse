@@ -39,8 +39,16 @@ class StandardRenderHandler : public RenderHandler
 {
 private:
 	GLuint renderProgram;
-	
+
 public:
+	/**
+	 * \brief Standard render params.
+	 */
+	struct RenderParams
+	{
+		
+	};
+
 	StandardRenderHandler();
 	void render(World *world);
 	void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);

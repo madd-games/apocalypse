@@ -28,6 +28,10 @@
 #define APOC_ENTITY_TEXTURE_H
 
 #include <Apoc/Video/OpenGL.h>
+#include <map>
+#include <string>
+
+using namespace std;
 
 /**
  * \brief A class that represents textures on the GPU.
@@ -35,15 +39,37 @@
 class Texture
 {
 private:
+	static map<string, Texture*> texMap;
 	GLuint texObj;
 
 public:
+	/**
+	 * \brief Initialise the texturing system by loading the texture map.
+	 */
+	static void Init();
+
+	/**
+	 * \brief Returns a texture given its name.
+	 */
+	static Texture* Get(string name);
+
 	/**
 	 * \brief Describes a texel.
 	 */
 	struct Texel
 	{
 		float red, green, blue, alpha;
+	};
+
+	/**
+	 * \brief Used to describe textures in the binary.
+	 */
+	struct Map
+	{
+		const char *name;
+		int width;
+		int height;
+		const Texel *data;
 	};
 
 	/**

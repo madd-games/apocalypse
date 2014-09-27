@@ -27,16 +27,41 @@
 #ifndef APOC_ENTITY_ENTITY_H
 #define APOC_ENTITY_ENTITY_H
 
+#include <Apoc/Entity/Model.h>
+#include <Apoc/Entity/Texture.h>
+#include <Apoc/Math/Matrix.h>
+#include <Apoc/Video/OpenGL.h>
+
+#include <vector>
+#include <map>
+#include <string>
+
+using namespace std;
+
 /**
  * \brief Base class for all entities.
  */
 class Entity
 {
+private:
+	struct Object
+	{
+		Model *model;
+		// applied independently to the object.
+		Matrix matrix;
+		// Maps OpenGL texture units to the texture to be bound.
+		map<unsigned int, Texture*> textures;
+	};
+
+	// Maps object names to their descriptions.
+	map<string, Object> objects;
+
 public:
 	/**
-	 * \brief Default constructor for entities.
+	 * \brief Constructor.
+	 * \param defs The model description.
 	 */
-	Entity();
+	Entity(Model::ObjDef *defs);
 	
 	/**
 	 * \brief Virtual destructor.
@@ -50,6 +75,8 @@ public:
 	 * It does nothing by default.
 	 */
 	virtual void update();
+
+	void renderObjects();
 };
 
 #endif

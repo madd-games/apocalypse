@@ -59,7 +59,10 @@ public:
 	Vector operator*(Vector b);
 	Vector operator/(Vector b);
 	Vector operator*(float x);
-	
+
+	bool operator==(const Vector b);
+	bool operator!=(const Vector b);
+
 	/**
 	 * \brief Returns the dot product of this vector and vector B.
 	 */

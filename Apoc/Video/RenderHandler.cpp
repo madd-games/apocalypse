@@ -43,51 +43,75 @@ GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
 	
 	glShaderSource(vertexShader, 1, &codeVertex, NULL);
 	glShaderSource(fragmentShader, 1, &codeFragment, NULL);
-	
+
+	cout << "[APOC] Compiling vertex shader" << endl;
 	glCompileShader(vertexShader);
 	GLint status, logSize;
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-	if (!status)
+	if (true)
 	{
 		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &logSize);
 		char *buffer = new char[logSize];
 		glGetShaderInfoLog(vertexShader, logSize, NULL, buffer);
 		
-		stringstream ss;
-		ss << "Compilation of the vertex shader failed:" << endl;
-		ss << buffer;
-		ApocFail(ss.str());
+		if (!status)
+		{
+			stringstream ss;
+			ss << "Compilation of the vertex shader failed:" << endl;
+			ss << buffer;
+			ApocFail(ss.str());
+		}
+		else
+		{
+			cout << buffer << endl;
+		};
 	};
-	
+
+	cout << "[APOC] Compiling fragment shader" << endl;
 	glCompileShader(fragmentShader);
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
-	if (!status)
+	if (true)
 	{
 		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &logSize);
 		char *buffer = new char[logSize];
 		glGetShaderInfoLog(fragmentShader, logSize, NULL, buffer);
 		
-		stringstream ss;
-		ss << "Compilation of the fragment shader failed:" << endl;
-		ss << buffer;
-		ApocFail(ss.str());
+		if (!status)
+		{
+			stringstream ss;
+			ss << "Compilation of the fragment shader failed:" << endl;
+			ss << buffer;
+			ApocFail(ss.str());
+		}
+		else
+		{
+			cout << buffer << endl;
+		};
 	};
-	
+
+	cout << "[APOC] Linking shaders" << endl;
 	glAttachShader(program, vertexShader);
 	glAttachShader(program, fragmentShader);
 	glLinkProgram(program);
 	
 	glGetProgramiv(program, GL_LINK_STATUS, &status);
-	if (!status)
+	if (true)
 	{
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logSize);
 		char *buffer = new char[logSize];
 		glGetProgramInfoLog(program, logSize, NULL, buffer);
-		
-		stringstream ss;
-		ss << "Linking the shader program failed:" << endl;
-		ss << buffer;
-		ApocFail(ss.str());
+
+		if (!status)
+		{
+			stringstream ss;
+			ss << "Linking the shader program failed:" << endl;
+			ss << buffer;
+			ApocFail(ss.str());
+		}
+		else
+		{
+			cout << buffer << endl;
+		};
 	};
 	
 	return program;

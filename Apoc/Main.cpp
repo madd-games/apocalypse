@@ -30,6 +30,8 @@
 #include <Apoc/Entity/Model.h>
 #include <Apoc/Math/Matrix.h>
 #include <Apoc/Entity/Texture.h>
+#include <Apoc/Entity/Entity.h>
+#include <Game/Entities/EntityTest/EntityTest.h>
 
 #include <math.h>
 #include <string>
@@ -41,11 +43,10 @@ SDL_Window *apocWindow;
 SDL_GLContext apocContext;
 RenderHandler *apocRenderHandler;
 
-extern "C" const Model::Vertex modVertices_test[];
-extern "C" const int modCount_test;
-extern "C" const int imgWidth_test;
-extern "C" const int imgHeight_test;
-extern "C" const Texture::Texel imgTexels_test[];
+extern Model::Vertex modVertices_EntityTest__Cube[];
+extern "C" const int imgWidth_0;
+extern "C" const int imgHeight_0;
+extern "C" const Texture::Texel imgTexels_0[];
 
 int main()
 {
@@ -61,7 +62,7 @@ int main()
 
 	apocWindow = SDL_CreateWindow("Apocalypse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			800, 600, SDL_WINDOW_OPENGL);
-			
+
 	apocContext = SDL_GL_CreateContext(apocWindow);
 	
 	glewExperimental = true;
@@ -70,13 +71,15 @@ int main()
 		ApocFail("Cannot initialise GLEW!");
 	};
 
+	while (glGetError() != GL_NO_ERROR);	// clearing the error flag first?
+
 	glEnable(GL_DEPTH_TEST);
-	
+
 	apocRenderHandler = new StandardRenderHandler();
 	apocRenderHandler->bindProgram();
 
-	Model *model = new Model(modVertices_test, modCount_test);
-	Texture *tex = new Texture(imgWidth_test, imgHeight_test, imgTexels_test);
+	cout << "[APOC] Loading textures" << endl;
+	Texture::Init();
 
 	GLint uModelMatrix = apocRenderHandler->getUniformLocation("uModelMatrix");
 	GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
@@ -94,10 +97,13 @@ int main()
 	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
 	glUniformMatrix4fv(uProjectionMatrix, 1, GL_FALSE, &matProj[0][0]);
 
+	Entity *entity = new EntityTest();
+
 	SDL_Event event;
 	bool quit = false;
 	unsigned long lastTicks = SDL_GetTicks();
 	float angle;
+	float z = -10;
 	while (!quit)
 	{
 		if (SDL_PollEvent(&event))
@@ -116,7 +122,7 @@ int main()
 		if ((SDL_GetTicks()-lastTicks) > 10)
 		{
 			lastTicks = SDL_GetTicks();
-			angle += M_PI/180.0;
+			z += 0.01;
 		};
 
 		glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -125,22 +131,24 @@ int main()
 		//apocRenderHandler->render(NULL);
 
 		matView = Matrix::LookAt(
-			Vector(10*sin(angle), 5.0, 10*cos(angle), 1.0),
+			Vector(0.0, 0.0, -10.0, 1.0),
 			Vector(0.0, 1.0, 0.0, 0.0),
 			Vector(0.0, 0.0, 0.0, 1.0)
 		);
-		cout << matView << endl;
 		glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
 
-		tex->bind();
-		model->draw();
+		//Vector testPoint(-0.999999, 1.000000, -1.000001, 1.000000);
+		//cout << "Look at:" << endl;
+		//cout << matView << endl;
+		//cout << "Point cast: " << (matProj * matView * matModel * testPoint).project() << endl;
+
+		entity->renderObjects();
 
 		glFlush();
 		SDL_GL_SwapWindow(apocWindow);
 	};
 
-	delete tex;
-	delete model;
+	//delete entity;
 	SDL_GL_DeleteContext(apocContext);
 	SDL_Quit();
 #endif

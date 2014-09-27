@@ -29,8 +29,12 @@
 
 #include <Apoc/Math/Vector.h>
 #include <Apoc/Video/RenderHandler.h>
+#include <Apoc/Entity/Texture.h>
+#include <map>
 
 extern RenderHandler *apocRenderHandler;
+
+using namespace std;
 
 /**
  * \brief A class for storing models.
@@ -51,7 +55,19 @@ public:
 		Vector texCoords;
 		Vector normal;
 	};
-	
+
+	/**
+	 * \brief An object definition.
+	 */
+	struct ObjDef
+	{
+		const char *name;
+		Vertex *vertices;
+		int count;
+		Model *model;		// initially NULL
+		const char *texName;
+	};
+
 	/**
 	 * \brief Constructor.
 	 * 
@@ -59,12 +75,12 @@ public:
 	 * the model on the GPU. The vertices array may be deleted after the Model object is
 	 * constructed.
 	 */
-	Model(const Vertex *vertices, const int count);
+	Model(Vertex *vertices, const int count);
 
 	/**
 	 * \brief Destructor.
 	 *
-	 * Deletes all the VAO and VBO.
+	 * Deletes the VAO and VBO.
 	 */
 	~Model();
 

@@ -2,7 +2,7 @@
 	@echo ">Parse $<"
 	@set -e; rm -f $@; \
 	$(CXX) -M $(CFLAGS) $< > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,%OBJFILE% $@ : ,g' < $@.$$$$ > $@; \
+	sed 's,%REPLACE%[ :]*,%OBJFILE% $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
 %OBJFILE%: %CPPFILE%

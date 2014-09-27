@@ -33,5 +33,6 @@
 using namespace std;
 
 void ApocFail(string msg);
+void* ApocSymbol(string sym);
 
 #endif

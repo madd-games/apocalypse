@@ -161,6 +161,34 @@ Vector Vector::operator*(float x)
 	return Vector(coords[0]*x, coords[1]*x, coords[2]*x, coords[3]*x);
 };
 
+bool Vector::operator==(const Vector b)
+{
+	int i;
+	for (i=0; i<4; i++)
+	{
+		if (coords[i] != b.coords[i])
+		{
+			return false;
+		};
+	};
+
+	return true;
+};
+
+bool Vector::operator!=(const Vector b)
+{
+	int i;
+	for (i=0; i<4; i++)
+	{
+		if (coords[i] == b.coords[i])
+		{
+			return false;
+		};
+	};
+
+	return true;
+};
+
 float Vector::dot(Vector b)
 {
 	float out = 0.0;

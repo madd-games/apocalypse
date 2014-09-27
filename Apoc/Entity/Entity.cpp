@@ -25,9 +25,30 @@
 */
 
 #include <Apoc/Entity/Entity.h>
+#include <Apoc/Utils/Utils.h>
+#include <inttypes.h>
 
-Entity::Entity()
+Entity::Entity(Model::ObjDef *defs)
 {
+	while (defs->vertices != NULL)
+	{
+		Object obj;
+		if (defs->model == NULL)
+		{
+			obj.model = new Model(defs->vertices, defs->count);
+			defs->model = obj.model;
+		}
+		else
+		{
+			obj.model = defs->model;
+		};
+
+		string texName = defs->texName;
+		obj.textures[0] = Texture::Get(texName);
+		obj.matrix = Matrix::Identity();
+		objects[defs->name] = obj;
+		defs++;
+	};
 };
 
 Entity::~Entity()
@@ -36,4 +57,20 @@ Entity::~Entity()
 
 void Entity::update()
 {
+};
+
+void Entity::renderObjects()
+{
+	map<string, Object>::iterator it;
+	for (it=objects.begin(); it!=objects.end(); ++it)
+	{
+		map<unsigned int, Texture*>::iterator jt;
+		for (jt=it->second.textures.begin(); jt!=it->second.textures.end(); ++jt)
+		{
+			glActiveTexture(GL_TEXTURE0 + jt->first);
+			jt->second->bind();
+		};
+
+		it->second.model->draw();
+	};
 };
