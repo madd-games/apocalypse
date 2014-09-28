@@ -154,7 +154,7 @@ Matrix Matrix::LookAt(Vector eye, Vector up, Vector ref)
 	mat[2] = Vector(right[2], up[2], forward[2], 0.0);
 	mat[3] = Vector(0, 0, 0, 1);
 
-	return Translate(-eye.x(), -eye.y(), -eye.z()) * mat;
+	return mat * Translate(-eye.x(), -eye.y(), -eye.z());
 };
 
 Matrix Matrix::Perspective(float width, float height, float zNear, float zFar, float fov)

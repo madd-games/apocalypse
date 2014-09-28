@@ -40,16 +40,6 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count)
 		ApocFail("The specified model is not triangulated!");
 	};
 
-	if (Vector(0, 0, 0, 0) == vertices[0].normal)
-	{
-		// TODO: calculate normals
-		int i;
-		for (i=0; i<count; i++)
-		{
-			vertices[i].normal = Vector(0, 1, 0);
-		};
-	};
-
 	GLint attrVertex, attrTexCoords, attrNormal;
 	apocRenderHandler->getAttrLocations(attrVertex, attrTexCoords, attrNormal);
 

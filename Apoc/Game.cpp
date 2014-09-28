@@ -29,3 +29,17 @@
 void Game::onGameStart()
 {
 };
+
+void Game::onKeyPress(SDL_Keycode key)
+{
+	(void)key;
+};
+
+void Game::onKeyRelease(SDL_Keycode key)
+{
+	(void)key;
+};
+
+void Game::update()
+{
+};

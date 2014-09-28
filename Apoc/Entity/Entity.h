@@ -51,6 +51,8 @@ private:
 		Matrix matrix;
 		// Maps OpenGL texture units to the texture to be bound.
 		map<unsigned int, Texture*> textures;
+		Vector diffuseColor;
+		Vector specularColor;
 	};
 
 	// Maps object names to their descriptions.

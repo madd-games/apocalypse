@@ -24,40 +24,34 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_GAME_H
-#define APOC_GAME_H
+#ifndef APOC_VIDEO_CAMERA_H
+#define APOC_VIDEO_CAMERA_H
 
-#include <Apoc/Video/OpenGL.h>
+#include <Apoc/Math/Vector.h>
 
 /**
- * \brief Base for main game classes.
+ * \brief Base class for cameras.
  *
- * Each game must declare a class deriving from this one, called `GameImpl`, in `Game/GameImpl.h`.
+ * Derivatives of this class are to be defined by the game, to return
+ * the vectors needed to define the view matrix.
  */
-class Game
+class Camera
 {
 public:
 	/**
-	 * \brief Called when the game is started.
+	 * \brief Returns the eye position.
 	 */
-	virtual void onGameStart();
+	virtual Vector getEye() = 0;
 
 	/**
-	 * \brief Called when a key is pressed.
-	 * \param key The key pressed (see SDL documentation).
+	 * \brief Returns the point of reference.
 	 */
-	virtual void onKeyPress(SDL_Keycode key);
+	virtual Vector getRef() = 0;
 
 	/**
-	 * \brief Called when a key is released.
-	 * \param key The key released (see SDL documentation).
+	 * \brief Returns the up vector.
 	 */
-	virtual void onKeyRelease(SDL_Keycode key);
-
-	/**
-	 * \brief Called before the world update.
-	 */
-	virtual void update();
+	virtual Vector getUpVector() = 0;
 };
 
 #endif

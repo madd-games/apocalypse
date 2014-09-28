@@ -31,6 +31,7 @@ extern RenderHandler *apocRenderHandler;
 
 vector<Entity*> World::entities;
 vector<Entity*> World::addQueue;
+Camera *World::camera = NULL;
 
 void World::addEntity(Entity *entity)
 {
@@ -39,6 +40,26 @@ void World::addEntity(Entity *entity)
 
 void World::update()
 {
+	GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
+	Matrix viewMatrix;
+	if (camera != NULL)
+	{
+		viewMatrix = Matrix::LookAt(
+			camera->getEye(),
+			camera->getUpVector(),
+			camera->getRef()
+		);
+	}
+	else
+	{
+		viewMatrix = Matrix::LookAt(
+			Vector(0.0, 2.0, -10.0),
+			Vector(0.0, 1.0, 0.0),
+			Vector(0.0, 0.0, 0.0)
+		);
+	};
+	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
+
 	vector<Entity*>::iterator it;
 	for (it=addQueue.begin(); it!=addQueue.end(); ++it)
 	{
@@ -59,4 +80,9 @@ void World::render()
 	{
 		(*it)->renderObjects();
 	};
+};
+
+void World::setCamera(Camera *camera)
+{
+	World::camera = camera;
 };

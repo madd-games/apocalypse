@@ -63,7 +63,9 @@ int main()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 	apocWindow = SDL_CreateWindow("Apocalypse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			800, 600, SDL_WINDOW_OPENGL);
+			1366, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+
+	SDL_ShowCursor(0);
 
 	apocContext = SDL_GL_CreateContext(apocWindow);
 	
@@ -76,6 +78,8 @@ int main()
 	while (glGetError() != GL_NO_ERROR);	// clearing the error flag first?
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CW);
 
 	apocRenderHandler = new StandardRenderHandler();
 	apocRenderHandler->bindProgram();
@@ -93,7 +97,7 @@ int main()
 		Vector(0.0, 1.0, 0.0, 0.0),
 		Vector(0.0, 0.0, 0.0, 1.0)
 	);
-	Matrix matProj = Matrix::Perspective(800.0, 600.0, 1.0, 1000.0, 60.0*M_PI/180.0);
+	Matrix matProj = Matrix::Perspective(1366.0, 768.0, 1.0, 1000.0, 60.0*M_PI/180.0);
 
 	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &matModel[0][0]);
 	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
@@ -116,9 +120,21 @@ int main()
 			if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE)
 			{
 				quit = true;
+			}
+			else if (event.type == SDL_KEYUP)
+			{
+				SDL_Keycode key = event.key.keysym.sym;
+				game->onKeyRelease(key);
+			};
+
+			if (event.type == SDL_KEYDOWN)
+			{
+				SDL_Keycode key = event.key.keysym.sym;
+				game->onKeyPress(key);
 			};
 		};
 
+		game->update();
 		World::update();
 		apocRenderHandler->render();
 

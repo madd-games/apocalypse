@@ -66,6 +66,8 @@ public:
 		int count;
 		Model *model;		// initially NULL
 		const char *texName;
+		Vector diffuseColor;
+		Vector specularColor;
 	};
 
 	/**
