@@ -27,9 +27,14 @@
 #include <Apoc/Entity/Entity.h>
 #include <Apoc/Utils/Utils.h>
 #include <inttypes.h>
+#include <Apoc/Video/RenderHandler.h>
+
+extern RenderHandler *apocRenderHandler;
 
 Entity::Entity(Model::ObjDef *defs)
 {
+	modelMatrix = Matrix::Identity();
+
 	while (defs->vertices != NULL)
 	{
 		Object obj;
@@ -55,12 +60,29 @@ Entity::~Entity()
 {
 };
 
+void Entity::transform(string obj, Matrix mat)
+{
+	if (obj == "")
+	{
+		modelMatrix = mat * modelMatrix;
+	}
+	else
+	{
+		objects[obj].matrix = mat * objects[obj].matrix;
+	};
+};
+
 void Entity::update()
 {
 };
 
 void Entity::renderObjects()
 {
+	GLint uModelMatrix = apocRenderHandler->getUniformLocation("uModelMatrix");
+	GLint uObjectMatrix = apocRenderHandler->getUniformLocation("uObjectMatrix");
+
+	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+
 	map<string, Object>::iterator it;
 	for (it=objects.begin(); it!=objects.end(); ++it)
 	{
@@ -71,6 +93,7 @@ void Entity::renderObjects()
 			jt->second->bind();
 		};
 
+		glUniformMatrix4fv(uObjectMatrix, 1, GL_FALSE, &it->second.matrix[0][0]);
 		it->second.model->draw();
 	};
 };

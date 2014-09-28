@@ -24,36 +24,42 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_VIDEO_STANDARD_RENDER_HANDLER_H
-#define APOC_VIDEO_STANDARD_RENDER_HANDLER_H
+#ifndef APOC_ENTITY_WORLD_H
+#define APOC_ENTITY_WORLD_H
 
-#include <Apoc/Video/RenderHandler.h>
+#include <Apoc/Entity/Entity.h>
+#include <vector>
+
+using namespace std;
 
 /**
- * \brief The standard render handler.
- * 
- * Renders the world without any special effects. This is used by default if no RenderHandler
- * is defined by the game.
+ * \brief Describes the world.
  */
-class StandardRenderHandler : public RenderHandler
+class World
 {
 private:
-	GLuint renderProgram;
+	static vector<Entity*> entities;
+	static vector<Entity*> addQueue;
 
 public:
 	/**
-	 * \brief Standard render params.
+	 * \brief Add an entity to the world.
+	 *
+	 * It will appear in the entity list on the next update.
 	 */
-	struct RenderParams
-	{
-		
-	};
+	static void addEntity(Entity *ent);
 
-	StandardRenderHandler();
-	virtual void render();
-	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
-	virtual GLint getUniformLocation(const char *name);
-	virtual void bindProgram();
+	/**
+	 * \brief Updates the world.
+	 *
+	 * This function basically calls the update() method of every Entity.
+	 */
+	static void update();
+
+	/**
+	 * \brief Render the world.
+	 */
+	static void render();
 };
 
 #endif

@@ -25,12 +25,14 @@
 */
 
 #include <Apoc/Video/StandardRenderHandler.h>
+#include <Apoc/Entity/World.h>
 
 const char *stdVertexShader = "\
 #version 150\n\
 uniform mat4 uModelMatrix;\n\
 uniform mat4 uViewMatrix;\n\
 uniform mat4 uProjectionMatrix;\n\
+uniform mat4 uObjectMatrix;\n\
 \n\
 in vec4 inVertex;\n\
 in vec2 inTexCoords;\n\
@@ -43,7 +45,7 @@ void main()\n\
 {\n\
 	passTexCoords = inTexCoords;\n\
 	passNormal = inNormal;\n\
-	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * inVertex;\n\
+	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * uObjectMatrix * inVertex;\n\
 };";
 
 const char *stdFragmentShader = "\
@@ -66,9 +68,11 @@ StandardRenderHandler::StandardRenderHandler()
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 };
 
-void StandardRenderHandler::render(World *world)
+void StandardRenderHandler::render()
 {
-	
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	World::render();
 };
 
 void StandardRenderHandler::getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal)

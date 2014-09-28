@@ -171,6 +171,29 @@ Matrix Matrix::Perspective(float width, float height, float zNear, float zFar, f
 	return out;
 };
 
+Matrix Matrix::Rotate(float x, float y, float z)
+{
+	Matrix matX;
+	matX[0] = Vector(1, 0, 0, 0);
+	matX[1] = Vector(0, cos(x), sin(x), 0);
+	matX[2] = Vector(0, -sin(x), cos(x), 0);
+	matX[3] = Vector(0, 0, 0, 1);
+
+	Matrix matY;
+	matY[0] = Vector(cos(y), 0, -sin(y), 0);
+	matY[1] = Vector(0, 1, 0, 0);
+	matY[2] = Vector(sin(y), 0, cos(y), 0);
+	matY[3] = Vector(0, 0, 0, 1);
+
+	Matrix matZ;
+	matZ[0] = Vector(cos(z), sin(z), 0, 0);
+	matZ[1] = Vector(-sin(z), cos(z), 0, 0);
+	matZ[2] = Vector(0, 0, 1, 0);
+	matZ[3] = Vector(0, 0, 0, 1);
+
+	return matX * matY * matZ;
+};
+
 ostream& operator<<(ostream &os, Matrix mat)
 {
 	int i, j;

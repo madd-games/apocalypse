@@ -82,6 +82,14 @@ public:
 	 */
 	static Matrix Perspective(float width, float height, float zNear, float zFar, float fov);
 
+	/**
+	 * \brief Returns a rotation matrix.
+	 * \param x The angle to rotate by around the X axis (in radians).
+	 * \param y The angle to rotate by around the Y axis (in radians).
+	 * \param z The angle to rotate by around the Z axis (in radians).
+	 */
+	static Matrix Rotate(float x, float y, float z);
+
 	friend ostream& operator<<(ostream &os, Matrix mat);
 };
 

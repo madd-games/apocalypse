@@ -24,36 +24,8 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_VIDEO_STANDARD_RENDER_HANDLER_H
-#define APOC_VIDEO_STANDARD_RENDER_HANDLER_H
+#include <Apoc/Game.h>
 
-#include <Apoc/Video/RenderHandler.h>
-
-/**
- * \brief The standard render handler.
- * 
- * Renders the world without any special effects. This is used by default if no RenderHandler
- * is defined by the game.
- */
-class StandardRenderHandler : public RenderHandler
+void Game::onGameStart()
 {
-private:
-	GLuint renderProgram;
-
-public:
-	/**
-	 * \brief Standard render params.
-	 */
-	struct RenderParams
-	{
-		
-	};
-
-	StandardRenderHandler();
-	virtual void render();
-	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
-	virtual GLint getUniformLocation(const char *name);
-	virtual void bindProgram();
 };
-
-#endif

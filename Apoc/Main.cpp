@@ -31,7 +31,9 @@
 #include <Apoc/Math/Matrix.h>
 #include <Apoc/Entity/Texture.h>
 #include <Apoc/Entity/Entity.h>
-#include <Game/Entities/EntityTest/EntityTest.h>
+#include <Apoc/Entity/World.h>
+
+#include <Game/GameImpl.h>
 
 #include <math.h>
 #include <string>
@@ -87,7 +89,7 @@ int main()
 
 	Matrix matModel = Matrix::Identity();
 	Matrix matView = Matrix::LookAt(
-		Vector(0.0, 0.0, -10.0, 1.0),
+		Vector(0.0, 2.0, -10.0, 1.0),
 		Vector(0.0, 1.0, 0.0, 0.0),
 		Vector(0.0, 0.0, 0.0, 1.0)
 	);
@@ -97,13 +99,11 @@ int main()
 	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
 	glUniformMatrix4fv(uProjectionMatrix, 1, GL_FALSE, &matProj[0][0]);
 
-	Entity *entity = new EntityTest();
-
 	SDL_Event event;
 	bool quit = false;
 	unsigned long lastTicks = SDL_GetTicks();
-	float angle;
-	float z = -10;
+	Game *game = new GameImpl;
+	game->onGameStart();
 	while (!quit)
 	{
 		if (SDL_PollEvent(&event))
@@ -119,36 +119,13 @@ int main()
 			};
 		};
 
-		if ((SDL_GetTicks()-lastTicks) > 10)
-		{
-			lastTicks = SDL_GetTicks();
-			z += 0.01;
-		};
-
-		glClearColor(0.0, 0.0, 0.0, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		//apocRenderHandler->render(NULL);
-
-		matView = Matrix::LookAt(
-			Vector(0.0, 0.0, -10.0, 1.0),
-			Vector(0.0, 1.0, 0.0, 0.0),
-			Vector(0.0, 0.0, 0.0, 1.0)
-		);
-		glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
-
-		//Vector testPoint(-0.999999, 1.000000, -1.000001, 1.000000);
-		//cout << "Look at:" << endl;
-		//cout << matView << endl;
-		//cout << "Point cast: " << (matProj * matView * matModel * testPoint).project() << endl;
-
-		entity->renderObjects();
+		World::update();
+		apocRenderHandler->render();
 
 		glFlush();
 		SDL_GL_SwapWindow(apocWindow);
 	};
 
-	//delete entity;
 	SDL_GL_DeleteContext(apocContext);
 	SDL_Quit();
 #endif

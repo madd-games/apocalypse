@@ -24,36 +24,39 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_VIDEO_STANDARD_RENDER_HANDLER_H
-#define APOC_VIDEO_STANDARD_RENDER_HANDLER_H
-
+#include <Apoc/Entity/World.h>
 #include <Apoc/Video/RenderHandler.h>
 
-/**
- * \brief The standard render handler.
- * 
- * Renders the world without any special effects. This is used by default if no RenderHandler
- * is defined by the game.
- */
-class StandardRenderHandler : public RenderHandler
+extern RenderHandler *apocRenderHandler;
+
+vector<Entity*> World::entities;
+vector<Entity*> World::addQueue;
+
+void World::addEntity(Entity *entity)
 {
-private:
-	GLuint renderProgram;
-
-public:
-	/**
-	 * \brief Standard render params.
-	 */
-	struct RenderParams
-	{
-		
-	};
-
-	StandardRenderHandler();
-	virtual void render();
-	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
-	virtual GLint getUniformLocation(const char *name);
-	virtual void bindProgram();
+	addQueue.push_back(entity);
 };
 
-#endif
+void World::update()
+{
+	vector<Entity*>::iterator it;
+	for (it=addQueue.begin(); it!=addQueue.end(); ++it)
+	{
+		entities.push_back(*it);
+	};
+	addQueue.clear();
+
+	for (it=entities.begin(); it!=entities.end(); ++it)
+	{
+		(*it)->update();
+	};
+};
+
+void World::render()
+{
+	vector<Entity*>::iterator it;
+	for (it=entities.begin(); it!=entities.end(); ++it)
+	{
+		(*it)->renderObjects();
+	};
+};

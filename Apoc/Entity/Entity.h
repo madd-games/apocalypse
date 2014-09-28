@@ -56,6 +56,19 @@ private:
 	// Maps object names to their descriptions.
 	map<string, Object> objects;
 
+	Matrix modelMatrix;
+
+protected:
+	/**
+	 * \brief Transform the entity or a single object with a matrix.
+	 *
+	 * The new matrix for the object or entity is mat multiplied by the old matrix.
+	 * \param obj If this is an empty string, the transformation is applied to the overall entity; otherwise, this is the
+	 *            name of the object to apply this transformation to.
+	 * \param mat The transformation matrix.
+	 */
+	virtual void transform(string obj, Matrix mat);
+
 public:
 	/**
 	 * \brief Constructor.
@@ -76,7 +89,12 @@ public:
 	 */
 	virtual void update();
 
+	/**
+	 * \brief Renders the entity. Do not override.
+	 */
 	void renderObjects();
+
+	friend class World;
 };
 
 #endif

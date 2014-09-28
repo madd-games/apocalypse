@@ -69,9 +69,8 @@ public:
 	 * \brief Render the world.
 	 * 
 	 * This function is called in a loop on the client.
-	 * \param world The world to render.
 	 */
-	virtual void render(World *world) = 0;
+	virtual void render() = 0;
 
 	/**
 	 * \brief Get attribute locations.
