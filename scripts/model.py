@@ -83,7 +83,7 @@ def compileModel(inFileName, outFileName, modelName, textureNames):
 					ni = 0
 					try:
 						ti = int(bits[1]) - 1
-						vi = int(bits[2]) - 1
+						ni = int(bits[2]) - 1
 					except IndexError:
 						pass
 					faces.append((vi, ti, ni))
