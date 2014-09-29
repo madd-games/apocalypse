@@ -79,7 +79,6 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CW);
 
 	apocRenderHandler = new StandardRenderHandler();
 	apocRenderHandler->bindProgram();

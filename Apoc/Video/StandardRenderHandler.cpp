@@ -123,9 +123,9 @@ GLint StandardRenderHandler::getUniformLocation(const char *name)
 void StandardRenderHandler::bindProgram()
 {
 	glUseProgram(renderProgram);
-	glUniform4f(getUniformLocation("uAmbientLight"), 0.05, 0.05, 0.05, 1.0);
+	glUniform4f(getUniformLocation("uAmbientLight"), 0.1, 0.1, 0.1, 1.0);
 	glUniform3f(getUniformLocation("uLightDir[0]"), 0.7, -1.0, 0.9);
-	glUniform3f(getUniformLocation("uLightDir[1]"), -0.7, -1.0, 0.9);
+	glUniform3f(getUniformLocation("uLightDir[1]"), -0.6, -1.0, -0.9);
 	glUniform4f(getUniformLocation("uDiffuseLight[0]"), 1.0, 1.0, 1.0, 1.0);
 	glUniform4f(getUniformLocation("uSpecularLight[0]"), 1.0, 1.0, 1.0, 1.0);
 	glUniform4f(getUniformLocation("uDiffuseLight[1]"), 0.7, 0.7, 0.7, 1.0);

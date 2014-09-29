@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import sys, os
+import pickle
 from scripts.entity import compileEntity
 from scripts.image import compileImage
 
@@ -53,15 +54,68 @@ if os.path.isdir("Game"):
 else:
 	print "!There is no Game directory! See the manual for more details."
 
+if not os.path.exists("Game/GameImpl.h"):
+	print "!Game/GameImpl.h does not exist, will not compile!"
+	sys.exit(1)
+
 os.system("mkdir -p build-%s" % target)
 os.system("mkdir -p out")
 os.system("mkdir -p cpptemp")
 
+entityDiary = {}
+try:
+	f = open("build-%s/entity.diary" % target, "rb")
+	entityDiary = pickle.load(f)
+	f.close()
+except:
+	pass
+
 textureNamesTemp = []
+cleanTextureNames = {}
+dirtyTextures = []
+try:
+	f = open("build-%s/texture.names" % target, "rb")
+	cleanTextureNames = pickle.load(f)
+	f.close()
+except:
+	pass
+
 if os.path.isdir("Game/Entities"):
 	for name in os.listdir("Game/Entities"):
-		print ">Compile entity %s" % name
-		compileEntity(name, textureNamesTemp)
+		dirty = False
+		newTable = {}
+		for filename in os.listdir("Game/Entities/%s" % name):
+			mtime = int(os.stat("Game/Entities/%s/%s" % (name, filename)).st_mtime)
+			newTable[filename] = mtime
+			if not entityDiary.has_key(name):
+				dirty = True
+			else:
+				if not entityDiary[name].has_key(filename):
+					dirty = True
+				else:
+					if entityDiary[name][filename] < mtime:
+						dirty = True
+
+		if not cleanTextureNames.has_key(name):
+			dirty = True
+
+		if dirty:
+			print ">Compile entity %s" % name
+			cleanTextureNames[name] = []
+			compileEntity(name, cleanTextureNames[name])
+			dirtyTextures.extend(cleanTextureNames[name])
+			entityDiary[name] = newTable
+
+for key, value in cleanTextureNames.items():
+	textureNamesTemp.extend(value)
+
+f = open("build-%s/entity.diary" % target, "wb")
+pickle.dump(entityDiary, f)
+f.close()
+
+f = open("build-%s/texture.names" % target, "wb")
+pickle.dump(cleanTextureNames, f)
+f.close()
 
 # Make a non-repetitive list of textures.
 textureNames = []
@@ -78,8 +132,9 @@ i = 0
 for name in textureNames:
 	inFileName = name
 	outFileName = "cpptemp/tex%d.cpp" % i
-	print ">Compile texture %s" % inFileName
-	width, height = compileImage(inFileName, outFileName, str(i))
+	if name in dirtyTextures:
+		print ">Compile texture %s" % inFileName
+	width, height = compileImage(inFileName, outFileName, str(i), name not in dirtyTextures)
 	f.write("\t{\"%s\", %d, %d, imgTexels_%d},\n" % (name, width, height, i))
 	i += 1
 f.write("\t{NULL, 0, 0, NULL}\n")

@@ -163,7 +163,7 @@ Matrix Matrix::Perspective(float width, float height, float zNear, float zFar, f
 	float fac = 1.0/(tanf(fov/2.0));
 	
 	Matrix out;
-	out[0] = Vector(fac/ar, 0.0, 0.0, 0.0);
+	out[0] = Vector(-fac/ar, 0.0, 0.0, 0.0);
 	out[1] = Vector(0.0, fac, 0.0, 0.0);
 	out[2] = Vector(0.0, 0.0, (-zNear-zFar)/(zNear-zFar), 1.0);
 	out[3] = Vector(0.0, 0.0, (2*zFar*zNear)/(zNear-zFar), 0.0);
@@ -175,8 +175,8 @@ Matrix Matrix::Rotate(float x, float y, float z)
 {
 	Matrix matX;
 	matX[0] = Vector(1, 0, 0, 0);
-	matX[1] = Vector(0, cos(x), sin(x), 0);
-	matX[2] = Vector(0, -sin(x), cos(x), 0);
+	matX[1] = Vector(0, cos(x), -sin(x), 0);
+	matX[2] = Vector(0, sin(x), cos(x), 0);
 	matX[3] = Vector(0, 0, 0, 1);
 
 	Matrix matY;
