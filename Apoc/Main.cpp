@@ -50,6 +50,11 @@ extern "C" const int imgWidth_0;
 extern "C" const int imgHeight_0;
 extern "C" const Texture::Texel imgTexels_0[];
 
+void ApocMoveMouse(int x, int y)
+{
+	SDL_WarpMouseInWindow(apocWindow, x, y);
+};
+
 int main()
 {
 #ifdef CLIENT
@@ -109,7 +114,7 @@ int main()
 	game->onGameStart();
 	while (!quit)
 	{
-		if (SDL_PollEvent(&event))
+		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)
 			{
@@ -130,6 +135,11 @@ int main()
 			{
 				SDL_Keycode key = event.key.keysym.sym;
 				game->onKeyPress(key);
+			};
+
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				game->onMouseMove();
 			};
 		};
 

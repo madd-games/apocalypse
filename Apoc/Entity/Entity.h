@@ -71,6 +71,12 @@ protected:
 	 */
 	virtual void transform(string obj, Matrix mat);
 
+	/**
+	 * \brief Like transform, except the transformation is applied before all others.
+	 * \sa transform
+	 */
+	virtual void preTransform(string obj, Matrix mat);
+
 public:
 	/**
 	 * \brief Constructor.
@@ -95,6 +101,17 @@ public:
 	 * \brief Renders the entity. Do not override.
 	 */
 	void renderObjects();
+
+	/**
+	 * \brief Translate the entity.
+	 */
+	virtual void translate(Vector vec);
+
+	/**
+	 * \brief Rotate the entity.
+	 * \sa Matrix::Rotate
+	 */
+	virtual void rotate(float x, float y, float z);
 
 	friend class World;
 };

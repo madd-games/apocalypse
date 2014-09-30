@@ -151,6 +151,14 @@ objectFiles = []
 depFiles = []
 rules = []
 
+for filename in os.listdir("Shaders"):
+	if filename.endswith(".glsl"):		# which it should
+		shaderName = filename[:-5]
+		objectFiles.append("build-%s/glsl_%s.o" % (target, shaderName))
+		srule = "build-%s/glsl_%s.o: Shaders/%s\n" % (target, shaderName, filename)
+		srule += "\t@python scripts/glsl_embed.py %s %s" % (shaderName, target)
+		rules.append(srule)
+
 def makeRule(cppfile):
 	objfile = "build-%s/%s.o" % (target, cppfile.replace("/", "__")[:-4])
 	depfile = objfile[:-2] + ".d"

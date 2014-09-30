@@ -43,3 +43,7 @@ void Game::onKeyRelease(SDL_Keycode key)
 void Game::update()
 {
 };
+
+void Game::onMouseMove()
+{
+};

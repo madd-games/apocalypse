@@ -58,6 +58,14 @@ public:
 	 * \brief Called before the world update.
 	 */
 	virtual void update();
+
+	/**
+	 * \brief Called when the mouse moves.
+	 *
+	 * Use SDL_GetMouseState() to get the mouse position and ApocWarpMouse() from Apoc/Utils/Utils.h to move the mouse.
+	 * See SDL documentation.
+	 */
+	virtual void onMouseMove();
 };
 
 #endif

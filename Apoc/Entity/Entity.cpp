@@ -74,6 +74,18 @@ void Entity::transform(string obj, Matrix mat)
 	};
 };
 
+void Entity::preTransform(string obj, Matrix mat)
+{
+	if (obj == "")
+	{
+		modelMatrix = modelMatrix * mat;
+	}
+	else
+	{
+		objects[obj].matrix = objects[obj].matrix * mat;
+	};
+};
+
 void Entity::update()
 {
 };
@@ -102,4 +114,14 @@ void Entity::renderObjects()
 		glUniformMatrix4fv(uObjectMatrix, 1, GL_FALSE, &it->second.matrix[0][0]);
 		it->second.model->draw();
 	};
+};
+
+void Entity::translate(Vector vec)
+{
+	transform("", Matrix::Translate(-vec.x(), vec.y(), vec.z()));
+};
+
+void Entity::rotate(float x, float y, float z)
+{
+	preTransform("", Matrix::Rotate(x, y, z));
 };

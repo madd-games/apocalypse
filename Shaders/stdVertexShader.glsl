@@ -24,16 +24,24 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_UTILS_UTILS_H
-#define APOC_UTILS_UTILS_H
+#version 150
+uniform mat4 uModelMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uProjectionMatrix;
+uniform mat4 uObjectMatrix;
 
-#include <string>
-#include <iostream>
+in vec4 inVertex;
+in vec2 inTexCoords;
+in vec3 inNormal;
 
-using namespace std;
+out vec2 passTexCoords;
+out vec3 passNormal;
+out vec4 passVertex;
 
-void ApocFail(string msg);
-void* ApocSymbol(string sym);
-void ApocMoveMouse(int x, int y);
-
-#endif
+void main()
+{
+	passVertex = inVertex;
+	passTexCoords = inTexCoords;
+	passNormal = inNormal;
+	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * uObjectMatrix * inVertex;
+};
