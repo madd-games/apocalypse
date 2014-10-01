@@ -63,30 +63,45 @@ protected:
 public:
 	/**
 	 * \brief An element of the directional light array.
-	 * \sa RenderHandler::DefineDirLight
 	 */
 	struct DirLight
 	{
 		/**
-		 * \brief The direction in which the light is cast (0-1).
+		 * \brief The direction in which the light is cast.
 		 */
 		Vector dir;
 
 		/**
-		 * \brief The specular component of the light (0-1).
-		 */
-		Vector specular;
-
-		/**
-		 * \brief The diffuse component of the light (0-1).
+		 * \brief The diffuse component of the light.
 		 */
 		Vector diffuse;
+
+		/**
+		 * \brief The specular component of the light.
+		 */
+		Vector specular;
 	};
 
 	/**
-	 * \brief Define a directional light.
+	 * \brief An element of the point light array.
 	 */
-	static void DefineDirLight(DirLight *light, Vector dir, Vector diffuse, Vector specular);
+	struct PointLight
+	{
+		/**
+		 * \brief The position of the light source.
+		 */
+		Vector pos;
+
+		/**
+		 * \brief The diffuse component of the light.
+		 */
+		Vector diffuse;
+
+		/**
+		 * \brief The specular component of the light.
+		 */
+		Vector specular;
+	};
 
 	/**
 	 * \brief Constructor.
@@ -123,6 +138,13 @@ public:
 	 * \param count The number of lights.
 	 */
 	virtual void setDirLights(DirLight *array, int count) = 0;
+
+	/**
+	 * \brief Set the array of point lights.
+	 * \param array The array.
+	 * \param count The number of lights.
+	 */
+	virtual void setPointLights(PointLight *array, int count) = 0;
 };
 
 #endif

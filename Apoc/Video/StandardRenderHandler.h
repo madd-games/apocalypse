@@ -31,16 +31,17 @@
 
 /**
  * \brief The standard render handler.
- * 
- * Renders the world without any special effects. This is used by default if no RenderHandler
- * is defined by the game.
  */
 class StandardRenderHandler : public RenderHandler
 {
 private:
 	GLuint renderProgram;
 	GLuint dirLightTex;
+	GLuint dirLightBuffer;
 	int numDirLights;
+	GLuint pointLightTex;
+	GLuint pointLightBuffer;
+	int numPointLights;
 
 public:
 	/**
@@ -57,6 +58,7 @@ public:
 	virtual GLint getUniformLocation(const char *name);
 	virtual void bindProgram();
 	virtual void setDirLights(DirLight *array, int count);
+	virtual void setPointLights(PointLight *array, int count);
 };
 
 #endif

@@ -30,19 +30,30 @@
 // Texture units:
 // 0 = main (diffuse) texture
 // 1 = directional light array
+// 2 = point light array
 
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
 
-StandardRenderHandler::StandardRenderHandler() : numDirLights(0)
+StandardRenderHandler::StandardRenderHandler() : numDirLights(0), numPointLights(0)
 {
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
+
+	// set up the directional light array buffer.
 	glActiveTexture(GL_TEXTURE1);
 	glGenTextures(1, &dirLightTex);
-	glBindTexture(GL_TEXTURE_2D, dirLightTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 3, 0, 0, GL_RGBA, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glBindTexture(GL_TEXTURE_BUFFER, dirLightTex);
+	glGenBuffers(1, &dirLightBuffer);
+	glBindBuffer(GL_TEXTURE_BUFFER, dirLightBuffer);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, dirLightBuffer);
+
+	// set up the point light array buffer.
+	glActiveTexture(GL_TEXTURE2);
+	glGenTextures(1, &pointLightTex);
+	glBindTexture(GL_TEXTURE_BUFFER, pointLightTex);
+	glGenBuffers(1, &pointLightBuffer);
+	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, pointLightBuffer);
 };
 
 void StandardRenderHandler::render()
@@ -53,7 +64,9 @@ void StandardRenderHandler::render()
 	glUseProgram(renderProgram);
 	glUniform4f(getUniformLocation("uAmbientLight"), 0.1, 0.1, 0.1, 1.0);
 	glUniform1i(getUniformLocation("uDirLightArray"), 1);
+	glUniform1i(getUniformLocation("uPointLightArray"), 2);
 	glUniform1i(getUniformLocation("uNumDirLights"), numDirLights);
+	glUniform1i(getUniformLocation("uNumPointLights"), numPointLights);
 	World::render();
 };
 
@@ -77,8 +90,14 @@ void StandardRenderHandler::bindProgram()
 
 void StandardRenderHandler::setDirLights(RenderHandler::DirLight *array, int count)
 {
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, dirLightTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 3, count, 0, GL_RGBA, GL_FLOAT, array);
+	glBindBuffer(GL_TEXTURE_BUFFER, dirLightBuffer);
+	glBufferData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::DirLight)*count, array, GL_DYNAMIC_COPY);
 	numDirLights = count;
+};
+
+void StandardRenderHandler::setPointLights(RenderHandler::PointLight *array, int count)
+{
+	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
+	glBufferData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::PointLight)*count, array, GL_DYNAMIC_COPY);
+	numPointLights = count;
 };

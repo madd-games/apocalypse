@@ -37,14 +37,17 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uObjectMatrix;
 
-// Directional light
-// Each row in the texture represents a directional light source, and each
-// column represents:
-// 0 = the direction of the light (mapped from [-1, 1] to [0, 1]).
-// 1 = the specular component
-// 2 = the diffuse component
-uniform sampler2D uDirLightArray;
+// Directional lights
+// Each light is specified by 3 texels:
+// the light's direction, the diffuse component, and the specular component.
+uniform samplerBuffer uDirLightArray;
 uniform int uNumDirLights;
+
+// Points lights
+// Each light is specified by 3 texels:
+// the light's source position, the diffuse component, and the specular component.
+uniform samplerBuffer uPointLightArray;
+uniform int uNumPointLights;
 
 in vec2 passTexCoords;
 in vec3 passNormal;
@@ -52,26 +55,26 @@ in vec4 passVertex;
 
 out vec4 outColor;
 
-// ===== DIRECTIONAL LIGHTS BEGIN ===== //
+// DIRECTIONAL LIGHTS
+
 vec3 getLightDir(in int i)
 {
-	vec4 sub = texelFetch(uDirLightArray, ivec2(0, i), 0);
-	return vec3(sub.x*2-1, sub.y*2-1, sub.z*2-1);
+	vec4 sub = texelFetch(uDirLightArray, (3*i));
+	return sub.xyz;
 };
 
-vec4 getLightSpecular(in int i)
+vec4 getDirLightDiffuse(in int i)
 {
-	return texelFetch(uDirLightArray, ivec2(1, i), 0);
+	return texelFetch(uDirLightArray, (3*i)+1);
 };
 
-vec4 getLightDiffuse(in int i)
+vec4 getDirLightSpecular(in int i)
 {
-	return texelFetch(uDirLightArray, ivec2(2, i), 0);
+	return texelFetch(uDirLightArray, (3*i)+2);
 };
 
-void computeDirLight(in int i, inout vec4 diffuseLight, inout vec4 specularLight)
+void computeDirLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout vec4 specularLight)
 {
-	vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(passNormal, 0.0)));
 	vec3 lightDir = -normalize(getLightDir(i));
 	float NdotL = max(dot(normal, lightDir), 0.0);
 	vec4 specular = vec4(0.0);
@@ -80,22 +83,82 @@ void computeDirLight(in int i, inout vec4 diffuseLight, inout vec4 specularLight
 		vec3 eye = -vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
 		vec3 hv = normalize(eye - lightDir);
 		float NdotHV = max(dot(normal, hv), 0.0);
-		specular = pow(NdotHV, uShininess) * uSpecularColor * getLightSpecular(i);
+		// we must assume that 0^0 = 1.
+		if (uShininess == 0.0)
+		{
+			specular = uSpecularColor * getDirLightSpecular(i);
+		}
+		else
+		{
+			specular = pow(NdotHV, uShininess) * uSpecularColor * getDirLightSpecular(i);
+		};
 	};
-	diffuseLight = max(diffuseLight, NdotL * uDiffuseColor * getLightDiffuse(i));
+	diffuseLight = max(diffuseLight, NdotL * uDiffuseColor * getDirLightDiffuse(i));
 	specularLight = max(specularLight, specular);
 };
-// ===== DIRECTIONAL LIGHTS END ===== //
+
+// POINT LIGHTS
+
+vec4 getPointLight(in int i)
+{
+	return texelFetch(uPointLightArray, (3*i));
+};
+
+vec4 getPointLightDiffuse(in int i)
+{
+	return texelFetch(uPointLightArray, (3*i)+1);
+};
+
+vec4 getPointLightSpecular(in int i)
+{
+	return texelFetch(uPointLightArray, (3*i)+2);
+};
+
+void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout vec4 specularLight)
+{
+	vec4 lightToPoint = passVertex - getPointLight(i);
+	vec3 lightDir = -normalize(lightToPoint.xyz);
+
+	float len = length(lightToPoint);
+	float factor = 1.0 / (len*len);
+
+	float NdotL = max(dot(normal, lightDir), 0.0);
+	vec4 specular = vec4(0.0);
+	if (NdotL > 0.0)
+	{
+		vec3 eye = -vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
+		vec3 hv = normalize(eye - lightDir);
+		float NdotHV = max(dot(normal, hv), 0.0);
+		// we must assume that 0^0 = 1.
+		if (uShininess == 0.0)
+		{
+			specular = factor * uSpecularColor * getPointLightSpecular(i);
+		}
+		else
+		{
+			specular = factor * pow(NdotHV, uShininess) * uSpecularColor * getPointLightSpecular(i);
+		};
+	};
+	diffuseLight = max(diffuseLight, factor * NdotL * uDiffuseColor * getPointLightDiffuse(i));
+	specularLight = max(specularLight, specular);
+};
 
 void main()
 {
 	vec4 diffuseLight = uAmbientLight;
 	vec4 specularLight = vec4(0.0, 0.0, 0.0, 1.0);
+	vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(passNormal, 0.0)));
+
 	int i;
 	for (i=0; i<uNumDirLights; i++)
 	{
-		computeDirLight(i, diffuseLight, specularLight);
+		computeDirLight(i, normal, diffuseLight, specularLight);
 	};
+	for (i=0; i<uNumPointLights; i++)
+	{
+		computePointLight(i, normal, diffuseLight, specularLight);
+	};
+
 	vec4 light = diffuseLight + specularLight;
 	light = min(light, vec4(1.0, 1.0, 1.0, 1.0));
 	light.w = 1.0;
