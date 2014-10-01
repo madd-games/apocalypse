@@ -28,6 +28,8 @@
 #define APOC_VIDEO_RENDER_HANDLER_H
 
 #include <Apoc/Video/OpenGL.h>
+#include <Apoc/Math/Vector.h>
+
 #include <string>
 
 using namespace std;
@@ -60,6 +62,33 @@ protected:
 	
 public:
 	/**
+	 * \brief An element of the directional light array.
+	 * \sa RenderHandler::DefineDirLight
+	 */
+	struct DirLight
+	{
+		/**
+		 * \brief The direction in which the light is cast (0-1).
+		 */
+		Vector dir;
+
+		/**
+		 * \brief The specular component of the light (0-1).
+		 */
+		Vector specular;
+
+		/**
+		 * \brief The diffuse component of the light (0-1).
+		 */
+		Vector diffuse;
+	};
+
+	/**
+	 * \brief Define a directional light.
+	 */
+	static void DefineDirLight(DirLight *light, Vector dir, Vector diffuse, Vector specular);
+
+	/**
 	 * \brief Constructor.
 	 */
 	RenderHandler();
@@ -87,6 +116,13 @@ public:
 	 */
 	virtual GLint getUniformLocation(const char *name) = 0;
 	virtual void bindProgram() = 0;
+
+	/**
+	 * \brief Set the array of directional lights.
+	 * \param array The array.
+	 * \param count The number of lights.
+	 */
+	virtual void setDirLights(DirLight *array, int count) = 0;
 };
 
 #endif

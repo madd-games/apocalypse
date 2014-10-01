@@ -34,9 +34,11 @@ uniform mat4 uViewMatrix;
 uniform mat4 uObjectMatrix;
 
 // Directional light
-uniform vec3 uLightDir[2];
+uniform sampler2D uDirLightArray;
+uniform int uNumDirLights;
+/*uniform vec3 uLightDir[2];
 uniform vec4 uDiffuseLight[2];
-uniform vec4 uSpecularLight[2];
+uniform vec4 uSpecularLight[2];*/
 
 in vec2 passTexCoords;
 in vec3 passNormal;
@@ -44,10 +46,26 @@ in vec4 passVertex;
 
 out vec4 outColor;
 
+vec3 getLightDir(in int i)
+{
+	vec4 sub = texelFetch(uDirLightArray, ivec2(0, i), 0);
+	return vec3(sub.x*2-1, sub.y*2-1, sub.z*2-1);
+};
+
+vec4 getDirSpecular(in int i)
+{
+	return texelFetch(uDirLightArray, ivec2(1, i), 0);
+};
+
+vec4 getDirDiffuse(in int i)
+{
+	return texelFetch(uDirLightArray, ivec2(2, i), 0);
+};
+
 vec4 computeDirLight(in int i)
 {
 	vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(passNormal, 0.0)));
-	vec3 lightDir = -normalize(uLightDir[i]);
+	vec3 lightDir = -normalize(getLightDir(i));
 	float NdotL = max(dot(normal, lightDir), 0.0);
 	vec4 specular = vec4(0.0);
 	if (NdotL > 0.0)
@@ -55,16 +73,16 @@ vec4 computeDirLight(in int i)
 		vec3 eye = vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
 		vec3 hv = normalize(eye - lightDir);
 		float NdotHV = max(dot(normal, hv), 0.0);
-		specular = NdotHV * uSpecularColor * uSpecularLight[i];
+		specular = NdotHV * uSpecularColor * getDirSpecular(i);
 	};
-	return NdotL * uDiffuseColor * uDiffuseLight[i] + specular;
+	return NdotL * uDiffuseColor * getDirDiffuse(i) + specular;
 };
 
 void main()
 {
 	vec4 light = uAmbientLight;
 	int i;
-	for (i=0; i<2; i++)
+	for (i=0; i<uNumDirLights; i++)
 	{
 		light = max(light, computeDirLight(i));
 	};

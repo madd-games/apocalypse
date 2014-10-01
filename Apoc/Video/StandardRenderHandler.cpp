@@ -27,18 +27,33 @@
 #include <Apoc/Video/StandardRenderHandler.h>
 #include <Apoc/Entity/World.h>
 
+// Texture units:
+// 0 = main (diffuse) texture
+// 1 = directional light array
+
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
 
-StandardRenderHandler::StandardRenderHandler()
+StandardRenderHandler::StandardRenderHandler() : numDirLights(0)
 {
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
+	glActiveTexture(GL_TEXTURE1);
+	glGenTextures(1, &dirLightTex);
+	glBindTexture(GL_TEXTURE_2D, dirLightTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 3, 0, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 };
 
 void StandardRenderHandler::render()
 {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glUseProgram(renderProgram);
+	glUniform4f(getUniformLocation("uAmbientLight"), 0.1, 0.1, 0.1, 1.0);
+	glUniform1i(getUniformLocation("uDirLightArray"), 1);
+	glUniform1i(getUniformLocation("uNumDirLights"), numDirLights);
 	World::render();
 };
 
@@ -58,10 +73,12 @@ void StandardRenderHandler::bindProgram()
 {
 	glUseProgram(renderProgram);
 	glUniform4f(getUniformLocation("uAmbientLight"), 0.1, 0.1, 0.1, 1.0);
-	glUniform3f(getUniformLocation("uLightDir[0]"), 0.7, -1.0, 0.9);
-	glUniform3f(getUniformLocation("uLightDir[1]"), -0.6, -1.0, -0.9);
-	glUniform4f(getUniformLocation("uDiffuseLight[0]"), 1.0, 1.0, 1.0, 1.0);
-	glUniform4f(getUniformLocation("uSpecularLight[0]"), 1.0, 1.0, 1.0, 1.0);
-	glUniform4f(getUniformLocation("uDiffuseLight[1]"), 0.7, 0.7, 0.7, 1.0);
-	glUniform4f(getUniformLocation("uSpecularLight[1]"), 0.5, 0.0, 0.0, 1.0);
+};
+
+void StandardRenderHandler::setDirLights(RenderHandler::DirLight *array, int count)
+{
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, dirLightTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 3, count, 0, GL_RGBA, GL_FLOAT, array);
+	numDirLights = count;
 };

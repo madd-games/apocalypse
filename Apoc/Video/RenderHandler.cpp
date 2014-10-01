@@ -32,6 +32,13 @@
 
 using namespace std;
 
+void RenderHandler::DefineDirLight(DirLight *light, Vector dir, Vector diffuse, Vector specular)
+{
+	light->dir = Vector((dir.x()+1)/2, (dir.y()+1)/2, (dir.z()+1)/2, 0.0);
+	light->diffuse = diffuse;
+	light->specular = specular;
+};
+
 GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
 {
 	GLuint program = glCreateProgram();

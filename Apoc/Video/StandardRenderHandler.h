@@ -39,6 +39,8 @@ class StandardRenderHandler : public RenderHandler
 {
 private:
 	GLuint renderProgram;
+	GLuint dirLightTex;
+	int numDirLights;
 
 public:
 	/**
@@ -54,6 +56,7 @@ public:
 	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
 	virtual GLint getUniformLocation(const char *name);
 	virtual void bindProgram();
+	virtual void setDirLights(DirLight *array, int count);
 };
 
 #endif
