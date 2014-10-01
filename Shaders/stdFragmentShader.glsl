@@ -26,19 +26,25 @@
 
 #version 150
 uniform sampler2D uSampler;
+
 uniform vec4 uAmbientLight;
+
 uniform vec4 uDiffuseColor;
 uniform vec4 uSpecularColor;
+uniform float uShininess;
+
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uObjectMatrix;
 
 // Directional light
+// Each row in the texture represents a directional light source, and each
+// column represents:
+// 0 = the direction of the light (mapped from [-1, 1] to [0, 1]).
+// 1 = the specular component
+// 2 = the diffuse component
 uniform sampler2D uDirLightArray;
 uniform int uNumDirLights;
-/*uniform vec3 uLightDir[2];
-uniform vec4 uDiffuseLight[2];
-uniform vec4 uSpecularLight[2];*/
 
 in vec2 passTexCoords;
 in vec3 passNormal;
@@ -46,18 +52,19 @@ in vec4 passVertex;
 
 out vec4 outColor;
 
+// ===== DIRECTIONAL LIGHTS BEGIN ===== //
 vec3 getLightDir(in int i)
 {
 	vec4 sub = texelFetch(uDirLightArray, ivec2(0, i), 0);
 	return vec3(sub.x*2-1, sub.y*2-1, sub.z*2-1);
 };
 
-vec4 getDirSpecular(in int i)
+vec4 getLightSpecular(in int i)
 {
 	return texelFetch(uDirLightArray, ivec2(1, i), 0);
 };
 
-vec4 getDirDiffuse(in int i)
+vec4 getLightDiffuse(in int i)
 {
 	return texelFetch(uDirLightArray, ivec2(2, i), 0);
 };
@@ -73,11 +80,12 @@ void computeDirLight(in int i, inout vec4 diffuseLight, inout vec4 specularLight
 		vec3 eye = -vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
 		vec3 hv = normalize(eye - lightDir);
 		float NdotHV = max(dot(normal, hv), 0.0);
-		specular = NdotHV * uSpecularColor * getDirSpecular(i);
+		specular = pow(NdotHV, uShininess) * uSpecularColor * getLightSpecular(i);
 	};
-	diffuseLight = max(diffuseLight, NdotL * uDiffuseColor * getDirDiffuse(i));
+	diffuseLight = max(diffuseLight, NdotL * uDiffuseColor * getLightDiffuse(i));
 	specularLight = max(specularLight, specular);
 };
+// ===== DIRECTIONAL LIGHTS END ===== //
 
 void main()
 {

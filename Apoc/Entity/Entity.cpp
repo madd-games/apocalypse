@@ -53,6 +53,7 @@ Entity::Entity(Model::ObjDef *defs)
 		obj.matrix = Matrix::Identity();
 		obj.diffuseColor = defs->diffuseColor;
 		obj.specularColor = defs->specularColor;
+		obj.shininess = defs->shininess;
 		objects[defs->name] = obj;
 		defs++;
 	};
@@ -96,6 +97,7 @@ void Entity::renderObjects()
 	GLint uObjectMatrix = apocRenderHandler->getUniformLocation("uObjectMatrix");
 	GLint uDiffuseColor = apocRenderHandler->getUniformLocation("uDiffuseColor");
 	GLint uSpecularColor = apocRenderHandler->getUniformLocation("uSpecularColor");
+	GLint uShininess = apocRenderHandler->getUniformLocation("uShininess");
 
 	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
 
@@ -111,6 +113,7 @@ void Entity::renderObjects()
 
 		glUniform4fv(uDiffuseColor, 1, &it->second.diffuseColor[0]);
 		glUniform4fv(uSpecularColor, 1, &it->second.specularColor[0]);
+		glUniform1f(uShininess, it->second.shininess);
 		glUniformMatrix4fv(uObjectMatrix, 1, GL_FALSE, &it->second.matrix[0][0]);
 		it->second.model->draw();
 	};

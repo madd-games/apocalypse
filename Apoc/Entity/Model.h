@@ -68,6 +68,7 @@ public:
 		const char *texName;
 		Vector diffuseColor;
 		Vector specularColor;
+		float shininess;	// ie. specular exponent
 	};
 
 	/**

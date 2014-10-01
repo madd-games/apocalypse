@@ -53,6 +53,7 @@ private:
 		map<unsigned int, Texture*> textures;
 		Vector diffuseColor;
 		Vector specularColor;
+		float shininess;
 	};
 
 	// Maps object names to their descriptions.

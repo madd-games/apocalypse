@@ -126,10 +126,12 @@ def compileModel(inFileName, outFileName, modelName, textureNames):
 	for objName in objects.keys():
 		materialName = materialsToUse.get(objName, "")
 		mat = materials.get(materialName, {})
-		f.write("\t{\"%s\", modVertices_%s__%s, %d, NULL, \"%s\", %s, %s},\n" % (objName, modelName, objName, len(objects[objName]),
+		f.write("\t{\"%s\", modVertices_%s__%s, %d, NULL, \"%s\", %s, %s, %s},\n" % (
+			objName, modelName, objName, len(objects[objName]),
 			mat.get("texture", "empty_texture"),
 			mat.get("diffuseColor", "Vector(1, 1, 1, 1)"),
-			mat.get("specularColor", "Vector(1, 1, 1, 1)")
+			mat.get("specularColor", "Vector(1, 1, 1, 1)"),
+			mat.get("shininess", "1.0")
 		))
 	f.write("\t{NULL, 0}\n};")
 	f.close()

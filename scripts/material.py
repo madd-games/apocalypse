@@ -32,6 +32,8 @@ def parseMaterialFile(matfile, textureNames):
 			currentMaterial["diffuseColor"] = "Vector(%s, %s, %s, 1)" % tuple(tokens[1:])
 		elif cmd == "Ks":
 			currentMaterial["specularColor"] = "Vector(%s, %s, %s, 1)" % tuple(tokens[1:])
+		elif cmd == "Ns":
+			currentMaterial["shininess"] = tokens[1]
 		elif cmd == "map_Kd":
 			# We take this as the texture.
 			name = os.path.abspath(" ".join(tokens[1:]))
