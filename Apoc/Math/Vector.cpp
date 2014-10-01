@@ -161,6 +161,11 @@ Vector Vector::operator*(float x)
 	return Vector(coords[0]*x, coords[1]*x, coords[2]*x, coords[3]*x);
 };
 
+Vector Vector::operator-()
+{
+	return Vector(-coords[0], -coords[1], -coords[2], coords[3]);
+};
+
 bool Vector::operator==(const Vector b)
 {
 	int i;

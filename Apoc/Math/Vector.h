@@ -59,6 +59,7 @@ public:
 	Vector operator*(Vector b);
 	Vector operator/(Vector b);
 	Vector operator*(float x);
+	Vector operator-();
 
 	bool operator==(const Vector b);
 	bool operator!=(const Vector b);

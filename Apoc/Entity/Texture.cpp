@@ -54,10 +54,14 @@ Texture* Texture::Get(string name)
 
 Texture::Texture(const int width, const int height, const Texture::Texel *data)
 {
+	glEnable(GL_TEXTURE_2D);		// work around AMD bugs, apparently.
+						// (idk, i have nVidia).
 	glGenTextures(1, &texObj);
 	glBindTexture(GL_TEXTURE_2D, texObj);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, data);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexStorage2D(GL_TEXTURE_2D, 8, GL_RGBA8, width, height);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_FLOAT, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 };
 
