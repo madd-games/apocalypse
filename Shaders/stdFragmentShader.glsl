@@ -62,7 +62,7 @@ vec4 getDirDiffuse(in int i)
 	return texelFetch(uDirLightArray, ivec2(2, i), 0);
 };
 
-vec4 computeDirLight(in int i)
+void computeDirLight(in int i, inout vec4 diffuseLight, inout vec4 specularLight)
 {
 	vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(passNormal, 0.0)));
 	vec3 lightDir = -normalize(getLightDir(i));
@@ -70,23 +70,27 @@ vec4 computeDirLight(in int i)
 	vec4 specular = vec4(0.0);
 	if (NdotL > 0.0)
 	{
-		vec3 eye = vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
+		vec3 eye = -vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
 		vec3 hv = normalize(eye - lightDir);
 		float NdotHV = max(dot(normal, hv), 0.0);
 		specular = NdotHV * uSpecularColor * getDirSpecular(i);
 	};
-	return NdotL * uDiffuseColor * getDirDiffuse(i) + specular;
+	diffuseLight = max(diffuseLight, NdotL * uDiffuseColor * getDirDiffuse(i));
+	specularLight = max(specularLight, specular);
 };
 
 void main()
 {
-	vec4 light = uAmbientLight;
+	vec4 diffuseLight = uAmbientLight;
+	vec4 specularLight = vec4(0.0, 0.0, 0.0, 1.0);
 	int i;
 	for (i=0; i<uNumDirLights; i++)
 	{
-		light = max(light, computeDirLight(i));
+		computeDirLight(i, diffuseLight, specularLight);
 	};
+	vec4 light = diffuseLight + specularLight;
 	light = min(light, vec4(1.0, 1.0, 1.0, 1.0));
+	light.w = 1.0;
 	vec4 color = texture(uSampler, passTexCoords) * light;
 	outColor = color;
 };
