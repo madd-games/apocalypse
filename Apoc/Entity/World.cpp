@@ -40,25 +40,7 @@ void World::addEntity(Entity *entity)
 
 void World::update()
 {
-	GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
-	Matrix viewMatrix;
-	if (camera != NULL)
-	{
-		viewMatrix = Matrix::LookAt(
-			camera->getEye(),
-			camera->getUpVector(),
-			camera->getRef()
-		);
-	}
-	else
-	{
-		viewMatrix = Matrix::LookAt(
-			Vector(0.0, 2.0, -10.0),
-			Vector(0.0, 1.0, 0.0),
-			Vector(0.0, 0.0, 0.0)
-		);
-	};
-	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
+
 
 	vector<Entity*>::iterator it;
 	for (it=addQueue.begin(); it!=addQueue.end(); ++it)
@@ -73,8 +55,35 @@ void World::update()
 	};
 };
 
-void World::render()
+void World::render(bool setMatrix)
 {
+	if (setMatrix)
+	{
+		GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
+		Matrix viewMatrix;
+		if (camera != NULL)
+		{
+			viewMatrix = Matrix::LookAt(
+				camera->getEye(),
+				camera->getUpVector(),
+				camera->getRef()
+			);
+		}
+		else
+		{
+			viewMatrix = Matrix::LookAt(
+				Vector(0.0, 2.0, -10.0),
+				Vector(0.0, 1.0, 0.0),
+				Vector(0.0, 0.0, 0.0)
+			);
+		};
+
+		GLint uProjMatrix = apocRenderHandler->getUniformLocation("uProjectionMatrix");
+		Matrix projMatrix = Matrix::Perspective(1366.0, 768.0, 1.0, 1000.0, 60.0*M_PI/180.0);
+		glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
+		glUniformMatrix4fv(uProjMatrix, 1, GL_FALSE, &projMatrix[0][0]);
+	};
+
 	vector<Entity*>::iterator it;
 	for (it=entities.begin(); it!=entities.end(); ++it)
 	{

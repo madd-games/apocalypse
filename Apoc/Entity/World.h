@@ -61,7 +61,7 @@ public:
 	/**
 	 * \brief Render the world.
 	 */
-	static void render();
+	static void render(bool setMatrix = true);
 
 	/**
 	 * \brief Set the Camera.

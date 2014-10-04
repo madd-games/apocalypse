@@ -37,6 +37,9 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uObjectMatrix;
 
+// The specular map sampler.
+uniform sampler2D uSpecularMap;
+
 // Directional lights
 // Each light is specified by 3 texels:
 // the light's direction, the diffuse component, and the specular component.
@@ -49,9 +52,17 @@ uniform int uNumDirLights;
 uniform samplerBuffer uPointLightArray;
 uniform int uNumPointLights;
 
+// This is 1 for shadow maps.
+uniform int uIsShadowMap;
+
+// For sampling the shadow map.
+uniform sampler2D uShadowMap;
+
 in vec2 passTexCoords;
 in vec3 passNormal;
 in vec4 passVertex;
+in vec4 passShadowCoord;
+in vec4 passFragCoord;
 
 out vec4 outColor;
 
@@ -145,23 +156,46 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 
 void main()
 {
-	vec4 diffuseLight = uAmbientLight;
-	vec4 specularLight = vec4(0.0, 0.0, 0.0, 1.0);
-	vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(passNormal, 0.0)));
-
-	int i;
-	for (i=0; i<uNumDirLights; i++)
+	if (uIsShadowMap == 0)
 	{
-		computeDirLight(i, normal, diffuseLight, specularLight);
-	};
-	for (i=0; i<uNumPointLights; i++)
-	{
-		computePointLight(i, normal, diffuseLight, specularLight);
-	};
+		vec4 shadowCoord = vec4(((passShadowCoord.x/passShadowCoord.w)+1)/2, ((passShadowCoord.y/passShadowCoord.w)+1)/2,
+					passShadowCoord.z/passShadowCoord.w, 1.0);
+		float depth = texture(uShadowMap, shadowCoord.xy).r;
 
-	vec4 light = diffuseLight + specularLight;
-	light = min(light, vec4(1.0, 1.0, 1.0, 1.0));
-	light.w = 1.0;
-	vec4 color = texture(uSampler, passTexCoords) * light;
-	outColor = color;
+		vec4 diffuseLight = uAmbientLight;
+		vec4 specularLight = vec4(0.0, 0.0, 0.0, 1.0);
+		vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(passNormal, 0.0)));
+
+		int i;
+		for (i=0; i<uNumDirLights; i++)
+		{
+			computeDirLight(i, normal, diffuseLight, specularLight);
+		};
+		for (i=0; i<uNumPointLights; i++)
+		{
+			computePointLight(i, normal, diffuseLight, specularLight);
+		};
+
+		bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);
+		if (depth < shadowCoord.z && withinTex)
+		{
+			diffuseLight = uAmbientLight;
+			specularLight = vec4(0.0, 0.0, 0.0, 1.0);
+			//vis = 0.5;
+		};
+
+		diffuseLight.w = 1.0;
+		specularLight.w = 1.0;
+		vec4 color = texture(uSampler, passTexCoords) * diffuseLight
+				+ texture(uSpecularMap, passTexCoords) * specularLight;
+		//outColor = vec4(depth, 0.0, shadowCoord.z, 1.0);
+		//outColor = vec4(0.0, depth-shadowCoord.z, 0.0, 1.0);
+		//outColor = vec4(depth, depth, 1.0, 1.0);
+		outColor = color;
+	}
+	else
+	{
+		float z = passFragCoord.z;
+		outColor = vec4(z, z, z, 1.0);
+	};
 };

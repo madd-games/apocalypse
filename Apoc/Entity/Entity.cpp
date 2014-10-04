@@ -49,7 +49,12 @@ Entity::Entity(Model::ObjDef *defs)
 		};
 
 		string texName = defs->texName;
+		string specMap = defs->specTex;
 		obj.textures[0] = Texture::Get(texName);
+		if (specMap != "<NONE>")
+		{
+			obj.textures[4] = Texture::Get(specMap);
+		};
 		obj.matrix = Matrix::Identity();
 		obj.diffuseColor = defs->diffuseColor;
 		obj.specularColor = defs->specularColor;
@@ -104,6 +109,7 @@ void Entity::renderObjects()
 	map<string, Object>::iterator it;
 	for (it=objects.begin(); it!=objects.end(); ++it)
 	{
+		apocRenderHandler->bindDefaultTextures();
 		map<unsigned int, Texture*>::iterator jt;
 		for (jt=it->second.textures.begin(); jt!=it->second.textures.end(); ++jt)
 		{
@@ -121,7 +127,7 @@ void Entity::renderObjects()
 
 void Entity::translate(Vector vec)
 {
-	transform("", Matrix::Translate(-vec.x(), vec.y(), vec.z()));
+	transform("", Matrix::Translate(vec.x(), vec.y(), vec.z()));
 };
 
 void Entity::rotate(float x, float y, float z)

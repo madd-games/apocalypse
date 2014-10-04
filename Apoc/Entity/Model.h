@@ -69,6 +69,7 @@ public:
 		Vector diffuseColor;
 		Vector specularColor;
 		float shininess;	// ie. specular exponent
+		const char *specTex;	// specular texture name.
 	};
 
 	/**

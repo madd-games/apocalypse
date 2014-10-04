@@ -26,17 +26,32 @@
 
 #include <Apoc/Video/StandardRenderHandler.h>
 #include <Apoc/Entity/World.h>
+#include <Apoc/Utils/Utils.h>
 
 // Texture units:
 // 0 = main (diffuse) texture
 // 1 = directional light array
 // 2 = point light array
+// 3 = shadow map
+// 4 = specular map
 
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
+unsigned long tmpTimer;
+float lmatheight = -0.1;
+
+const float defImageTexData[] = {
+	0.3, 0.3, 1.0, 1.0,		1.0, 1.0, 1.0, 1.0,
+	1.0, 1.0, 1.0, 1.0,		0.3, 0.3, 0.3, 1.0
+};
+
+const float defSpecularMapData[] = {
+	1.0, 1.0, 1.0, 1.0
+};
 
 StandardRenderHandler::StandardRenderHandler() : numDirLights(0), numPointLights(0)
 {
+	tmpTimer = SDL_GetTicks();
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 
 	// set up the directional light array buffer.
@@ -54,19 +69,104 @@ StandardRenderHandler::StandardRenderHandler() : numDirLights(0), numPointLights
 	glGenBuffers(1, &pointLightBuffer);
 	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
 	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, pointLightBuffer);
+
+	// default image texture.
+	glGenTextures(1, &defImageTex);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, defImageTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_FLOAT, defImageTexData);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// default specular map.
+	glGenTextures(1, &defSpecularMap);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, defSpecularMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_FLOAT, defSpecularMapData);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// the shadowmap framebuffer
+	glGenFramebuffers(1, &shadowFramebuffer);
+	glGenTextures(1, &shadowTex);
+	glBindTexture(GL_TEXTURE_2D, shadowTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowFramebuffer);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTex, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		ApocFail("The shadowmap framebuffer is incomplete!");
+	};
+
+	Matrix view = Matrix::LookAt(
+		Vector(0.0, -0.1, -1.0),
+		Vector(0.0, 1.0, 0.0),
+		Vector(0.0, 0.0, 0.0)
+	);
+	lightMatrix = Matrix::Ortho(20, -20, 20, -20, -30, 20) * view;
+	//cout << "Light matrix: " << endl << lightMatrix << endl;
+
+	//Vector point(-11.000000, 0.000000, 10.999980, 1);
+	//cout << "Test point: " << (lightMatrix * point) << endl;
 };
 
 void StandardRenderHandler::render()
 {
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if ((SDL_GetTicks()-tmpTimer) > 100)
+	{
+		lmatheight -= 0.01;
+		tmpTimer = SDL_GetTicks();
+	};
 
-	glUseProgram(renderProgram);
+	Matrix view = Matrix::LookAt(
+		Vector(0.0, lmatheight, -1.0),
+		Vector(0.0, 1.0, 0.0),
+		Vector(0.0, 0.0, 0.0)
+	);
+	lightMatrix = Matrix::Ortho(20, -20, 20, -20, -20, 10) * view;
+
+	//glDepthFunc(GL_LESS);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowFramebuffer);
+	glViewport(0, 0, 1024, 1024);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glUniform1i(getUniformLocation("uIsShadowMap"), 1);
+	glDrawBuffer(GL_NONE);
+	Matrix identity = Matrix::Identity();
+	glUniformMatrix4fv(getUniformLocation("uProjectionMatrix"), 1, GL_FALSE, &identity[0][0]);
+	glUniformMatrix4fv(getUniformLocation("uViewMatrix"), 1, GL_FALSE, &lightMatrix[0][0]);
+	World::render(false);
+	//return;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, 1366, 768);
+	//glUseProgram(renderProgram);
+	glDrawBuffer(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUniformMatrix4fv(getUniformLocation("uLightMatrix"), 1, GL_FALSE, &lightMatrix[0][0]);
+	glUniform1i(getUniformLocation("uIsShadowMap"), 0);
 	glUniform4f(getUniformLocation("uAmbientLight"), 0.1, 0.1, 0.1, 1.0);
 	glUniform1i(getUniformLocation("uDirLightArray"), 1);
 	glUniform1i(getUniformLocation("uPointLightArray"), 2);
+	glUniform1i(getUniformLocation("uShadowMap"), 3);
+	glUniform1i(getUniformLocation("uSpecularMap"), 4);
 	glUniform1i(getUniformLocation("uNumDirLights"), numDirLights);
 	glUniform1i(getUniformLocation("uNumPointLights"), numPointLights);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, shadowTex);
+	glEnable(GL_CULL_FACE);
 	World::render();
 };
 
@@ -100,4 +200,12 @@ void StandardRenderHandler::setPointLights(RenderHandler::PointLight *array, int
 	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
 	glBufferData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::PointLight)*count, array, GL_DYNAMIC_COPY);
 	numPointLights = count;
+};
+
+void StandardRenderHandler::bindDefaultTextures()
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, defImageTex);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, defSpecularMap);
 };

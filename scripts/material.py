@@ -39,6 +39,10 @@ def parseMaterialFile(matfile, textureNames):
 			name = os.path.abspath(" ".join(tokens[1:]))
 			currentMaterial["texture"] = name
 			textureNames.append(name)
+		elif cmd == "map_Ks":
+			name = os.path.abspath(" ".join(tokens[1:]))
+			currentMaterial["specularMap"] = name
+			textureNames.append(name)
 
 	materials[currentMaterialName] = currentMaterial
 	return materials

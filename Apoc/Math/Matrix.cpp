@@ -149,9 +149,9 @@ Matrix Matrix::LookAt(Vector eye, Vector up, Vector ref)
 	up = forward.cross(right);
 	
 	Matrix mat;
-	mat[0] = Vector(right[0], up[0], forward[0], 0.0);
-	mat[1] = Vector(right[1], up[1], forward[1], 0.0);
-	mat[2] = Vector(right[2], up[2], forward[2], 0.0);
+	mat[0] = Vector(-right[0], up[0], forward[0], 0.0);
+	mat[1] = Vector(-right[1], up[1], forward[1], 0.0);
+	mat[2] = Vector(-right[2], up[2], forward[2], 0.0);
 	mat[3] = Vector(0, 0, 0, 1);
 
 	return mat * Translate(-eye.x(), -eye.y(), -eye.z());
@@ -163,12 +163,22 @@ Matrix Matrix::Perspective(float width, float height, float zNear, float zFar, f
 	float fac = 1.0/(tanf(fov/2.0));
 	
 	Matrix out;
-	out[0] = Vector(-fac/ar, 0.0, 0.0, 0.0);
+	out[0] = Vector(fac/ar, 0.0, 0.0, 0.0);
 	out[1] = Vector(0.0, fac, 0.0, 0.0);
 	out[2] = Vector(0.0, 0.0, (-zNear-zFar)/(zNear-zFar), 1.0);
 	out[3] = Vector(0.0, 0.0, (2*zFar*zNear)/(zNear-zFar), 0.0);
 	
 	return out;
+};
+
+Matrix Matrix::Ortho(float left, float right, float top, float bottom, float zNear, float zFar)
+{
+	Matrix mat = Identity();
+	mat[0][0] = 2.0/(right-left);
+	mat[1][1] = 2.0/(top-bottom);
+	mat[2][2] = -2.0/(zFar-zNear);
+	mat[3] = Vector(-(right+left)/(right-left), -(top+bottom)/(top-bottom), -(zFar+zNear)/(zFar-zNear), 1.0);
+	return mat;
 };
 
 Matrix Matrix::Rotate(float x, float y, float z)

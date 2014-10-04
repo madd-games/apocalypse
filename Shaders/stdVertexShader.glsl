@@ -29,6 +29,7 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 uniform mat4 uObjectMatrix;
+uniform mat4 uLightMatrix;
 
 in vec4 inVertex;
 in vec2 inTexCoords;
@@ -37,11 +38,16 @@ in vec3 inNormal;
 out vec2 passTexCoords;
 out vec3 passNormal;
 out vec4 passVertex;
+out vec4 passShadowCoord;
+out vec4 passFragCoord;
 
 void main()
 {
 	passVertex = inVertex;
 	passTexCoords = inTexCoords;
 	passNormal = inNormal;
-	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * uObjectMatrix * inVertex;
+	passShadowCoord = uLightMatrix * uModelMatrix * uObjectMatrix * inVertex;
+	vec4 fragCoord = uProjectionMatrix * uViewMatrix * uModelMatrix * uObjectMatrix * inVertex;
+	passFragCoord = fragCoord;
+	gl_Position = fragCoord;
 };

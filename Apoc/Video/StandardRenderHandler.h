@@ -28,6 +28,7 @@
 #define APOC_VIDEO_STANDARD_RENDER_HANDLER_H
 
 #include <Apoc/Video/RenderHandler.h>
+#include <Apoc/Math/Matrix.h>
 
 /**
  * \brief The standard render handler.
@@ -35,6 +36,9 @@
 class StandardRenderHandler : public RenderHandler
 {
 private:
+	GLuint shadowFramebuffer;
+	GLuint shadowTex;
+
 	GLuint renderProgram;
 	GLuint dirLightTex;
 	GLuint dirLightBuffer;
@@ -42,6 +46,11 @@ private:
 	GLuint pointLightTex;
 	GLuint pointLightBuffer;
 	int numPointLights;
+	Matrix lightMatrix;
+
+	// default textures
+	GLuint defImageTex;
+	GLuint defSpecularMap;
 
 public:
 	/**
@@ -59,6 +68,7 @@ public:
 	virtual void bindProgram();
 	virtual void setDirLights(DirLight *array, int count);
 	virtual void setPointLights(PointLight *array, int count);
+	virtual void bindDefaultTextures();
 };
 
 #endif

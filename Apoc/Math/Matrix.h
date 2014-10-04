@@ -83,6 +83,17 @@ public:
 	static Matrix Perspective(float width, float height, float zNear, float zFar, float fov);
 
 	/**
+	 * \brief Returns an orthographic projection matrix.
+	 * \param left The left coordinate.
+	 * \param right The right coordinate.
+	 * \param top The top coordinate.
+	 * \param bottom The bottom coordinate.
+	 * \param zNear The near Z coordinate.
+	 * \param zFar The far Z coordinate.
+	 */
+	static Matrix Ortho(float left, float right, float top, float bottom, float zNear, float zFar);
+
+	/**
 	 * \brief Returns a rotation matrix.
 	 * \param x The angle to rotate by around the X axis (in radians).
 	 * \param y The angle to rotate by around the Y axis (in radians).

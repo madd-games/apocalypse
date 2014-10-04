@@ -145,6 +145,11 @@ public:
 	 * \param count The number of lights.
 	 */
 	virtual void setPointLights(PointLight *array, int count) = 0;
+
+	/**
+	 * \brief Binds all the defaults textures.
+	 */
+	virtual void bindDefaultTextures() = 0;
 };
 
 #endif
