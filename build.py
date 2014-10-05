@@ -55,7 +55,7 @@ if not os.path.exists("Game/GameImpl.h"):
 	f.write("#define GAME_IMPL_H\n\n")
 	f.write("#include <Apoc/Game.h>\n\n")
 	f.write("class GameImpl : public Game\n")
-	f.write("{\n\t\n};\n")
+	f.write("{\npublic:\n\t\n};\n")
 	f.write("\n#endif")
 	f.close()
 

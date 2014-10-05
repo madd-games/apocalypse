@@ -38,7 +38,7 @@
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
 unsigned long tmpTimer;
-float lmatheight = -0.1;
+float lmatheight = -0.3;
 
 const float defImageTexData[] = {
 	0.3, 0.3, 1.0, 1.0,		1.0, 1.0, 1.0, 1.0,
@@ -125,7 +125,7 @@ void StandardRenderHandler::render()
 {
 	if ((SDL_GetTicks()-tmpTimer) > 100)
 	{
-		lmatheight -= 0.01;
+		//lmatheight -= 0.01;
 		tmpTimer = SDL_GetTicks();
 	};
 

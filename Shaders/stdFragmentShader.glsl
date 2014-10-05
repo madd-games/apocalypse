@@ -137,7 +137,7 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 	vec4 specular = vec4(0.0);
 	if (NdotL > 0.0)
 	{
-		vec3 eye = -vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
+		vec3 eye = -normalize(vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex));
 		vec3 hv = normalize(eye - lightDir);
 		float NdotHV = max(dot(normal, hv), 0.0);
 		// we must assume that 0^0 = 1.
@@ -177,21 +177,24 @@ void main()
 		};
 
 		bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);
-		if (depth < shadowCoord.z && withinTex)
+		if ((depth-0.005) < shadowCoord.z && withinTex)
 		{
 			diffuseLight = uAmbientLight;
 			specularLight = vec4(0.0, 0.0, 0.0, 1.0);
 			//vis = 0.5;
 		};
 
+		diffuseLight = clamp(diffuseLight, 0, 1);
+		specularLight = clamp(specularLight, 0, 1);
 		diffuseLight.w = 1.0;
 		specularLight.w = 1.0;
 		vec4 color = texture(uSampler, passTexCoords) * diffuseLight
 				+ texture(uSpecularMap, passTexCoords) * specularLight;
 		//outColor = vec4(depth, 0.0, shadowCoord.z, 1.0);
-		//outColor = vec4(0.0, depth-shadowCoord.z, 0.0, 1.0);
+		//outColor = vec4(0.0, shadowCoord.z-depth, 0.1, 1.0);
 		//outColor = vec4(depth, depth, 1.0, 1.0);
 		outColor = color;
+		//outColor = vec4(, 1.0);
 	}
 	else
 	{
