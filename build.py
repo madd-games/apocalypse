@@ -48,15 +48,19 @@ def listfiles(dirname):
 		elif path.endswith(".cpp"):
 			files.append(path)
 
-listfiles("Apoc")
-if os.path.isdir("Game"):
-	listfiles("Game")
-else:
-	print "!There is no Game directory! See the manual for more details."
-
+os.system("mkdir -p Game")
 if not os.path.exists("Game/GameImpl.h"):
-	print "!Game/GameImpl.h does not exist, will not compile!"
-	sys.exit(1)
+	f = open("Game/GameImpl.h", "wb")
+	f.write("#ifndef GAME_IMPL_H\n")
+	f.write("#define GAME_IMPL_H\n\n")
+	f.write("#include <Apoc/Game.h>\n\n")
+	f.write("class GameImpl : public Game\n")
+	f.write("{\n\t\n};\n")
+	f.write("\n#endif")
+	f.close()
+
+listfiles("Apoc")
+listfiles("Game")
 
 os.system("mkdir -p build-%s" % target)
 os.system("mkdir -p out")

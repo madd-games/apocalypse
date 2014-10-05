@@ -29,7 +29,9 @@ def compileModel(inFileName, outFileName, modelName, textureNames):
 	# !!! WARNING !!! #
 
 	nameChars = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	lineno = 0
 	for line in lines:
+		lineno += 1
 		if not line.startswith('#'):
 			tokens = line.split(" ")
 			cmd = tokens[0]
@@ -74,7 +76,7 @@ def compileModel(inFileName, outFileName, modelName, textureNames):
 				normals.append((x, y, z))
 			elif cmd == "f":
 				if (len(tokens) != 4):
-					print "ERROR: All faces must be triangles!"
+					print "ERROR: All faces must be triangles! (line %d)" % lineno
 					sys.exit(1)
 				for part in tokens[1:]:
 					bits = part.split("/")
@@ -82,7 +84,10 @@ def compileModel(inFileName, outFileName, modelName, textureNames):
 					ti = 0
 					ni = 0
 					try:
-						ti = int(bits[1]) - 1
+						try:
+							ti = int(bits[1]) - 1
+						except:
+							pass
 						ni = int(bits[2]) - 1
 					except IndexError:
 						pass

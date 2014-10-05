@@ -50,7 +50,10 @@ Entity::Entity(Model::ObjDef *defs)
 
 		string texName = defs->texName;
 		string specMap = defs->specTex;
-		obj.textures[0] = Texture::Get(texName);
+		if (texName != "empty_texture")
+		{
+			obj.textures[0] = Texture::Get(texName);
+		};
 		if (specMap != "<NONE>")
 		{
 			obj.textures[4] = Texture::Get(specMap);

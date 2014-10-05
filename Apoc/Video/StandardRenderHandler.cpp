@@ -42,7 +42,7 @@ float lmatheight = -0.1;
 
 const float defImageTexData[] = {
 	0.3, 0.3, 1.0, 1.0,		1.0, 1.0, 1.0, 1.0,
-	1.0, 1.0, 1.0, 1.0,		0.3, 0.3, 0.3, 1.0
+	1.0, 1.0, 1.0, 1.0,		0.3, 0.3, 1.0, 1.0
 };
 
 const float defSpecularMapData[] = {
@@ -84,7 +84,7 @@ StandardRenderHandler::StandardRenderHandler() : numDirLights(0), numPointLights
 	glGenTextures(1, &defSpecularMap);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, defSpecularMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_FLOAT, defSpecularMapData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, defSpecularMapData);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
