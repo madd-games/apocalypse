@@ -36,3 +36,7 @@ The only target supported right now is `client`, which is also the default. Ther
 
 If you want to run the engine on Windows and build from a Linux system, we recommend using the MinGW-W64 cross-compiler:
 `i686-w64-mingw32` for 32-bit Windows and `x86_64-w64-mingw32` for 64-bit Windows.
+
+## Build dependencies
+To build the engine, you need SDL2, GLEW, OpenGL (which should be installed by default), and optionally an OpenCL SDK.
+We will also use OpenAL in the future, but it will be optional.
