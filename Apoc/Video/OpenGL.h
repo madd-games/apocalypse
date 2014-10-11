@@ -28,6 +28,7 @@
 #define APOC_VIDEO_OPENGL_H
 
 // Include this header to get all the OpenGL functions.
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <SDL.h>
 #include <SDL_opengl.h>

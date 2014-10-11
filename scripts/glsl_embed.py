@@ -4,8 +4,9 @@
 
 import sys, os
 
-shaderName = sys.argv[1]
-target = sys.argv[2]
+compiler = sys.argv[1]
+shaderName = sys.argv[2]
+target = sys.argv[3]
 
 print ">Embed shader %s" % shaderName
 
@@ -22,5 +23,5 @@ for line in lines:
 f.write("\";")
 f.close()
 
-os.system("g++ -c temp.cpp -o build-%s/glsl_%s.o -w" % (target, shaderName))
+os.system("%s -c temp.cpp -o build-%s/glsl_%s.o -w" % (compiler, target, shaderName))
 

@@ -33,7 +33,7 @@
 using namespace std;
 
 void ApocFail(string msg);
-void* ApocSymbol(string sym);
+//void* ApocSymbol(string sym);
 void ApocMoveMouse(int x, int y);
 
 #endif

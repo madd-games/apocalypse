@@ -41,6 +41,7 @@ void ApocFail(string msg)
 	exit(1);
 };
 
+#if 0
 void* ApocSymbol(string name)
 {
 	void *sym;
@@ -61,3 +62,4 @@ void* ApocSymbol(string name)
 
 	return sym;
 };
+#endif

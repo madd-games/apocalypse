@@ -59,9 +59,9 @@ class KernelProcessor:
 
 		return output
 
-def compileKernels(target):
+def compileKernels(target, compiler):
 	p = KernelProcessor()
 	f = open("temp.cpp", "wb")
 	f.write(p.finalOutput)
 	f.close()
-	os.system("g++ -c temp.cpp -o build-%s/kernels.o -w" % target)
+	os.system("%s -c temp.cpp -o build-%s/kernels.o -w" % (compiler, target))

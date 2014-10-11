@@ -51,7 +51,7 @@ if sysinfo["opencl_enable"]:
 	ldopencl = "-lOpenCL"
 	ccopencl = "-DENABLE_OPENCL"
 	print ">Assemble kernels"
-	compileKernels(target)
+	compileKernels(target, sysinfo["cpp_compiler"])
 	objectFiles.append("build-%s/kernels.o" % target)
 
 files = []
@@ -180,7 +180,7 @@ for filename in os.listdir("Shaders"):
 		shaderName = filename[:-5]
 		objectFiles.append("build-%s/glsl_%s.o" % (target, shaderName))
 		srule = "build-%s/glsl_%s.o: Shaders/%s\n" % (target, shaderName, filename)
-		srule += "\t@python scripts/glsl_embed.py %s %s" % (shaderName, target)
+		srule += "\t@python scripts/glsl_embed.py $(CXX) %s %s" % (shaderName, target)
 		rules.append(srule)
 
 def makeRule(cppfile):
@@ -199,9 +199,17 @@ def makeRule(cppfile):
 for filename in files:
 	makeRule(filename)
 
+if sysinfo["is_windows"]:
+	sdl_ldflags="-static -L/usr/i686-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -mwindows -Wl,--no-undefined -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion -luuid -static-libgcc -lglew -lopengl32"
+	sdl_cflags="-I/usr/i686-w64-mingw32/include/SDL2 -DGLEW_STATIC"
+else:
+	sdl_ldflags="-L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread -lm -ldl -lrt  -lGLEW -lGL"
+	sdl_cflags="-I/usr/local/include/SDL2 -D_REENTRANT"
+
 f = open("build.mk", "wb")
-f.write("CFLAGS=-w -D%s -I. -I/usr/local/include/SDL2 -ggdb -D_REENTRANT %s -std=c++11\n" % (target.upper(), ccopencl))
-f.write("LDFLAGS=-L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread -lm -ldl -lrt -lGLEW -lGL %s\n" % ldopencl)
+f.write("CXX=%s\n" % sysinfo["cpp_compiler"])
+f.write("CFLAGS=-D_USE_MATH_DEFINES -w -D%s -I. %s -ggdb %s -std=c++11\n" % (target.upper(), sdl_cflags, ccopencl))
+f.write("LDFLAGS=%s %s\n" % (sdl_ldflags, ldopencl))
 f.write("DEPFILES=%s\n" % " ".join(depFiles))
 f.write("OBJFILES=%s\n" % " ".join(objectFiles))
 f.write("\n")
