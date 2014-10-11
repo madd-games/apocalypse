@@ -88,11 +88,19 @@ int main(int argc, char *argv[])
 
 	apocWindow = SDL_CreateWindow("Apocalypse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			1366, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+	if (apocWindow == NULL)
+	{
+		ApocFail(string("SDL_CreateWindow failed: ") + SDL_GetError());
+	};
 
 	SDL_ShowCursor(0);
 
 	apocContext = SDL_GL_CreateContext(apocWindow);
-	
+	if (apocContext == NULL)
+	{
+		ApocFail(string("Could not create GL context: ") + SDL_GetError());
+	};
+
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{

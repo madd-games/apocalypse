@@ -41,7 +41,7 @@ void ApocFailImpl(string filename, int line, string msg)
 	stringstream ss;
 	ss << filename << ":" << line << ": " << msg;
 #ifdef _WIN32
-	MessageBox(NULL, ss.str(), "ApocFail", MB_OK | MB_ICONHAND);
+	MessageBox(NULL, ss.str().c_str(), "ApocFail", MB_OK | MB_ICONHAND);
 #else
 	cerr << ss.str() << endl;
 #endif
