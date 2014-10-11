@@ -32,8 +32,9 @@
 
 using namespace std;
 
-void ApocFail(string msg);
-//void* ApocSymbol(string sym);
+#define ApocFail(x) ApocFailImpl(__FILE__, __LINE__, (x))
+
+void ApocFailImpl(string filename, int line, string msg);
 void ApocMoveMouse(int x, int y);
 
 #endif

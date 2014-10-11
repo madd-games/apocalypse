@@ -27,39 +27,23 @@
 #include <Apoc/Utils/Utils.h>
 #include <Apoc/Video/OpenGL.h>
 #include <stdlib.h>
+#include <sstream>
 
 #ifdef _WIN32
 #include <windows.h>
-#else
-#include <dlfcn.h>
 #endif
 
-void ApocFail(string msg)
+using namespace std;
+
+void ApocFailImpl(string filename, int line, string msg)
 {
-	cerr << msg << endl;
 	SDL_Quit();
+	stringstream ss;
+	ss << filename << ":" << line << ": " << msg;
+#ifdef _WIN32
+	MessageBox(NULL, ss.str(), "ApocFail", MB_OK | MB_ICONHAND);
+#else
+	cerr << ss.str() << endl;
+#endif
 	exit(1);
 };
-
-#if 0
-void* ApocSymbol(string name)
-{
-	void *sym;
-#ifdef _WIN32
-	HMODULE hModule = GetModuleHandle(NULL)
-	sym = GetProcAddress(hModule, name.c_str());
-	//FreeLibrary(hModule);
-#else
-	void *module = dlopen(NULL, RTLD_NOW);
-	sym = dlsym(module, name.c_str());
-	//dlclose(module);
-#endif
-
-	if (sym == NULL)
-	{
-		ApocFail(string("The following symbol was not found: ") + name);
-	};
-
-	return sym;
-};
-#endif
