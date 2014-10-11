@@ -29,6 +29,7 @@
 
 #include <Apoc/Entity/Entity.h>
 #include <Apoc/Video/Camera.h>
+#include <Apoc/Particles/Emitter.h>
 #include <vector>
 
 using namespace std;
@@ -41,6 +42,7 @@ class World
 private:
 	static vector<Entity*> entities;
 	static vector<Entity*> addQueue;
+	static vector<Emitter*> emitters;
 	static Camera *camera;
 
 public:
@@ -64,9 +66,19 @@ public:
 	static void render(bool setMatrix = true);
 
 	/**
+	 * \brief Render the particles.
+	 */
+	static void renderParticles();
+
+	/**
 	 * \brief Set the Camera.
 	 */
 	static void setCamera(Camera *camera);
+
+	/**
+	 * \brief Add an emitter to the world.
+	 */
+	static void addEmitter(Emitter *emitter);
 };
 
 #endif

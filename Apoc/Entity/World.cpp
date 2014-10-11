@@ -31,6 +31,7 @@ extern RenderHandler *apocRenderHandler;
 
 vector<Entity*> World::entities;
 vector<Entity*> World::addQueue;
+vector<Emitter*> World::emitters;
 Camera *World::camera = NULL;
 
 void World::addEntity(Entity *entity)
@@ -40,8 +41,6 @@ void World::addEntity(Entity *entity)
 
 void World::update()
 {
-
-
 	vector<Entity*>::iterator it;
 	for (it=addQueue.begin(); it!=addQueue.end(); ++it)
 	{
@@ -91,7 +90,22 @@ void World::render(bool setMatrix)
 	};
 };
 
+void World::renderParticles()
+{
+	vector<Emitter*>::iterator eit;
+	for (eit=emitters.begin(); eit!=emitters.end(); ++eit)
+	{
+		(*eit)->update();
+		(*eit)->render();
+	};
+};
+
 void World::setCamera(Camera *camera)
 {
 	World::camera = camera;
+};
+
+void World::addEmitter(Emitter *emitter)
+{
+	emitters.push_back(emitter);
 };

@@ -31,9 +31,13 @@ uniform mat4 uProjectionMatrix;
 uniform mat4 uObjectMatrix;
 uniform mat4 uLightMatrix;
 
+// this is 1 for particles.
+uniform int uIsParticle;
+
 in vec4 inVertex;
 in vec2 inTexCoords;
 in vec3 inNormal;
+in int inPartPosIndex;		// only used for particles.
 
 out vec2 passTexCoords;
 out vec3 passNormal;
@@ -48,6 +52,32 @@ void main()
 	passNormal = inNormal;
 	passShadowCoord = uLightMatrix * uModelMatrix * uObjectMatrix * inVertex;
 	vec4 fragCoord = uProjectionMatrix * uViewMatrix * uModelMatrix * uObjectMatrix * inVertex;
+	if (uIsParticle == 1)
+	{
+		float xradius = 0.025;
+		float yradius = 0.056;
+		if (inPartPosIndex == 1)
+		{
+			fragCoord += vec4(-xradius, yradius, 0.0, 0.0);
+			passTexCoords = vec2(0.0, 1.0);
+		}
+		else if (inPartPosIndex == 2)
+		{
+			fragCoord += vec4(-xradius, -yradius, 0.0, 0.0);
+			passTexCoords = vec2(0.0, 0.0);
+		}
+		else if (inPartPosIndex == 3)
+		{
+			fragCoord += vec4(xradius, -yradius, 0.0, 0.0);
+			passTexCoords = vec2(1.0, 0.0);
+		}
+		else
+		{
+			fragCoord += vec4(xradius, yradius, 0.0, 0.0);
+			passTexCoords = vec2(1.0, 1.0);
+		};
+	};
+
 	passFragCoord = fragCoord;
 	gl_Position = fragCoord;
 };

@@ -35,6 +35,10 @@
 
 #include <Game/GameImpl.h>
 
+#ifdef ENABLE_OPENCL
+#include <Apoc/Compute/Compute.h>
+#endif
+
 #include <math.h>
 #include <string>
 #include <iostream>
@@ -55,9 +59,20 @@ void ApocMoveMouse(int x, int y)
 	SDL_WarpMouseInWindow(apocWindow, x, y);
 };
 
-int main()
+int main(int argc, char *argv[])
 {
 #ifdef CLIENT
+	bool allowCL = true;
+	int i;
+	for (i=0; i<argc; i++)
+	{
+		string str = argv[i];
+		if (str == "--no-cl")
+		{
+			allowCL = false;
+		};
+	};
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		ApocFail("Cannot initialize SDL!");
@@ -65,7 +80,7 @@ int main()
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
 	apocWindow = SDL_CreateWindow("Apocalypse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			1366, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
@@ -84,9 +99,18 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	apocRenderHandler = new StandardRenderHandler();
 	apocRenderHandler->bindProgram();
+
+#ifdef ENABLE_OPENCL
+	if (allowCL)
+	{
+		InitCompute();
+	};
+#endif
 
 	cout << "[APOC] Loading textures" << endl;
 	Texture::Init();
@@ -151,7 +175,12 @@ int main()
 		SDL_GL_SwapWindow(apocWindow);
 	};
 
+#ifdef ENABLE_OPENCL
+	QuitCompute();
+#endif
+
 	SDL_GL_DeleteContext(apocContext);
+	SDL_DestroyWindow(apocWindow);
 	SDL_Quit();
 #endif
 	return 0;

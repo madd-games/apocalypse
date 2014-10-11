@@ -137,6 +137,7 @@ void StandardRenderHandler::render()
 	lightMatrix = Matrix::Ortho(20, -20, 20, -20, -20, 10) * view;
 
 	//glDepthFunc(GL_LESS);
+	glUniform1i(getUniformLocation("uIsParticle"), 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFramebuffer);
 	glViewport(0, 0, 1024, 1024);
@@ -168,6 +169,9 @@ void StandardRenderHandler::render()
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glEnable(GL_CULL_FACE);
 	World::render();
+
+	glUniform1i(getUniformLocation("uIsParticle"), 1);
+	World::renderParticles();
 };
 
 void StandardRenderHandler::getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal)
@@ -180,6 +184,11 @@ void StandardRenderHandler::getAttrLocations(GLint &attrVertex, GLint &attrTexCo
 GLint StandardRenderHandler::getUniformLocation(const char *name)
 {
 	return glGetUniformLocation(renderProgram, name);
+};
+
+GLint StandardRenderHandler::getAttrLocation(const char *name)
+{
+	return glGetAttribLocation(renderProgram, name);
 };
 
 void StandardRenderHandler::bindProgram()

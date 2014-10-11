@@ -24,74 +24,32 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_TEXTURE_H
-#define APOC_ENTITY_TEXTURE_H
-
-#include <Apoc/Video/OpenGL.h>
-#include <map>
-#include <string>
-
-using namespace std;
+typedef struct
+{
+	float x;
+	float y;
+	float z;
+	float w;
+} ApocVector;
 
 /**
- * \brief A class that represents textures on the GPU.
+ * Copy a vector.
  */
-class Texture
+void ApocVectorCopy(__global ApocVector *dst, __global ApocVector *src)
 {
-private:
-	static map<string, Texture*> texMap;
-	GLuint texObj;
-
-public:
-	/**
-	 * \brief Initialise the texturing system by loading the texture map.
-	 */
-	static void Init();
-
-	/**
-	 * \brief Returns a texture given its name.
-	 */
-	static Texture* Get(string name);
-
-	/**
-	 * \brief Describes a texel.
-	 */
-	struct Texel
-	{
-		float red, green, blue, alpha;
-	};
-
-	/**
-	 * \brief Used to describe textures in the binary.
-	 */
-	struct Map
-	{
-		const char *name;
-		int width;
-		int height;
-		const Texel *data;
-		bool allowMipmaps;
-	};
-
-	/**
-	 * \brief Constructor.
-	 * \param width The width of the texture.
-	 * \param height The height of the texture.
-	 * \param data Texel data loaded by image.py.
-	 */
-	Texture(const int width, const int height, const Texel *data, bool allowMipmaps = true);
-
-	/**
-	 * \brief Destructor.
-	 *
-	 * Deletes the OpenGL texture object.
-	 */
-	~Texture();
-
-	/**
-	 * \brief Bind the texture to the current active texture unit.
-	 */
-	void bind();
+	dst->x = src->x;
+	dst->y = src->y;
+	dst->z = src->z;
+	dst->w = src->w;
 };
 
-#endif
+/**
+ * Add together 2 vectors in 1 thread, and store in 'a'.
+ */
+void ApocVectorAddST(__global ApocVector *a, __global ApocVector *b)
+{
+	a->x += b->x;
+	a->y += b->y;
+	a->z += b->z;
+	a->w += b->w;
+};

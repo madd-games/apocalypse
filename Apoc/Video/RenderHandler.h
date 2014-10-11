@@ -130,6 +130,13 @@ public:
 	 * \return The location of the uniform variable.
 	 */
 	virtual GLint getUniformLocation(const char *name) = 0;
+
+	/**
+	 * \brief Get the location of an attribute.
+	 * \param name The name of the attribute.
+	 */
+	virtual GLint getAttrLocation(const char *name) = 0;
+
 	virtual void bindProgram() = 0;
 
 	/**

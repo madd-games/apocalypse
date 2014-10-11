@@ -58,6 +58,9 @@ uniform int uIsShadowMap;
 // For sampling the shadow map.
 uniform sampler2D uShadowMap;
 
+// Particle systems
+uniform int uIsParticle;
+
 in vec2 passTexCoords;
 in vec3 passNormal;
 in vec4 passVertex;
@@ -176,13 +179,13 @@ void main()
 			computePointLight(i, normal, diffuseLight, specularLight);
 		};
 
-		bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);
+		/*bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);
 		if ((depth-0.005) < shadowCoord.z && withinTex)
 		{
 			diffuseLight = uAmbientLight;
 			specularLight = vec4(0.0, 0.0, 0.0, 1.0);
 			//vis = 0.5;
-		};
+		};*/
 
 		diffuseLight = clamp(diffuseLight, 0, 1);
 		specularLight = clamp(specularLight, 0, 1);
@@ -190,11 +193,11 @@ void main()
 		specularLight.w = 1.0;
 		vec4 color = texture(uSampler, passTexCoords) * diffuseLight
 				+ texture(uSpecularMap, passTexCoords) * specularLight;
-		//outColor = vec4(depth, 0.0, shadowCoord.z, 1.0);
-		//outColor = vec4(0.0, shadowCoord.z-depth, 0.1, 1.0);
-		//outColor = vec4(depth, depth, 1.0, 1.0);
 		outColor = color;
-		//outColor = vec4(, 1.0);
+		if (uIsParticle == 1)
+		{
+			outColor = texture(uSampler, passTexCoords);
+		};
 	}
 	else
 	{

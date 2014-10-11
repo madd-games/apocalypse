@@ -38,7 +38,7 @@ void Texture::Init()
 	while (iter->name != NULL)
 	{
 		string name(iter->name);
-		texMap[name] = new Texture(iter->width, iter->height, iter->data);
+		texMap[name] = new Texture(iter->width, iter->height, iter->data, iter->allowMipmaps);
 		iter++;
 	};
 };
@@ -52,13 +52,13 @@ Texture* Texture::Get(string name)
 	return texMap[name];
 };
 
-Texture::Texture(const int width, const int height, const Texture::Texel *data)
+Texture::Texture(const int width, const int height, const Texture::Texel *data, bool allowMipmaps)
 {
 	glEnable(GL_TEXTURE_2D);		// work around AMD bugs, apparently.
 						// (idk, i have nVidia).
 	glGenTextures(1, &texObj);
 	glBindTexture(GL_TEXTURE_2D, texObj);
-	glTexStorage2D(GL_TEXTURE_2D, 8, GL_RGBA8, width, height);
+	glTexStorage2D(GL_TEXTURE_2D, allowMipmaps ? 8:1, GL_RGBA8, width, height);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_FLOAT, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

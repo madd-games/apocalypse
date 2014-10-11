@@ -24,74 +24,50 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_TEXTURE_H
-#define APOC_ENTITY_TEXTURE_H
+#ifndef APOC_COMPUTE_KERNEL_H
+#define APOC_COMPUTE_KERNEL_H
 
-#include <Apoc/Video/OpenGL.h>
-#include <map>
-#include <string>
+#ifdef ENABLE_OPENCL
 
-using namespace std;
+#include <Apoc/Compute/Compute.h>
+#include <stdlib.h>
 
 /**
- * \brief A class that represents textures on the GPU.
+ * \brief A class that describes commands executable on the GPU.
+ *
+ * Only available if OpenCL is enabled both at compile-time and run-time.
  */
-class Texture
+class Kernel
 {
 private:
-	static map<string, Texture*> texMap;
-	GLuint texObj;
+	cl_kernel p_kernel;
+	size_t roundUp(size_t a, size_t b);
 
 public:
 	/**
-	 * \brief Initialise the texturing system by loading the texture map.
-	 */
-	static void Init();
-
-	/**
-	 * \brief Returns a texture given its name.
-	 */
-	static Texture* Get(string name);
-
-	/**
-	 * \brief Describes a texel.
-	 */
-	struct Texel
-	{
-		float red, green, blue, alpha;
-	};
-
-	/**
-	 * \brief Used to describe textures in the binary.
-	 */
-	struct Map
-	{
-		const char *name;
-		int width;
-		int height;
-		const Texel *data;
-		bool allowMipmaps;
-	};
-
-	/**
 	 * \brief Constructor.
-	 * \param width The width of the texture.
-	 * \param height The height of the texture.
-	 * \param data Texel data loaded by image.py.
+	 * \param name The name of the requested kernel function from the kernel directory of Apocalypse or the game.
 	 */
-	Texture(const int width, const int height, const Texel *data, bool allowMipmaps = true);
+	Kernel(const char *name);
+	~Kernel();
 
 	/**
-	 * \brief Destructor.
+	 * \brief Sets a kernel argument, see clSetKernelArg().
+	 * \param index The argument index.
+	 * \param size Size of the argument.
+	 * \param value Pointer to the value for the argument.
+	 */
+	void setArg(unsigned int index, size_t size, void *value);
+
+	/**
+	 * \brief Execute the kernel.
+	 * \param numThreads The number of threads.
 	 *
-	 * Deletes the OpenGL texture object.
+	 * Please note that more than numThreads may actually execute! You should therefore pass numThreads as an
+	 * argument to the kernel.
 	 */
-	~Texture();
-
-	/**
-	 * \brief Bind the texture to the current active texture unit.
-	 */
-	void bind();
+	void execute(size_t numThreads);
 };
 
+#endif
 #endif

@@ -24,74 +24,62 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_TEXTURE_H
-#define APOC_ENTITY_TEXTURE_H
+#ifdef ENABLE_OPENCL
 
-#include <Apoc/Video/OpenGL.h>
-#include <map>
-#include <string>
+#include <Apoc/Compute/Kernel.h>
+#include <Apoc/Utils/Utils.h>
+#include <sstream>
+
+extern cl_program p_program;
+extern cl_command_queue p_command_queue;
 
 using namespace std;
 
-/**
- * \brief A class that represents textures on the GPU.
- */
-class Texture
+size_t Kernel::roundUp(size_t a, size_t b)
 {
-private:
-	static map<string, Texture*> texMap;
-	GLuint texObj;
-
-public:
-	/**
-	 * \brief Initialise the texturing system by loading the texture map.
-	 */
-	static void Init();
-
-	/**
-	 * \brief Returns a texture given its name.
-	 */
-	static Texture* Get(string name);
-
-	/**
-	 * \brief Describes a texel.
-	 */
-	struct Texel
+	size_t out = a;
+	while (out < b)
 	{
-		float red, green, blue, alpha;
+		out += a;
 	};
+	return out;
+};
 
-	/**
-	 * \brief Used to describe textures in the binary.
-	 */
-	struct Map
+Kernel::Kernel(const char *name)
+{
+	cl_int error;
+	p_kernel = clCreateKernel(p_program, name, &error);
+	if (error != CL_SUCCESS)
 	{
-		const char *name;
-		int width;
-		int height;
-		const Texel *data;
-		bool allowMipmaps;
+		stringstream ss;
+		ss << "OpenCL returned an error while trying to create a kernel: " << name;
+		ApocFail(ss.str());
 	};
+};
 
-	/**
-	 * \brief Constructor.
-	 * \param width The width of the texture.
-	 * \param height The height of the texture.
-	 * \param data Texel data loaded by image.py.
-	 */
-	Texture(const int width, const int height, const Texel *data, bool allowMipmaps = true);
+Kernel::~Kernel()
+{
+	clReleaseKernel(p_kernel);
+};
 
-	/**
-	 * \brief Destructor.
-	 *
-	 * Deletes the OpenGL texture object.
-	 */
-	~Texture();
+void Kernel::setArg(unsigned int index, size_t size, void *value)
+{
+	if (clSetKernelArg(p_kernel, index, size, value) != CL_SUCCESS)
+	{
+		ApocFail("Kernel::setArg");
+	};
+};
 
-	/**
-	 * \brief Bind the texture to the current active texture unit.
-	 */
-	void bind();
+void Kernel::execute(size_t numThreads)
+{
+	size_t local_ws = 512;
+	size_t global_ws = roundUp(local_ws, numThreads);
+	cl_int error = clEnqueueNDRangeKernel(p_command_queue, p_kernel, 1, NULL, &global_ws, &local_ws, 0, NULL, NULL);
+	if (error != CL_SUCCESS)
+	{
+		cerr << "Error during kernel execution: " << error << endl;
+		ApocFail("Kernel::execute");
+	};
 };
 
 #endif

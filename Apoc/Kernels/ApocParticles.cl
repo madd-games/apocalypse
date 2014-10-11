@@ -24,74 +24,50 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_TEXTURE_H
-#define APOC_ENTITY_TEXTURE_H
+#use ApocMath
 
-#include <Apoc/Video/OpenGL.h>
-#include <map>
-#include <string>
-
-using namespace std;
+typedef struct
+{
+	ApocVector pos;
+	ApocVector velocity;
+	ApocVector acceleration;
+	int spawnTime;
+	int lastUpdate;
+	int ageToLive;
+	ApocVector origin;
+	ApocVector startVelocity;
+} __attribute__ ((packed)) ApocParticle;
 
 /**
- * \brief A class that represents textures on the GPU.
+ * \brief Called to update a particle emitter's state directly on the GPU.
+ * \param particles The array of particles.
+ * \param count Number of particles.
+ * \param time The return value of SDL_GetTicks() for this update.
  */
-class Texture
+__kernel void ApocUpdateEmitter(__global ApocParticle *particles, int count, int time)
 {
-private:
-	static map<string, Texture*> texMap;
-	GLuint texObj;
-
-public:
-	/**
-	 * \brief Initialise the texturing system by loading the texture map.
-	 */
-	static void Init();
-
-	/**
-	 * \brief Returns a texture given its name.
-	 */
-	static Texture* Get(string name);
-
-	/**
-	 * \brief Describes a texel.
-	 */
-	struct Texel
+	int idx = get_global_id(0);
+	if (idx < count)
 	{
-		float red, green, blue, alpha;
+		int dt = time - particles[idx].lastUpdate;
+		int age = time - particles[idx].spawnTime;
+
+		if (age > particles[idx].ageToLive)
+		{
+			ApocVectorCopy(&particles[idx].pos, &particles[idx].origin);
+			ApocVectorCopy(&particles[idx].velocity, &particles[idx].startVelocity);
+			particles[idx].spawnTime = time;
+		}
+		else
+		{
+			int i;
+			for (i=0; i<dt; i++)
+			{
+				ApocVectorAddST(&particles[idx].pos, &particles[idx].velocity);
+				ApocVectorAddST(&particles[idx].velocity, &particles[idx].acceleration);
+			};
+		};
+
+		particles[idx].lastUpdate = time;
 	};
-
-	/**
-	 * \brief Used to describe textures in the binary.
-	 */
-	struct Map
-	{
-		const char *name;
-		int width;
-		int height;
-		const Texel *data;
-		bool allowMipmaps;
-	};
-
-	/**
-	 * \brief Constructor.
-	 * \param width The width of the texture.
-	 * \param height The height of the texture.
-	 * \param data Texel data loaded by image.py.
-	 */
-	Texture(const int width, const int height, const Texel *data, bool allowMipmaps = true);
-
-	/**
-	 * \brief Destructor.
-	 *
-	 * Deletes the OpenGL texture object.
-	 */
-	~Texture();
-
-	/**
-	 * \brief Bind the texture to the current active texture unit.
-	 */
-	void bind();
 };
-
-#endif

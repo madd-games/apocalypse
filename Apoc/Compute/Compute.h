@@ -24,74 +24,21 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_TEXTURE_H
-#define APOC_ENTITY_TEXTURE_H
+#ifndef APOC_COMPUTE_COMPUTE_H
+#define APOC_COMPUTE_COMPUTE_H
 
-#include <Apoc/Video/OpenGL.h>
-#include <map>
-#include <string>
-
-using namespace std;
-
-/**
- * \brief A class that represents textures on the GPU.
- */
-class Texture
-{
-private:
-	static map<string, Texture*> texMap;
-	GLuint texObj;
-
-public:
-	/**
-	 * \brief Initialise the texturing system by loading the texture map.
-	 */
-	static void Init();
-
-	/**
-	 * \brief Returns a texture given its name.
-	 */
-	static Texture* Get(string name);
-
-	/**
-	 * \brief Describes a texel.
-	 */
-	struct Texel
-	{
-		float red, green, blue, alpha;
-	};
-
-	/**
-	 * \brief Used to describe textures in the binary.
-	 */
-	struct Map
-	{
-		const char *name;
-		int width;
-		int height;
-		const Texel *data;
-		bool allowMipmaps;
-	};
-
-	/**
-	 * \brief Constructor.
-	 * \param width The width of the texture.
-	 * \param height The height of the texture.
-	 * \param data Texel data loaded by image.py.
-	 */
-	Texture(const int width, const int height, const Texel *data, bool allowMipmaps = true);
-
-	/**
-	 * \brief Destructor.
-	 *
-	 * Deletes the OpenGL texture object.
-	 */
-	~Texture();
-
-	/**
-	 * \brief Bind the texture to the current active texture unit.
-	 */
-	void bind();
-};
+// A header for including the OpenCL headers in a uniform way.
+#ifdef ENABLE_OPENCL
+#	ifdef __APPLE__
+#		include <OpenCL/opencl.h>
+#	else
+#		include <CL/opencl.h>
+#	endif
+void InitCompute();
+void QuitCompute();
+bool IsComputeEnabled();
+void AcquireGL(size_t num, const cl_mem *mem);
+void ReleaseGL(size_t num, const cl_mem *mem);
+#endif
 
 #endif

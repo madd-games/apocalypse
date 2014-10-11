@@ -65,6 +65,7 @@ public:
 	virtual void render();
 	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
 	virtual GLint getUniformLocation(const char *name);
+	virtual GLint getAttrLocation(const char *name);
 	virtual void bindProgram();
 	virtual void setDirLights(DirLight *array, int count);
 	virtual void setPointLights(PointLight *array, int count);
