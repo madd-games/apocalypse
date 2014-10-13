@@ -49,7 +49,8 @@ const float defSpecularMapData[] = {
 	1.0, 1.0, 1.0, 1.0
 };
 
-StandardRenderHandler::StandardRenderHandler() : numDirLights(0), numPointLights(0)
+StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
+	: numDirLights(0), numPointLights(0), screenWidth(screenWidth), screenHeight(screenHeight)
 {
 	tmpTimer = SDL_GetTicks();
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
@@ -152,7 +153,7 @@ void StandardRenderHandler::render()
 	//return;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, 1366, 768);
+	glViewport(0, 0, screenWidth, screenHeight);
 	//glUseProgram(renderProgram);
 	glDrawBuffer(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -170,6 +171,8 @@ void StandardRenderHandler::render()
 	glEnable(GL_CULL_FACE);
 	World::render();
 
+	glUniformMatrix4fv(getUniformLocation("uModelMatrix"), 1, GL_FALSE, &identity[0][0]);
+	glUniformMatrix4fv(getUniformLocation("uObjectMatrix"), 1, GL_FALSE, &identity[0][0]);
 	glUniform1i(getUniformLocation("uIsParticle"), 1);
 	World::renderParticles();
 };

@@ -43,6 +43,13 @@ using namespace std;
  */
 class Entity
 {
+public:
+	struct BoundingBox
+	{
+		Vector min;
+		Vector max;
+	};
+
 private:
 	struct Object
 	{
@@ -60,6 +67,9 @@ private:
 	map<string, Object> objects;
 
 	Matrix modelMatrix;
+	BoundingBox modelBoundingBox;
+	bool bbDirty;
+	void unmangleVectors(Vector &a, Vector &b);
 
 protected:
 	/**
@@ -114,7 +124,28 @@ public:
 	 */
 	virtual void rotate(float x, float y, float z);
 
+	/**
+	 * \brief Get the model's bounding box.
+	 */
+	BoundingBox getBoundingBox();
+
+	/**
+	 * \brief Checks if this entity is colliding with another one.
+	 *
+	 * If there is a collision, then the colliding entity is returned, otherwise, NULL is returned.
+	 */
+	Entity *checkCollision();
+
+	/**
+	 * \brief Translate the entity with collision checking.
+	 *
+	 * If this move causes the entity to collide with something, it will not occur.
+	 * \return NULL on successful move, the colliding entity in case of collision.
+	 */
+	Entity* move(Vector vec);
+
 	friend class World;
+	friend class CollisionCheck;
 };
 
 #endif

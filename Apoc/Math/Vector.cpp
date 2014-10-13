@@ -27,6 +27,9 @@
 #include <Apoc/Math/Vector.h>
 #include <math.h>
 
+Vector Vector::Zero(0, 0, 0, 0);
+Vector Vector::Origin(0, 0, 0, 1);
+
 Vector::Vector()
 {
 	coords[0] = 0.0;

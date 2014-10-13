@@ -66,6 +66,16 @@ public:
 	 * See SDL documentation.
 	 */
 	virtual void onMouseMove();
+
+	/**
+	 * \brief Specifies the desired screen resolution (or window size, depending on what isFullscreen returns).
+	 */
+	virtual void getScreenSize(int &width, int &height);
+
+	/**
+	 * \brief Returns true if a fullscreen mode is desired.
+	 */
+	virtual bool isFullscreen();
 };
 
 #endif

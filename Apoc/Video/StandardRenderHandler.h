@@ -52,6 +52,8 @@ private:
 	GLuint defImageTex;
 	GLuint defSpecularMap;
 
+	int screenWidth, screenHeight;
+
 public:
 	/**
 	 * \brief Standard render params.
@@ -61,7 +63,7 @@ public:
 		
 	};
 
-	StandardRenderHandler();
+	StandardRenderHandler(int screenWidth, int screenHeight);
 	virtual void render();
 	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
 	virtual GLint getUniformLocation(const char *name);

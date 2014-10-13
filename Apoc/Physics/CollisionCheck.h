@@ -24,37 +24,44 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <Apoc/Game.h>
+#ifndef APOC_PHYSICS_COLLISION_CHECK_H
+#define APOC_PHYSICS_COLLISION_CHECK_H
 
-void Game::onGameStart()
+#include <Apoc/Math/Vector.h>
+#include <Apoc/Math/Matrix.h>
+#include <Apoc/Entity/Entity.h>
+#include <Apoc/Entity/Model.h>
+
+/**
+ * \brief Utilities that help with collision checking.
+ */
+class CollisionCheck
 {
+public:
+	/**
+	 * \brief Tests segment-triangle intersection.
+	 *
+	 * Checks if segment (p<sub>0</sub>,p<sub>1</sub>) intersects with triangle (t<sub>0</sub>, t<sub>1</sub>, t<sub>2</sub>).
+	 * If they do not, false is returned; if they do, then this function returns true and stores the point of
+	 * intersection in i; otherwise, i is destroyed.
+	 */
+	static bool SegTri(Vector p0, Vector p1, Vector t0, Vector t1, Vector t2, Vector &i);
+	static bool SegTri(Vector p0, Vector p1, Vector t0, Vector t1, Vector t2);
+
+	/**
+	 * \brief Checks if triangles A<sub>0,2</sub> and B<sub>0,2</sub> intersect.
+	 */
+	static bool TriTri(Vector a0, Vector a1, Vector a2, Vector b0, Vector b1, Vector b2);
+
+	/**
+	 * \brief Checks if 2 models are currently colliding when transformed by the specified matrices.
+	 */
+	static bool Models(Matrix &mat0, Model *mod0, Matrix &mat1, Model *mod1);
+
+	/**
+	 * \brief Checks if 2 entities are currently colliding.
+	 */
+	static bool Entities(Entity *a, Entity *b);
 };
 
-void Game::onKeyPress(SDL_Keycode key)
-{
-	(void)key;
-};
-
-void Game::onKeyRelease(SDL_Keycode key)
-{
-	(void)key;
-};
-
-void Game::update()
-{
-};
-
-void Game::onMouseMove()
-{
-};
-
-void Game::getScreenSize(int &width, int &height)
-{
-	width = 1366;
-	height = 768;
-};
-
-bool Game::isFullscreen()
-{
-	return true;
-};
+#endif

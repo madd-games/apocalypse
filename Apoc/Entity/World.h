@@ -79,6 +79,8 @@ public:
 	 * \brief Add an emitter to the world.
 	 */
 	static void addEmitter(Emitter *emitter);
+
+	friend class Entity;
 };
 
 #endif

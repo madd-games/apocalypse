@@ -40,6 +40,16 @@ private:
 	float coords[4];
 	
 public:
+	/**
+	 * \brief The zero vector, (0, 0, 0, 0).
+	 */
+	static Vector Zero;
+
+	/**
+	 * \brief The origin, (0, 0, 0, 1).
+	 */
+	static Vector Origin;
+
 	Vector();
 	Vector(float x, float y);
 	Vector(float x, float y, float z);

@@ -55,6 +55,7 @@ public:
 		Vector texCoords;
 		Vector normal;
 	};
+	Vertex *data;
 
 	/**
 	 * \brief An object definition.
@@ -71,6 +72,9 @@ public:
 		float shininess;	// ie. specular exponent
 		const char *specTex;	// specular texture name.
 	};
+
+	Vector minVector;
+	Vector maxVector;
 
 	/**
 	 * \brief Constructor.
@@ -95,6 +99,8 @@ public:
 	 * shader uniforms. It is up to the RenderHandler to set the uniforms as appropriate.
 	 */
 	void draw();
+
+	friend class CollisionCheck;
 };
 
 #endif

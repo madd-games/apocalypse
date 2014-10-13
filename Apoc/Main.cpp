@@ -32,6 +32,7 @@
 #include <Apoc/Entity/Texture.h>
 #include <Apoc/Entity/Entity.h>
 #include <Apoc/Entity/World.h>
+#include <Apoc/Physics/CollisionCheck.h>
 
 #include <Game/GameImpl.h>
 
@@ -66,6 +67,8 @@ void ApocMoveMouse(int x, int y)
 int main(int argc, char *argv[])
 {
 #ifdef CLIENT
+	Game *game = new GameImpl;
+
 	bool allowCL = true;
 	int i;
 	for (i=0; i<argc; i++)
@@ -86,8 +89,13 @@ int main(int argc, char *argv[])
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
+	int screenWidth, screenHeight;
+	game->getScreenSize(screenWidth, screenHeight);
+
+	int flagsFullscreen = game->isFullscreen() ? SDL_WINDOW_FULLSCREEN:0;
+
 	apocWindow = SDL_CreateWindow("Apocalypse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			1366, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+			screenWidth, screenHeight, SDL_WINDOW_OPENGL | flagsFullscreen);
 	if (apocWindow == NULL)
 	{
 		ApocFail(string("SDL_CreateWindow failed: ") + SDL_GetError());
@@ -114,7 +122,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	apocRenderHandler = new StandardRenderHandler();
+	apocRenderHandler = new StandardRenderHandler(screenWidth, screenHeight);
 	apocRenderHandler->bindProgram();
 
 #ifdef ENABLE_OPENCL
@@ -146,7 +154,6 @@ int main(int argc, char *argv[])
 	SDL_Event event;
 	bool quit = false;
 	unsigned long lastTicks = SDL_GetTicks();
-	Game *game = new GameImpl;
 	game->onGameStart();
 	while (!quit)
 	{

@@ -25,13 +25,15 @@
 */
 
 #include <Apoc/Entity/Entity.h>
+#include <Apoc/Entity/World.h>
 #include <Apoc/Utils/Utils.h>
+#include <Apoc/Physics/CollisionCheck.h>
 #include <inttypes.h>
 #include <Apoc/Video/RenderHandler.h>
 
 extern RenderHandler *apocRenderHandler;
 
-Entity::Entity(Model::ObjDef *defs)
+Entity::Entity(Model::ObjDef *defs) : bbDirty(true)
 {
 	modelMatrix = Matrix::Identity();
 
@@ -81,6 +83,7 @@ void Entity::transform(string obj, Matrix mat)
 	{
 		objects[obj].matrix = mat * objects[obj].matrix;
 	};
+	bbDirty = true;
 };
 
 void Entity::preTransform(string obj, Matrix mat)
@@ -93,6 +96,7 @@ void Entity::preTransform(string obj, Matrix mat)
 	{
 		objects[obj].matrix = objects[obj].matrix * mat;
 	};
+	bbDirty = true;
 };
 
 void Entity::update()
@@ -136,4 +140,79 @@ void Entity::translate(Vector vec)
 void Entity::rotate(float x, float y, float z)
 {
 	preTransform("", Matrix::Rotate(x, y, z));
+};
+
+void Entity::unmangleVectors(Vector &a, Vector &b)
+{
+	int i;
+	for (i=0; i<3; i++)
+	{
+		if (a[i] > b[i])
+		{
+			float tmp = a[i];
+			a[i] = b[i];
+			b[i] = tmp;
+		};
+	};
+};
+
+Entity::BoundingBox Entity::getBoundingBox()
+{
+	if (bbDirty)
+	{
+		Vector globMinVector = objects.begin()->second.matrix * objects.begin()->second.model->minVector;
+		Vector globMaxVector = objects.begin()->second.matrix * objects.begin()->second.model->maxVector;
+		unmangleVectors(globMinVector, globMaxVector);
+
+		map<string, Object>::iterator it;
+		for (it=objects.begin(); it!=objects.end(); ++it)
+		{
+			Vector minVector = it->second.matrix * it->second.model->minVector;
+			Vector maxVector = it->second.matrix * it->second.model->maxVector;
+			unmangleVectors(minVector, maxVector);
+
+			int i;
+			for (i=0; i<3; i++)
+			{
+				if (minVector[i] < globMinVector[i]) globMinVector[i] = minVector[i];
+				if (maxVector[i] > globMaxVector[i]) globMaxVector[i] = maxVector[i];
+			};
+		};
+
+		modelBoundingBox.min = modelMatrix * globMinVector;
+		modelBoundingBox.max = modelMatrix * globMaxVector;
+		unmangleVectors(modelBoundingBox.min, modelBoundingBox.max);
+		bbDirty = false;
+	};
+
+	return modelBoundingBox;
+};
+
+Entity* Entity::checkCollision()
+{
+	vector<Entity*>::iterator it;
+	for (it=World::entities.begin(); it!=World::entities.end(); ++it)
+	{
+		if ((*it) != this)
+		{
+			if (CollisionCheck::Entities(this, *it))
+			{
+				return *it;
+			};
+		};
+	};
+
+	return NULL;
+};
+
+Entity* Entity::move(Vector vec)
+{
+	translate(vec);
+	Entity *coll = checkCollision();
+	if (coll != NULL)
+	{
+		translate(-vec);
+		return coll;
+	};
+	return NULL;
 };

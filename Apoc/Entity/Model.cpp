@@ -28,7 +28,7 @@
 #include <Apoc/Utils/Utils.h>
 #include <Apoc/Math/Vector.h>
 
-Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count)
+Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), data(vertices)
 {
 	if (count == 0)
 	{
@@ -38,6 +38,22 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count)
 	if ((count % 3) != 0)
 	{
 		ApocFail("The specified model is not triangulated!");
+	};
+
+	minVector = vertices[0].pos;
+	maxVector = vertices[0].pos;
+
+	int i;
+	for (i=1; i<count; i++)
+	{
+		Vector pos = vertices[i].pos;
+
+		int j;
+		for (j=0; j<3; j++)
+		{
+			if (pos[j] < minVector[j]) minVector[j] = pos[j];
+			if (pos[j] > maxVector[j]) maxVector[j] = pos[j];
+		};
 	};
 
 	GLint attrVertex, attrTexCoords, attrNormal;
