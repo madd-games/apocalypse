@@ -184,7 +184,6 @@ void main()
 		{
 			diffuseLight = uAmbientLight;
 			specularLight = vec4(0.0, 0.0, 0.0, 1.0);
-			//vis = 0.5;
 		};
 
 		diffuseLight = clamp(diffuseLight, 0, 1);

@@ -99,6 +99,11 @@ void Entity::preTransform(string obj, Matrix mat)
 	bbDirty = true;
 };
 
+Matrix Entity::getModelMatrix()
+{
+	return modelMatrix;
+};
+
 void Entity::update()
 {
 };
@@ -160,6 +165,7 @@ Entity::BoundingBox Entity::getBoundingBox()
 {
 	if (bbDirty)
 	{
+#if 0
 		Vector globMinVector = objects.begin()->second.matrix * objects.begin()->second.model->minVector;
 		Vector globMaxVector = objects.begin()->second.matrix * objects.begin()->second.model->maxVector;
 		unmangleVectors(globMinVector, globMaxVector);
@@ -182,6 +188,28 @@ Entity::BoundingBox Entity::getBoundingBox()
 		modelBoundingBox.min = modelMatrix * globMinVector;
 		modelBoundingBox.max = modelMatrix * globMaxVector;
 		unmangleVectors(modelBoundingBox.min, modelBoundingBox.max);
+		bbDirty = false;
+#endif
+		modelBoundingBox.min = modelMatrix * objects.begin()->second.matrix * objects.begin()->second.model->data[0].pos;
+		modelBoundingBox.max = modelBoundingBox.min;
+
+		map<string, Object>::iterator it;
+		for (it=objects.begin(); it!=objects.end(); ++it)
+		{
+			Matrix mat = modelMatrix * it->second.matrix;
+			int i;
+			for (i=0; i<it->second.model->vertexCount; i++)
+			{
+				Vector pos = mat * it->second.model->data[i].pos;
+				int j;
+				for (j=0; j<3; j++)
+				{
+					if (pos[j] < modelBoundingBox.min[j]) modelBoundingBox.min[j] = pos[j];
+					if (pos[j] > modelBoundingBox.max[j]) modelBoundingBox.max[j] = pos[j];
+				};
+			};
+		};
+
 		bbDirty = false;
 	};
 

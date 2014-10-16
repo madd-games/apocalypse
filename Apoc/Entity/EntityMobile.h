@@ -24,84 +24,48 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_MODEL_H
-#define APOC_ENTITY_MODEL_H
+#ifndef APOC_ENTITY_MOBILE_H
+#define APOC_ENTITY_MOBILE_H
 
+#include <Apoc/Entity/Entity.h>
+#include <Apoc/Video/Camera.h>
 #include <Apoc/Math/Vector.h>
-#include <Apoc/Video/RenderHandler.h>
-#include <Apoc/Entity/Texture.h>
-#include <map>
-
-extern RenderHandler *apocRenderHandler;
-
-using namespace std;
 
 /**
- * \brief A class for storing models.
+ * \brief Mobile entities ("mobs").
  */
-class Model
+class EntityMobile : public Entity, public Camera
 {
 private:
-	GLuint vao, vbo;
-	int vertexCount;
+	Vector eyePos;
+	Vector eyeRef;
+	Vector upVector;
+	float theta, phi;
 
 public:
-	/**
-	 * \brief A structure that represents a vertex.
-	 */
-	struct Vertex
-	{
-		Vector pos;
-		Vector texCoords;
-		Vector normal;
-	};
-	Vertex *data;
-
-	/**
-	 * \brief An object definition.
-	 */
-	struct ObjDef
-	{
-		const char *name;
-		Vertex *vertices;
-		int count;
-		Model *model;		// initially NULL
-		const char *texName;
-		Vector diffuseColor;
-		Vector specularColor;
-		float shininess;	// ie. specular exponent
-		const char *specTex;	// specular texture name.
-	};
-
-	Vector minVector;
-	Vector maxVector;
+	bool forward, backwards, left, right;
 
 	/**
 	 * \brief Constructor.
-	 * 
-	 * Given a list of vertices and the size, this will create the VAO and VBO to store
-	 * the model on the GPU. The vertices array may be deleted after the Model object is
-	 * constructed.
+	 * \param defs The object definitions, passed to the constructor of Entity.
+	 * \param eye The position of the eye in model space.
+	 * \param ref The point of reference in model space.
 	 */
-	Model(Vertex *vertices, const int count);
+	EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref, Vector up);
+
+	virtual Vector getEye();
+	virtual Vector getRef();
+	virtual Vector getUpVector();
 
 	/**
-	 * \brief Destructor.
-	 *
-	 * Deletes the VAO and VBO.
+	 * \brief Moves the camera.
 	 */
-	~Model();
+	void moveCamera(float deltaTheta, float deltaPhi);
 
 	/**
-	 * \brief Draw the model.
-	 *
-	 * This function will call glDrawArrays() with the VAO and VBO bound, but without modifying the
-	 * shader uniforms. It is up to the RenderHandler to set the uniforms as appropriate.
+	 * \brief Update the position of the entity according to params.
 	 */
-	void draw();
-
-	friend class CollisionCheck;
-	friend class Entity;
+	virtual void update();
 };
 
 #endif

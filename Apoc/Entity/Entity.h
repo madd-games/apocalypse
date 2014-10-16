@@ -88,6 +88,11 @@ protected:
 	 */
 	virtual void preTransform(string obj, Matrix mat);
 
+	/**
+	 * \brief Returns the model matrix.
+	 */
+	Matrix getModelMatrix();
+
 public:
 	/**
 	 * \brief Constructor.
@@ -116,13 +121,13 @@ public:
 	/**
 	 * \brief Translate the entity.
 	 */
-	virtual void translate(Vector vec);
+	void translate(Vector vec);
 
 	/**
 	 * \brief Rotate the entity.
 	 * \sa Matrix::Rotate
 	 */
-	virtual void rotate(float x, float y, float z);
+	void rotate(float x, float y, float z);
 
 	/**
 	 * \brief Get the model's bounding box.
