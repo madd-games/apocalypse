@@ -39,7 +39,7 @@ class Matrix
 {
 private:
 	Vector columns[4];
-	static float SubDet(Matrix &mat, int order);
+	static float Minor(Matrix &mat, int order);
 
 public:
 	Matrix();

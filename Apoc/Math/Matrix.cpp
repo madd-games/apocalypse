@@ -32,7 +32,7 @@
 
 using namespace std;
 
-float Matrix::SubDet(Matrix &mat, int order)
+float Matrix::Minor(Matrix &mat, int order)
 {
 	if (order == 2)
 	{
@@ -56,7 +56,7 @@ float Matrix::SubDet(Matrix &mat, int order)
 				k++;
 			};
 		};
-		d += pow(-1, i) * mat[i][0] * SubDet(submat, order-1);
+		d += pow(-1, i) * mat[i][0] * Minor(submat, order-1);
 	};
 	return d;
 };
@@ -136,7 +136,7 @@ Vector Matrix::operator*(Vector vec)
 
 float Matrix::det()
 {
-	return SubDet(*this, 4);
+	return Minor(*this, 4);
 };
 
 Matrix Matrix::inv()
@@ -176,7 +176,7 @@ Matrix Matrix::inv()
 			// minors, cofactors, transpose and divide by determinant in one go
 			// i don't care if it's confusing, it's a game engine that has to perform well,
 			// not a maths lesson.
-			out[j][i] = factor * pow(-1, i+j) * SubDet(submat, 3);
+			out[j][i] = factor * pow(-1, i+j) * Minor(submat, 3);
 		};
 	};
 
