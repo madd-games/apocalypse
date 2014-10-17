@@ -39,16 +39,34 @@ class Matrix
 {
 private:
 	Vector columns[4];
-	
+	static float SubDet(Matrix &mat, int order);
+
 public:
 	Matrix();
 	Matrix(const Matrix &mat);
 	Matrix& operator=(Matrix mat);
 	Vector& operator[](int i);
-	Matrix transpose();
 	Matrix operator*(Matrix b);
 	Vector operator*(Vector vec);
-	
+
+	/**
+	 * \brief Returns the determinant of this matrix.
+	 */
+	float det();
+
+	/**
+	 * \brief Returns the inverse of this matrix.
+	 *
+	 * If the determinant (det) of the matrix is zero, then there is no inverse and
+	 * ApocFail() is thrown.
+	 */
+	Matrix inv();
+
+	/**
+	 * \brief Returns the transpose of this matrix.
+	 */
+	Matrix transpose();
+
 	/**
 	 * \brief Returns the identity matrix.
 	 */
@@ -105,5 +123,6 @@ public:
 };
 
 ostream& operator<<(ostream &os, Matrix mat);
+Matrix operator*(float x, Matrix mat);
 
 #endif

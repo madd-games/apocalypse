@@ -242,3 +242,8 @@ ostream& operator<<(ostream &os, Vector vec)
 	os << "(" << vec.x() << ", " << vec.y() << ", " << vec.z() << ", " << vec.w() << ")";
 	return os;
 };
+
+Vector operator*(float x, Vector vec)
+{
+	return vec * x;
+};

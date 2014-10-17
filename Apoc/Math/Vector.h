@@ -104,5 +104,6 @@ public:
 };
 
 ostream& operator<<(ostream &os, Vector vec);
+Vector operator*(float x, Vector vec);
 
 #endif

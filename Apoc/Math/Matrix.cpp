@@ -25,10 +25,41 @@
 */
 
 #include <Apoc/Math/Matrix.h>
+#include <Apoc/Utils/Utils.h>
 #include <math.h>
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
+
+float Matrix::SubDet(Matrix &mat, int order)
+{
+	if (order == 2)
+	{
+		return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0];
+	};
+
+	Matrix submat;
+	int i, j, k=0, l;
+	float d = 0;
+	for (i=0; i<order; i++)
+	{
+		k = 0;
+		for (j=0; j<order; j++)
+		{
+			if (i != j)
+			{
+				for (l=1; l<order; l++)
+				{
+					submat[k][l-1] = mat[j][l];
+				};
+				k++;
+			};
+		};
+		d += pow(-1, i) * mat[i][0] * SubDet(submat, order-1);
+	};
+	return d;
+};
 
 Matrix::Matrix()
 {
@@ -100,6 +131,55 @@ Vector Matrix::operator*(Vector vec)
 	{
 		out[i] = a[i].dot(vec);
 	};
+	return out;
+};
+
+float Matrix::det()
+{
+	return SubDet(*this, 4);
+};
+
+Matrix Matrix::inv()
+{
+	float d = det();
+	if (d == 0.0)
+	{
+		ApocFail("Attempting to find the inverse of a matrix with a determinant of zero.");
+	};
+	float factor = 1.0 / d;
+
+	Matrix out;
+	int i, j;
+	for (i=0; i<4; i++)
+	{
+		for (j=0; j<4; j++)
+		{
+			Matrix submat;		// the matrix for which we are finding the determinant.
+			int k, l, m=0, n;
+			for (k=0; k<4; k++)
+			{
+				if (k != i)
+				{
+					n = 0;
+					for (l=0; l<4; l++)
+					{
+						if (l != j)
+						{
+							submat[m][n] = (*this)[k][l];
+							n++;
+						};
+					};
+					m++;
+				};
+			};
+
+			// minors, cofactors, transpose and divide by determinant in one go
+			// i don't care if it's confusing, it's a game engine that has to perform well,
+			// not a maths lesson.
+			out[j][i] = factor * pow(-1, i+j) * SubDet(submat, 3);
+		};
+	};
+
 	return out;
 };
 
@@ -221,4 +301,17 @@ ostream& operator<<(ostream &os, Matrix mat)
 	};
 	
 	return os;
+};
+
+Matrix operator*(float x, Matrix mat)
+{
+	Matrix out;
+	int i, j;
+	for (i=0; i<4; i++)
+	{
+		for (j=0; j<4; i++)
+		{
+			out[i][j] = x * mat[i][j];
+		};
+	};
 };

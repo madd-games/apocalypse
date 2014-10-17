@@ -54,11 +54,6 @@ SDL_Window *apocWindow;
 SDL_GLContext apocContext;
 RenderHandler *apocRenderHandler;
 
-extern Model::Vertex modVertices_EntityTest__Cube[];
-extern "C" const int imgWidth_0;
-extern "C" const int imgHeight_0;
-extern "C" const Texture::Texel imgTexels_0[];
-
 void ApocMoveMouse(int x, int y)
 {
 	SDL_WarpMouseInWindow(apocWindow, x, y);
