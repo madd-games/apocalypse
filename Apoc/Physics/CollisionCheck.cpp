@@ -152,18 +152,24 @@ bool CollisionCheck::Entities(Entity *a, Entity *b)
 	map<string, Entity::Object>::iterator itA;
 	for (itA=a->objects.begin(); itA!=a->objects.end(); ++itA)
 	{
-		Matrix mat0 = a->modelMatrix * itA->second.matrix;
-		Model *mod0 = itA->second.model;
-
-		map<string, Entity::Object>::iterator itB;
-		for (itB=b->objects.begin(); itB!=b->objects.end(); ++itB)
+		if (itA->second.collideable)
 		{
-			Matrix mat1 = b->modelMatrix * itB->second.matrix;
-			Model *mod1 = itB->second.model;
+			Matrix mat0 = a->modelMatrix * itA->second.matrix;
+			Model *mod0 = itA->second.model;
 
-			if (Models(mat0, mod0, mat1, mod1))
+			map<string, Entity::Object>::iterator itB;
+			for (itB=b->objects.begin(); itB!=b->objects.end(); ++itB)
 			{
-				return true;
+				if (itB->second.collideable)
+				{
+					Matrix mat1 = b->modelMatrix * itB->second.matrix;
+					Model *mod1 = itB->second.model;
+
+					if (Models(mat0, mod0, mat1, mod1))
+					{
+						return true;
+					};
+				};
 			};
 		};
 	};

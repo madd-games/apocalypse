@@ -61,6 +61,8 @@ private:
 		Vector diffuseColor;
 		Vector specularColor;
 		float shininess;
+		bool visible;
+		bool collideable;		// true if this is included as a collision model.
 	};
 
 	// Maps object names to their descriptions.
@@ -80,18 +82,27 @@ protected:
 	 *            name of the object to apply this transformation to.
 	 * \param mat The transformation matrix.
 	 */
-	virtual void transform(string obj, Matrix mat);
+	void transform(string obj, Matrix mat);
 
 	/**
 	 * \brief Like transform, except the transformation is applied before all others.
 	 * \sa transform
 	 */
-	virtual void preTransform(string obj, Matrix mat);
+	void preTransform(string obj, Matrix mat);
 
 	/**
 	 * \brief Returns the model matrix.
 	 */
 	Matrix getModelMatrix();
+
+	/**
+	 * \brief Access an object's visibility property.
+	 * \param name The name of the object.
+	 *
+	 * This function returns a reference to a variable, which when set to true causes the object to be
+	 * visible (the default), whereas when set to false, the object will not be drawn.
+	 */
+	bool& visible(string name);
 
 public:
 	/**

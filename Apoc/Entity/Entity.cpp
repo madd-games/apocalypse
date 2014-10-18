@@ -64,8 +64,20 @@ Entity::Entity(Model::ObjDef *defs) : bbDirty(true)
 		obj.diffuseColor = defs->diffuseColor;
 		obj.specularColor = defs->specularColor;
 		obj.shininess = defs->shininess;
+		string name(defs->name);
+		obj.visible = (name != "ApocColl");
+		obj.collideable = (name == "ApocColl");
 		objects[defs->name] = obj;
 		defs++;
+	};
+
+	if (objects.count("ApocColl") == 0)
+	{
+		map<string, Object>::iterator it;
+		for (it=objects.begin(); it!=objects.end(); ++it)
+		{
+			it->second.collideable = true;
+		};
 	};
 };
 
@@ -104,6 +116,11 @@ Matrix Entity::getModelMatrix()
 	return modelMatrix;
 };
 
+bool& Entity::visible(string name)
+{
+	return objects[name].visible;
+};
+
 void Entity::update()
 {
 };
@@ -121,19 +138,22 @@ void Entity::renderObjects()
 	map<string, Object>::iterator it;
 	for (it=objects.begin(); it!=objects.end(); ++it)
 	{
-		apocRenderHandler->bindDefaultTextures();
-		map<unsigned int, Texture*>::iterator jt;
-		for (jt=it->second.textures.begin(); jt!=it->second.textures.end(); ++jt)
+		if (it->second.visible)
 		{
-			glActiveTexture(GL_TEXTURE0 + jt->first);
-			jt->second->bind();
-		};
+			apocRenderHandler->bindDefaultTextures();
+			map<unsigned int, Texture*>::iterator jt;
+			for (jt=it->second.textures.begin(); jt!=it->second.textures.end(); ++jt)
+			{
+				glActiveTexture(GL_TEXTURE0 + jt->first);
+				jt->second->bind();
+			};
 
-		glUniform4fv(uDiffuseColor, 1, &it->second.diffuseColor[0]);
-		glUniform4fv(uSpecularColor, 1, &it->second.specularColor[0]);
-		glUniform1f(uShininess, it->second.shininess);
-		glUniformMatrix4fv(uObjectMatrix, 1, GL_FALSE, &it->second.matrix[0][0]);
-		it->second.model->draw();
+			glUniform4fv(uDiffuseColor, 1, &it->second.diffuseColor[0]);
+			glUniform4fv(uSpecularColor, 1, &it->second.specularColor[0]);
+			glUniform1f(uShininess, it->second.shininess);
+			glUniformMatrix4fv(uObjectMatrix, 1, GL_FALSE, &it->second.matrix[0][0]);
+			it->second.model->draw();
+		};
 	};
 };
 
@@ -165,31 +185,6 @@ Entity::BoundingBox Entity::getBoundingBox()
 {
 	if (bbDirty)
 	{
-#if 0
-		Vector globMinVector = objects.begin()->second.matrix * objects.begin()->second.model->minVector;
-		Vector globMaxVector = objects.begin()->second.matrix * objects.begin()->second.model->maxVector;
-		unmangleVectors(globMinVector, globMaxVector);
-
-		map<string, Object>::iterator it;
-		for (it=objects.begin(); it!=objects.end(); ++it)
-		{
-			Vector minVector = it->second.matrix * it->second.model->minVector;
-			Vector maxVector = it->second.matrix * it->second.model->maxVector;
-			unmangleVectors(minVector, maxVector);
-
-			int i;
-			for (i=0; i<3; i++)
-			{
-				if (minVector[i] < globMinVector[i]) globMinVector[i] = minVector[i];
-				if (maxVector[i] > globMaxVector[i]) globMaxVector[i] = maxVector[i];
-			};
-		};
-
-		modelBoundingBox.min = modelMatrix * globMinVector;
-		modelBoundingBox.max = modelMatrix * globMaxVector;
-		unmangleVectors(modelBoundingBox.min, modelBoundingBox.max);
-		bbDirty = false;
-#endif
 		modelBoundingBox.min = modelMatrix * objects.begin()->second.matrix * objects.begin()->second.model->data[0].pos;
 		modelBoundingBox.max = modelBoundingBox.min;
 

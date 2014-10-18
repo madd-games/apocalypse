@@ -37,6 +37,9 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uObjectMatrix;
 
+// Eye position
+uniform vec4 uEyePos;
+
 // The specular map sampler.
 uniform sampler2D uSpecularMap;
 
@@ -94,7 +97,7 @@ void computeDirLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout ve
 	vec4 specular = vec4(0.0);
 	if (NdotL > 0.0)
 	{
-		vec3 eye = -vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
+		vec3 eye = vec3(uEyePos - passVertex);
 		vec3 hv = normalize(eye - lightDir);
 		float NdotHV = max(dot(normal, hv), 0.0);
 		// we must assume that 0^0 = 1.
@@ -140,7 +143,7 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 	vec4 specular = vec4(0.0);
 	if (NdotL > 0.0)
 	{
-		vec3 eye = -normalize(vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex));
+		vec3 eye = vec3(uEyePos - passVertex);
 		vec3 hv = normalize(eye - lightDir);
 		float NdotHV = max(dot(normal, hv), 0.0);
 		// we must assume that 0^0 = 1.
