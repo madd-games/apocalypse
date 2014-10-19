@@ -37,8 +37,18 @@ using namespace std;
 class Vector
 {
 private:
+	// We will use GCC Vector Extensions if possible since they are about 4x
+	// faster (trust me, I tested them).
+#ifdef __GNUC__
+	typedef float NativeVector __attribute__ ((vector_size(4*sizeof(float))));
+	typedef int Mask __attribute__ ((vector_size(4*sizeof(int))));
+	NativeVector coords;
+	static Mask MaskYZX;
+	static Mask MaskZXY;
+#else
 	float coords[4];
-	
+#endif
+
 public:
 	/**
 	 * \brief The zero vector, (0, 0, 0, 0).

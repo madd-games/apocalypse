@@ -27,6 +27,11 @@
 #include <Apoc/Math/Vector.h>
 #include <math.h>
 
+#ifdef __GNUC__
+Vector::Mask Vector::MaskYZX = {1, 2, 0, 3};
+Vector::Mask Vector::MaskZXY = {2, 0, 1, 3};
+#endif
+
 Vector Vector::Zero(0, 0, 0, 0);
 Vector Vector::Origin(0, 0, 0, 1);
 
@@ -98,75 +103,98 @@ float& Vector::operator[](int i)
 
 Vector& Vector::operator=(Vector vec)
 {
+#ifdef __GNUC__
+	coords = vec.coords;
+#else
 	int i;
 	for (i=0; i<4; i++)
 	{
 		coords[i] = vec[i];
 	};
-	
+#endif
 	return *this;
 };
 
 Vector Vector::operator+(Vector b)
 {
 	Vector out;
-	
+#ifdef __GNUC__
+	out.coords = coords + b.coords;
+#else
 	int i;
 	for (i=0; i<4; i++)
 	{
 		out[i] = coords[i] + b[i];
 	};
-	
+#endif
 	return out;
 };
 
 Vector Vector::operator-(Vector b)
 {
 	Vector out;
-	
+#ifdef __GNUC__
+	out.coords = coords - b.coords;
+#else
 	int i;
 	for (i=0; i<4; i++)
 	{
 		out[i] = coords[i] - b[i];
 	};
-	
+#endif
 	return out;
 };
 
 Vector Vector::operator*(Vector b)
 {
 	Vector out;
-	
+#ifdef __GNUC__
+	out.coords = coords * b.coords;
+#else
 	int i;
 	for (i=0; i<4; i++)
 	{
 		out[i] = coords[i] * b[i];
 	};
-	
+#endif
 	return out;
 };
 
 Vector Vector::operator/(Vector b)
 {
 	Vector out;
-	
+#ifdef __GNUC__
+	out.coords = coords / b.coords;
+#else
 	int i;
 	for (i=0; i<4; i++)
 	{
 		out[i] = coords[i] / b[i];
 	};
-	
+#endif
 	return out;
 };
 
 Vector Vector::operator*(float x)
 {
+#ifdef __GNUC__
+	Vector out;
+	out.coords = coords * x;
+	return out;
+#else
 	return Vector(coords[0]*x, coords[1]*x, coords[2]*x, coords[3]*x);
+#endif
 };
 
 Vector Vector::operator-()
 {
+#ifdef __GNUC__
+	Vector out;
+	out.coords = -coords;
+	return out;
+#else
 	return Vector(-coords[0], -coords[1], -coords[2], coords[3]);
+#endif
 };
 
 bool Vector::operator==(const Vector b)
@@ -199,6 +227,10 @@ bool Vector::operator!=(const Vector b)
 
 float Vector::dot(Vector b)
 {
+#ifdef __GNUC__
+	NativeVector v = coords * b.coords;
+	return v[0] + v[1] + v[2] + v[3];
+#else
 	float out = 0.0;
 	int i;
 	for (i=0; i<4; i++)
@@ -207,15 +239,22 @@ float Vector::dot(Vector b)
 	};
 
 	return out;
+#endif
 };
 
 Vector Vector::cross(Vector b)
 {
 	Vector out;
+#ifdef __GNUC__
+	out.coords = (__builtin_shuffle(coords, MaskYZX) * __builtin_shuffle(b.coords, MaskZXY))
+			- (__builtin_shuffle(coords, MaskZXY) * __builtin_shuffle(b.coords, MaskYZX));
+	out.coords[3] = 0;
+#else
 	out[0] = coords[1]*b[2] - coords[2]*b[1];		// X
 	out[1] = coords[2]*b[0] - coords[0]*b[2];		// Y
 	out[2] = coords[0]*b[1] - coords[1]*b[0];		// Z
 	out[3] = 0.0;						// W, is this right?
+#endif
 	return out;
 };
 
