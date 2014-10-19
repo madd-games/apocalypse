@@ -25,17 +25,23 @@
 */
 
 #include <Apoc/Entity/EntityMobile.h>
+#include <SDL.h>
 #include <math.h>
 
 EntityMobile::EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref)
-	: Entity(defs), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0)
+	: Entity(defs), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0)
 {
+	ticks = SDL_GetTicks();
+};
 
+Vector EntityMobile::getEyeDelta()
+{
+	return Vector(0, 0.5 * (sin(deltaFactor) + 1), 0, 0);
 };
 
 Vector EntityMobile::getEye()
 {
-	return getModelMatrix() * eyePos;
+	return getModelMatrix() * eyePos + getEyeDelta();
 };
 
 Vector EntityMobile::getRef()
@@ -69,7 +75,12 @@ void EntityMobile::moveCamera(float deltaTheta, float deltaPhi)
 
 void EntityMobile::update()
 {
-	float speed = 0.1;
+	float speed = 0.015 * (SDL_GetTicks() - ticks);
+	if (forward || backwards || left || right)
+	{
+		deltaFactor += 0.007 * (SDL_GetTicks() - ticks);
+	};
+
 	Vector vmove(0, 0, 0, 0);
 	if (forward)
 	{
@@ -102,7 +113,7 @@ void EntityMobile::update()
 	{
 		sz = -1;
 	};
-	//move(vmove);
+
 	if (move(Vector(vmove.x()+sx, 0, 0)) == NULL)
 	{
 		translate(Vector(-sx, 0, 0));
@@ -111,4 +122,6 @@ void EntityMobile::update()
 	{
 		translate(Vector(0, 0, -sz));
 	};
+
+	ticks = SDL_GetTicks();
 };
