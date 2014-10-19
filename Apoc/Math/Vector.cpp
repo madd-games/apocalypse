@@ -248,13 +248,12 @@ Vector Vector::cross(Vector b)
 #ifdef __GNUC__
 	out.coords = (__builtin_shuffle(coords, MaskYZX) * __builtin_shuffle(b.coords, MaskZXY))
 			- (__builtin_shuffle(coords, MaskZXY) * __builtin_shuffle(b.coords, MaskYZX));
-	out.coords[3] = 0;
 #else
 	out[0] = coords[1]*b[2] - coords[2]*b[1];		// X
 	out[1] = coords[2]*b[0] - coords[0]*b[2];		// Y
 	out[2] = coords[0]*b[1] - coords[1]*b[0];		// Z
-	out[3] = 0.0;						// W, is this right?
 #endif
+	out[3] = 0.0;
 	return out;
 };
 
