@@ -104,6 +104,25 @@ protected:
 	 */
 	bool& visible(string name);
 
+	/**
+	 * \brief Translate the entity with collision checking.
+	 *
+	 * If this move causes the entity to collide with something, it will not occur.
+	 * \return NULL on successful move, the colliding entity in case of collision.
+	 */
+	Entity* move(Vector vec);
+
+	/**
+	 * \brief Translate the entity.
+	 */
+	void translate(Vector vec, const char *objName = "");
+
+	/**
+	 * \brief Rotate the entity.
+	 * \sa Matrix::Rotate
+	 */
+	void rotate(float x, float y, float z, const char *objName = "");
+
 public:
 	/**
 	 * \brief Constructor.
@@ -130,17 +149,6 @@ public:
 	void renderObjects();
 
 	/**
-	 * \brief Translate the entity.
-	 */
-	void translate(Vector vec);
-
-	/**
-	 * \brief Rotate the entity.
-	 * \sa Matrix::Rotate
-	 */
-	void rotate(float x, float y, float z);
-
-	/**
 	 * \brief Get the model's bounding box.
 	 */
 	BoundingBox getBoundingBox();
@@ -151,14 +159,6 @@ public:
 	 * If there is a collision, then the colliding entity is returned, otherwise, NULL is returned.
 	 */
 	Entity *checkCollision();
-
-	/**
-	 * \brief Translate the entity with collision checking.
-	 *
-	 * If this move causes the entity to collide with something, it will not occur.
-	 * \return NULL on successful move, the colliding entity in case of collision.
-	 */
-	Entity* move(Vector vec);
 
 	friend class World;
 	friend class CollisionCheck;

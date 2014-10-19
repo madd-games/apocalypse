@@ -62,6 +62,9 @@ void ApocMoveMouse(int x, int y)
 int main(int argc, char *argv[])
 {
 #ifdef CLIENT
+#ifdef __GNUC__
+	cout << "[APOC] GCC Vector Extensions are enabled" << endl;
+#endif
 	Game *game = new GameImpl;
 
 	bool allowCL = true;

@@ -39,7 +39,6 @@ class EntityMobile : public Entity, public Camera
 private:
 	Vector eyePos;
 	Vector eyeRef;
-	Vector upVector;
 	float theta, phi;
 
 public:
@@ -51,7 +50,7 @@ public:
 	 * \param eye The position of the eye in model space.
 	 * \param ref The point of reference in model space.
 	 */
-	EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref, Vector up);
+	EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref);
 
 	virtual Vector getEye();
 	virtual Vector getRef();

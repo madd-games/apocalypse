@@ -157,14 +157,14 @@ void Entity::renderObjects()
 	};
 };
 
-void Entity::translate(Vector vec)
+void Entity::translate(Vector vec, const char *objName)
 {
-	transform("", Matrix::Translate(vec.x(), vec.y(), vec.z()));
+	transform(objName, Matrix::Translate(vec.x(), vec.y(), vec.z()));
 };
 
-void Entity::rotate(float x, float y, float z)
+void Entity::rotate(float x, float y, float z, const char *objName)
 {
-	preTransform("", Matrix::Rotate(x, y, z));
+	preTransform(objName, Matrix::Rotate(x, y, z));
 };
 
 void Entity::unmangleVectors(Vector &a, Vector &b)

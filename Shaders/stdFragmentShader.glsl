@@ -182,12 +182,12 @@ void main()
 			computePointLight(i, normal, diffuseLight, specularLight);
 		};
 
-		bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);
+		/*bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);
 		if ((depth-0.005) < shadowCoord.z && withinTex)
 		{
 			diffuseLight = uAmbientLight;
 			specularLight = vec4(0.0, 0.0, 0.0, 1.0);
-		};
+		};*/
 
 		diffuseLight = clamp(diffuseLight, 0, 1);
 		specularLight = clamp(specularLight, 0, 1);

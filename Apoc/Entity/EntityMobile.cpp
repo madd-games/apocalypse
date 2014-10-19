@@ -27,10 +27,10 @@
 #include <Apoc/Entity/EntityMobile.h>
 #include <math.h>
 
-EntityMobile::EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref, Vector up)
+EntityMobile::EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref)
 	: Entity(defs), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0)
 {
-	upVector = up.normalize();
+
 };
 
 Vector EntityMobile::getEye()
@@ -51,6 +51,9 @@ Vector EntityMobile::getUpVector()
 
 void EntityMobile::moveCamera(float deltaTheta, float deltaPhi)
 {
+	rotate(0, deltaTheta, 0);
+	rotate(0, -deltaTheta, 0, "ApocColl");
+
 	float pi = 4 * atan(1);
 	phi += deltaPhi;
 	theta += deltaTheta;
@@ -89,5 +92,23 @@ void EntityMobile::update()
 		vmove = vmove + left * -speed;
 	};
 
-	move(vmove);
+	float sx = 1;
+	if (vmove.x() < 0)
+	{
+		sx = -1;
+	};
+	float sz = 1;
+	if (vmove.z() < 0)
+	{
+		sz = -1;
+	};
+	//move(vmove);
+	if (move(Vector(vmove.x()+sx, 0, 0)) == NULL)
+	{
+		translate(Vector(-sx, 0, 0));
+	};
+	if (move(Vector(0, 0, vmove.z()+sz)) == NULL)
+	{
+		translate(Vector(0, 0, -sz));
+	};
 };
