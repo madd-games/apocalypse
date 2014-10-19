@@ -40,3 +40,6 @@ If you want to run the engine on Windows and build from a Linux system, we recom
 ## Build dependencies
 To build the engine, you need SDL2, GLEW, OpenGL (which should be installed by default), and optionally an OpenCL SDK.
 We will also use OpenAL in the future, but it will be optional.
+
+## Building a game
+To build a game, you should install the SDK - you can do this by running the `install-sdk` script in its directory. Next, go to an empty directroy, or a directory that already contains a `Game` subdirectroy you want to build, and run `apoc-setup-workspace`. You can thenbuild by running `make` - if there is no `Game` directory, then `make` will automatically generate a template for your game. You can also edit your `Makefile` to add more options to `build.py` as shown above.
