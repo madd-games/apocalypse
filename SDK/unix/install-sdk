@@ -1,0 +1,13 @@
+#! /bin/sh
+# Install the Apocalypse SDK
+mkdir -p /usr/src/madd-games
+rm -rf /usr/src/madd-games/apoc
+mkdir -p /usr/src/madd-games/apoc
+cp -r ../../Apoc /usr/src/madd-games/apoc
+cp -r ../../scripts /usr/src/madd-games/apoc
+cp -r ../../Shaders /usr/src/madd-games/apoc
+cp ../../build.py /usr/src/madd-games/apoc/build.py
+cp ../../build.rule /usr/src/madd-games/apoc/build.rule
+
+cp apoc-setup-workspace /usr/bin/apoc-setup-workspace
+chmod +x /usr/bin/apoc-setup-workspace
