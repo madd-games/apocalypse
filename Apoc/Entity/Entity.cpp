@@ -52,6 +52,7 @@ Entity::Entity(Model::ObjDef *defs) : bbDirty(true)
 
 		string texName = defs->texName;
 		string specMap = defs->specTex;
+		string normalMap = defs->normalMap;
 		if (texName != "empty_texture")
 		{
 			obj.textures[0] = Texture::Get(texName);
@@ -59,6 +60,10 @@ Entity::Entity(Model::ObjDef *defs) : bbDirty(true)
 		if (specMap != "<NONE>")
 		{
 			obj.textures[4] = Texture::Get(specMap);
+		};
+		if (normalMap != "<NONE>")
+		{
+			obj.textures[5] = Texture::Get(normalMap);
 		};
 		obj.matrix = Matrix::Identity();
 		obj.diffuseColor = defs->diffuseColor;

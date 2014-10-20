@@ -73,6 +73,7 @@ public:
 		Vector specularColor;
 		float shininess;	// ie. specular exponent
 		const char *specTex;	// specular texture name.
+		const char *normalMap;	// normal map texture name.
 	};
 
 	Vector minVector;
