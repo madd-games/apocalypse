@@ -56,6 +56,36 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), dat
 		};
 	};
 
+	// compute the tangents for each triangle.
+	int i;
+	for (i=0; i<count; i+=3)
+	{
+		Vector &v0 = vertices[i+0].pos;
+		Vector &v1 = vertices[i+1].pos;
+		Vector &v2 = vertices[i+2].pos;
+		
+		Vector &uv0 = vertices[i+0].texCoords;
+		Vector &uv1 = vertices[i+1].texCoords;
+		Vector &uv2 = vertices[i+2].texCoords;
+		
+		Vector deltaPos1 = v1 - v0;
+		Vector deltaPos2 = v2 - v0;
+		
+		Vector deltaUV1 = uv1 - uv0;
+		Vector deltaUV2 = uv2 - uv0;
+		
+		float r = 1.0f / (deltaUV1.x() * deltaUV2.y() - deltaUV1.y() * deltaUV2.x());
+		Vector vtan = (deltaPos2 * deltaUV1.x() - deltaPos1 * deltaUV2.x())*r;
+		Vector utan = (deltaPos1 * deltaUV2.y() - deltaPos2 * deltaUV1.y())*r;
+		
+		int j;
+		for (j=0; j<3; j++)
+		{
+			vertices[i+j].vtan = vtan;
+			vertices[i+j].utan = utan;
+		};
+	};
+	
 	GLint attrVertex, attrTexCoords, attrNormal, attrVTan, attrUTan;
 	apocRenderHandler->getAttrLocations(attrVertex, attrTexCoords, attrNormal);
 	attrVTan = apocRenderHandler->getAttrLocation("inVTan");
