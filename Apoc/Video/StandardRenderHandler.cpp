@@ -34,6 +34,7 @@
 // 2 = point light array
 // 3 = shadow map
 // 4 = specular map
+// 5 = normal map
 
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
@@ -47,6 +48,10 @@ const float defImageTexData[] = {
 
 const float defSpecularMapData[] = {
 	1.0, 1.0, 1.0, 1.0
+};
+
+const float defNormalMapData[] = {
+	0.0, 0.0, 1.0, 1.0
 };
 
 StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
@@ -91,6 +96,16 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	// default normal map.
+	glGenTextures(1, &defNormalMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, defNormalMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, defNormalMapData);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
 	// the shadowmap framebuffer
 	glGenFramebuffers(1, &shadowFramebuffer);
 	glGenTextures(1, &shadowTex);
@@ -164,6 +179,7 @@ void StandardRenderHandler::render()
 	glUniform1i(getUniformLocation("uPointLightArray"), 2);
 	glUniform1i(getUniformLocation("uShadowMap"), 3);
 	glUniform1i(getUniformLocation("uSpecularMap"), 4);
+	glUniform1i(getUniformLocation("uNormalMap"), 5);
 	glUniform1i(getUniformLocation("uNumDirLights"), numDirLights);
 	glUniform1i(getUniformLocation("uNumPointLights"), numPointLights);
 	glActiveTexture(GL_TEXTURE3);
@@ -220,4 +236,6 @@ void StandardRenderHandler::bindDefaultTextures()
 	glBindTexture(GL_TEXTURE_2D, defImageTex);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, defSpecularMap);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, defNormalMap);
 };
