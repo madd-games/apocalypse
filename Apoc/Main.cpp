@@ -127,7 +127,13 @@ int main(int argc, char *argv[])
 	if (allowCL)
 	{
 		InitCompute();
+	}
+	else
+	{
+		cout << "[APOC] [COMPUTE] OpenCL disabled in command line!" << endl;
 	};
+#else
+	cout << "[APOC] [COMPUTE] OpenCL support disabled at compile-time!" << endl;
 #endif
 
 	cout << "[APOC] Loading textures" << endl;
