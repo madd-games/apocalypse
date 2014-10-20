@@ -27,6 +27,8 @@
 #ifndef APOC_UTILS_UTILS_H
 #define APOC_UTILS_UTILS_H
 
+/** \file Some basic utility functions. */
+
 #include <string>
 #include <iostream>
 
@@ -36,5 +38,8 @@ using namespace std;
 
 void ApocFailImpl(string filename, int line, string msg);
 void ApocMoveMouse(int x, int y);
+
+float ApocGetRenderTime();
+float ApocGetFPS();
 
 #endif
