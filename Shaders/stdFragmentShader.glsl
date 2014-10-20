@@ -72,6 +72,8 @@ in vec3 passNormal;
 in vec4 passVertex;
 in vec4 passShadowCoord;
 in vec4 passFragCoord;
+in vec3 passVTan;
+in vec3 passUTan;
 
 out vec4 outColor;
 
@@ -172,7 +174,14 @@ void main()
 
 		vec4 diffuseLight = uAmbientLight;
 		vec4 specularLight = vec4(0.0, 0.0, 0.0, 1.0);
-		vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(passNormal, 0.0)));
+		//vec3 tmpNormal = passNormal;
+		vec4 normalPolygonSpace = texture(uNormalMap, passTexCoords);
+		vec3 tmpNormal = vec3(
+			dot(passVTan, normalPolygonSpace.x),
+			dot(passUTan, normalPolygonSpace.y),
+			dot(passNormal, normalPolygonSpace.z)
+		);
+		vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(tmpNormal, 0.0)));
 
 		int i;
 		for (i=0; i<uNumDirLights; i++)
