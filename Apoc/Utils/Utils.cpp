@@ -35,6 +35,8 @@
 
 using namespace std;
 
+extern float apocRenderTime;		// Main.cpp
+
 void ApocFailImpl(string filename, int line, string msg)
 {
 	SDL_Quit();
@@ -46,4 +48,14 @@ void ApocFailImpl(string filename, int line, string msg)
 	cerr << ss.str() << endl;
 #endif
 	exit(1);
+};
+
+float ApocGetRenderTime()
+{
+	return apocRenderTime;
+};
+
+float ApocGetFPS()
+{
+	return 1.0/apocRenderTime;
 };
