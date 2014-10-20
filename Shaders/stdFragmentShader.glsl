@@ -24,7 +24,7 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#version 150
+#version 330
 uniform sampler2D uSampler;
 
 uniform vec4 uAmbientLight;
