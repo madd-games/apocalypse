@@ -59,6 +59,8 @@ void ApocMoveMouse(int x, int y)
 	SDL_WarpMouseInWindow(apocWindow, x, y);
 };
 
+float apocRenderTime;		// used by ApocGetRenderTime() and ApocGetFPS() in Apoc/Utils/Utils.cpp
+
 int main(int argc, char *argv[])
 {
 #ifdef CLIENT
@@ -157,10 +159,12 @@ int main(int argc, char *argv[])
 
 	SDL_Event event;
 	bool quit = false;
-	unsigned long lastTicks = SDL_GetTicks();
+	unsigned long lastTicks;
 	game->onGameStart();
 	while (!quit)
 	{
+		lastTicks = SDL_GetTicks();
+		
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)
@@ -194,6 +198,9 @@ int main(int argc, char *argv[])
 		World::update();
 		apocRenderHandler->render();
 
+		// Measure the time needed to render this frame.
+		apocRenderTime = (float)(SDL_GetTicks() - lastTicks) / 1000.0;
+		
 		glFlush();
 		SDL_GL_SwapWindow(apocWindow);
 	};
