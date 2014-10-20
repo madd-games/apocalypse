@@ -28,6 +28,11 @@
 #include <Apoc/Utils/Utils.h>
 #include <Apoc/Math/Vector.h>
 
+#include <iostream>
+#include <stdlib.h>
+
+using namespace std;
+
 Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), data(vertices)
 {
 	if (count == 0)
@@ -57,7 +62,6 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), dat
 	};
 
 	// compute the tangents for each triangle.
-	int i;
 	for (i=0; i<count; i+=3)
 	{
 		Vector &v0 = vertices[i+0].pos;
@@ -73,11 +77,11 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), dat
 		
 		Vector deltaUV1 = uv1 - uv0;
 		Vector deltaUV2 = uv2 - uv0;
-		
+
 		float r = 1.0f / (deltaUV1.x() * deltaUV2.y() - deltaUV1.y() * deltaUV2.x());
-		Vector vtan = (deltaPos2 * deltaUV1.x() - deltaPos1 * deltaUV2.x())*r;
-		Vector utan = (deltaPos1 * deltaUV2.y() - deltaPos2 * deltaUV1.y())*r;
-		
+		Vector vtan = (deltaPos1 * deltaUV2.y() - deltaPos2 * deltaUV1.y())*r;
+		Vector utan = (deltaPos2 * deltaUV1.x() - deltaPos1 * deltaUV2.x())*r;
+
 		int j;
 		for (j=0; j<3; j++)
 		{
@@ -90,7 +94,7 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), dat
 	apocRenderHandler->getAttrLocations(attrVertex, attrTexCoords, attrNormal);
 	attrVTan = apocRenderHandler->getAttrLocation("inVTan");
 	attrUTan = apocRenderHandler->getAttrLocation("inUTan");
-	
+
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 

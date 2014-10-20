@@ -65,7 +65,11 @@ void World::render(bool setMatrix)
 	{
 		GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
 		GLint uEyePos = apocRenderHandler->getUniformLocation("uEyePos");
-		Vector eye = camera->getEye();
+		Vector eye = Vector::Origin;
+		if (camera != NULL)
+		{
+			eye = camera->getEye();
+		};
 		glUniform4fv(uEyePos, 1, &eye[0]);
 
 		Matrix viewMatrix;
