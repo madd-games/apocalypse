@@ -51,6 +51,7 @@ private:
 	// default textures
 	GLuint defImageTex;
 	GLuint defSpecularMap;
+	GLuint defNormalMap;
 
 	int screenWidth, screenHeight;
 
