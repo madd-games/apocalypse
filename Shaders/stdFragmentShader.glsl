@@ -43,6 +43,9 @@ uniform vec4 uEyePos;
 // The specular map sampler.
 uniform sampler2D uSpecularMap;
 
+// The normal map sampler.
+uniform sampler2D uNormalMap;
+
 // Directional lights
 // Each light is specified by 3 texels:
 // the light's direction, the diffuse component, and the specular component.
