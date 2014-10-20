@@ -5,6 +5,10 @@
 from material import parseMaterialFile
 import sys, os
 
+# Returns the cross product of 2 vectors, passed as 3-tuples, as a 3-tuple.
+def crossProduct(a, b):
+	return (a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0])
+
 def compileModel(inFileName, outFileName, modelName, textureNames):
 	vertices = []
 	texCoords = []
