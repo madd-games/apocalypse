@@ -56,9 +56,11 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), dat
 		};
 	};
 
-	GLint attrVertex, attrTexCoords, attrNormal;
+	GLint attrVertex, attrTexCoords, attrNormal, attrVTan, attrUTan;
 	apocRenderHandler->getAttrLocations(attrVertex, attrTexCoords, attrNormal);
-
+	attrVTan = apocRenderHandler->getAttrLocation("inVTan");
+	attrUTan = apocRenderHandler->getAttrLocation("inUTan");
+	
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
@@ -69,10 +71,14 @@ Model::Model(Model::Vertex *vertices, const int count) : vertexCount(count), dat
 	glEnableVertexAttribArray(attrVertex);
 	glEnableVertexAttribArray(attrTexCoords);
 	glEnableVertexAttribArray(attrNormal);
-
+	glEnableVertexAttribArray(attrVTan);
+	glEnableVertexAttribArray(attrUTan);
+	
 	glVertexAttribPointer(attrVertex, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, pos));
 	glVertexAttribPointer(attrTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, texCoords));
 	glVertexAttribPointer(attrNormal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, normal));
+	glVertexAttribPointer(attrVTan, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, vtan));
+	glVertexAttribPointer(attrUTan, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Model::Vertex, utan));
 };
 
 Model::~Model()
