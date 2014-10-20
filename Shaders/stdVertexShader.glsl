@@ -37,6 +37,8 @@ uniform int uIsParticle;
 in vec4 inVertex;
 in vec2 inTexCoords;
 in vec3 inNormal;
+in vec3 inVTan;
+in vec3 inUTan;
 in int inPartPosIndex;		// only used for particles.
 
 out vec2 passTexCoords;
@@ -44,6 +46,8 @@ out vec3 passNormal;
 out vec4 passVertex;
 out vec4 passShadowCoord;
 out vec4 passFragCoord;
+out vec3 passVTan;
+out vec3 passUTan;
 
 void main()
 {
@@ -51,6 +55,8 @@ void main()
 	passTexCoords = inTexCoords;
 	passNormal = inNormal;
 	passShadowCoord = uLightMatrix * uModelMatrix * uObjectMatrix * inVertex;
+	passVTan = inVTan;
+	passUTan = inUTan;
 	vec4 fragCoord = uProjectionMatrix * uViewMatrix * uModelMatrix * uObjectMatrix * inVertex;
 	if (uIsParticle == 1)
 	{
