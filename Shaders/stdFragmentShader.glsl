@@ -136,8 +136,7 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 	vec4 lightToPoint = passVertex - getPointLight(i);
 	vec3 lightDir = -normalize(lightToPoint.xyz);
 
-	float len = length(lightToPoint);
-	float factor = 1.0 / (len*len);
+	float factor = 1.0 / (dot(lightToPoint, lightToPoint));
 
 	float NdotL = max(dot(normal, lightDir), 0.0);
 	vec4 specular = vec4(0.0);
