@@ -54,6 +54,8 @@ public:
 		Vector pos;
 		Vector texCoords;
 		Vector normal;
+		Vector vtan;
+		Vector utan;
 	};
 	Vertex *data;
 
