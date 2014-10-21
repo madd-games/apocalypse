@@ -29,8 +29,7 @@ by Python using the `build.py` script, which has the following usage:
 
 The only target supported right now is `client`, which is also the default. There are a few available options:
 
-* `--no-cl` stops the engine from using any OpenCL, even if the host supports it. Please note that if no OpenCL SDK
-  is found, then OpenCL support is also automatically excluded.
+* `--enable-cl` tells the engine to use the EXPERIMENTAL OpenCL support if possible. Currently not recommended.
 
 * `--host=` specifies what operating system the engine shall be built for. This causes cross-compilation.
 

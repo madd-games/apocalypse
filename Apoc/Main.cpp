@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
 		apocRenderHandler->render();
 
 		// Measure the time needed to render this frame.
-		apocRenderTime = (float)(SDL_GetTicks() - lastTicks) / 1000.0;
+		if (!quit) apocRenderTime = (float)(SDL_GetTicks() - lastTicks) / 1000.0;
 		
 		glFlush();
 		SDL_GL_SwapWindow(apocWindow);
@@ -213,5 +213,9 @@ int main(int argc, char *argv[])
 	SDL_DestroyWindow(apocWindow);
 	SDL_Quit();
 #endif
+
+	cout << "[APOC] Last render time: " << apocRenderTime << endl;
+	cout << "[APOC] Therefore last FPS: " << (1.0/apocRenderTime) << endl;
+
 	return 0;
 };

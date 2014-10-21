@@ -38,7 +38,7 @@ def checkForOpenCL(cpp_compiler):
 	f.write("#endif\n")
 	f.close()
 
-	opencl_enable = ((os.system("%s -c temp.cpp -o temp.o >/dev/null 2>&1" % cpp_compiler) == 0) and ("--no-cl" not in sys.argv))
+	opencl_enable = ((os.system("%s -c temp.cpp -o temp.o >/dev/null 2>&1" % cpp_compiler) == 0) and ("--enable-cl" in sys.argv))
 	if opencl_enable:
 		print "--OpenCL enabled"
 	else:
