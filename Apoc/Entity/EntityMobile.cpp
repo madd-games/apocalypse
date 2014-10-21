@@ -29,7 +29,8 @@
 #include <math.h>
 
 EntityMobile::EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref)
-	: Entity(defs), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0)
+	: Entity(defs), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
+	  forward(false), backwards(false), left(false), right(false)
 {
 	ticks = SDL_GetTicks();
 };

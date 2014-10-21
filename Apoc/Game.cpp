@@ -50,11 +50,11 @@ void Game::onMouseMove()
 
 void Game::getScreenSize(int &width, int &height)
 {
-	width = 1366;
-	height = 768;
+	width = 640;
+	height = 480;
 };
 
 bool Game::isFullscreen()
 {
-	return true;
+	return false;
 };
