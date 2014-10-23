@@ -28,8 +28,8 @@
 #include <SDL.h>
 #include <math.h>
 
-EntityMobile::EntityMobile(Model::ObjDef *defs, Vector eye, Vector ref)
-	: Entity(defs), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
+EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref)
+	: EntityPhysics(defs, mass), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
 	  forward(false), backwards(false), left(false), right(false)
 {
 	ticks = SDL_GetTicks();
@@ -76,6 +76,8 @@ void EntityMobile::moveCamera(float deltaTheta, float deltaPhi)
 
 void EntityMobile::update()
 {
+	EntityPhysics::update();
+
 	float speed = 0.015 * (SDL_GetTicks() - ticks);
 	if (forward || backwards || left || right)
 	{

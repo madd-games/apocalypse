@@ -37,7 +37,17 @@ extern RenderHandler *apocRenderHandler;
 vector<Entity*> World::entities;
 vector<Entity*> World::addQueue;
 vector<Emitter*> World::emitters;
+vector<Field*> World::fields;
 Camera *World::camera = NULL;
+
+void World::ActFields(EntityPhysics *phe, int dt)
+{
+	vector<Field*>::iterator it;
+	for (it=fields.begin(); it!=fields.end(); ++it)
+	{
+		(*it)->actOn(phe, dt);
+	};
+};
 
 void World::addEntity(Entity *entity)
 {
@@ -121,4 +131,9 @@ void World::setCamera(Camera *camera)
 void World::addEmitter(Emitter *emitter)
 {
 	emitters.push_back(emitter);
+};
+
+void World::addField(Field *field)
+{
+	fields.push_back(field);
 };

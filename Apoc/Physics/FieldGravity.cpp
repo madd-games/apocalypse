@@ -24,50 +24,13 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_MOBILE_H
-#define APOC_ENTITY_MOBILE_H
+#include <Apoc/Physics/FieldGravity.h>
 
-#include <Apoc/Entity/EntityPhysics.h>
-#include <Apoc/Video/Camera.h>
-#include <Apoc/Math/Vector.h>
-
-/**
- * \brief Mobile entities ("mobs").
- */
-class EntityMobile : public EntityPhysics, public Camera
+FieldGravity::FieldGravity(Vector acc) : acceleration(acc)
 {
-private:
-	Vector eyePos;
-	Vector eyeRef;
-	float theta, phi;
-	unsigned long ticks;
-	Vector getEyeDelta();
-	float deltaFactor;
-
-public:
-	bool forward, backwards, left, right;
-
-	/**
-	 * \brief Constructor.
-	 * \param defs The object definitions, passed to the constructor of Entity.
-	 * \param eye The position of the eye in model space.
-	 * \param ref The point of reference in model space.
-	 */
-	EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref);
-
-	virtual Vector getEye();
-	virtual Vector getRef();
-	virtual Vector getUpVector();
-
-	/**
-	 * \brief Moves the camera.
-	 */
-	void moveCamera(float deltaTheta, float deltaPhi);
-
-	/**
-	 * \brief Update the position of the entity according to params.
-	 */
-	virtual void update();
 };
 
-#endif
+void FieldGravity::actOn(EntityPhysics *phe, int dt)
+{
+	phe->applyImpulse(acceleration * phe->getMass() * (float) dt);
+};

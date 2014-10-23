@@ -24,76 +24,29 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_WORLD_H
-#define APOC_ENTITY_WORLD_H
+#ifndef APOC_PHYSICS_FIELD_H
+#define APOC_PHYSICS_FIELD_H
 
-#include <Apoc/Entity/Entity.h>
-#include <Apoc/Video/Camera.h>
-#include <Apoc/Particles/Emitter.h>
-#include <Apoc/Physics/Field.h>
+#include <Apoc/Math/Vector.h>
 #include <Apoc/Entity/EntityPhysics.h>
 
-#include <vector>
-
-using namespace std;
-
 /**
- * \brief Describes the world.
+ * \brief Describes force fields.
+ *
+ * You can add force fields to the world to simulate things like wind, gravity,
+ * anti-gravity or whatever weird stuff you come up with. As long as you can describe
+ * your imaginations with a function that takes an EntityPhysics and returns a force
+ * vector.
  */
-class World
+class Field
 {
-private:
-	static vector<Entity*> entities;
-	static vector<Entity*> addQueue;
-	static vector<Emitter*> emitters;
-	static vector<Field*> fields;
-	static Camera *camera;
-
-	// Make all the fields act on an EntityPhysics.
-	static void ActFields(EntityPhysics *phe, int dt);
-
 public:
 	/**
-	 * \brief Add an entity to the world.
-	 *
-	 * It will appear in the entity list on the next update.
+	 * \brief Evaluate the field function for this EntityPhysics.
+	 * \param phe The EntityPhysics.
+	 * \param dt Difference in time since last update (in milliseconds).
 	 */
-	static void addEntity(Entity *ent);
-
-	/**
-	 * \brief Updates the world.
-	 *
-	 * This function basically calls the update() method of every Entity.
-	 */
-	static void update();
-
-	/**
-	 * \brief Render the world.
-	 */
-	static void render(bool setMatrix = true);
-
-	/**
-	 * \brief Render the particles.
-	 */
-	static void renderParticles();
-
-	/**
-	 * \brief Set the Camera.
-	 */
-	static void setCamera(Camera *camera);
-
-	/**
-	 * \brief Add an emitter to the world.
-	 */
-	static void addEmitter(Emitter *emitter);
-
-	/**
-	 * \brief Add a force field to the world.
-	 */
-	static void addField(Field *field);
-
-	friend class Entity;
-	friend class EntityPhysics;
+	virtual void actOn(EntityPhysics *phe, int dt) = 0;
 };
 
 #endif

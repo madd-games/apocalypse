@@ -24,76 +24,38 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_WORLD_H
-#define APOC_ENTITY_WORLD_H
+#ifndef APOC_PHYSICS_FIELD_WIND_H
+#define APOC_PHYSICS_FIELD_WIND_H
 
-#include <Apoc/Entity/Entity.h>
-#include <Apoc/Video/Camera.h>
-#include <Apoc/Particles/Emitter.h>
 #include <Apoc/Physics/Field.h>
-#include <Apoc/Entity/EntityPhysics.h>
-
-#include <vector>
-
-using namespace std;
+#include <Apoc/Math/Vector.h>
 
 /**
- * \brief Describes the world.
+ * \brief The wind field.
+ *
+ * The wind field applies a single force to all objects in the world, and can also be changed
+ * dynamically. Unlike FieldGravity, it will applies a constant <i>force</i> (mass * acceleration),
+ * rather than a constant acceleration - meaning that heavier objects are less affected by the
+ * wind.
  */
-class World
+class FieldWind : public Field
 {
 private:
-	static vector<Entity*> entities;
-	static vector<Entity*> addQueue;
-	static vector<Emitter*> emitters;
-	static vector<Field*> fields;
-	static Camera *camera;
-
-	// Make all the fields act on an EntityPhysics.
-	static void ActFields(EntityPhysics *phe, int dt);
+	Vector force;
 
 public:
 	/**
-	 * \brief Add an entity to the world.
-	 *
-	 * It will appear in the entity list on the next update.
+	 * \brief Constructor.
+	 * \param force The initial force of the wind.
 	 */
-	static void addEntity(Entity *ent);
+	FieldWind(Vector force);
 
 	/**
-	 * \brief Updates the world.
-	 *
-	 * This function basically calls the update() method of every Entity.
+	 * \brief Change the force of the wind.
 	 */
-	static void update();
+	void setForce(Vector force);
 
-	/**
-	 * \brief Render the world.
-	 */
-	static void render(bool setMatrix = true);
-
-	/**
-	 * \brief Render the particles.
-	 */
-	static void renderParticles();
-
-	/**
-	 * \brief Set the Camera.
-	 */
-	static void setCamera(Camera *camera);
-
-	/**
-	 * \brief Add an emitter to the world.
-	 */
-	static void addEmitter(Emitter *emitter);
-
-	/**
-	 * \brief Add a force field to the world.
-	 */
-	static void addField(Field *field);
-
-	friend class Entity;
-	friend class EntityPhysics;
+	virtual void actOn(EntityPhysics *phe, int dt);
 };
 
 #endif

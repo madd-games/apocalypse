@@ -24,76 +24,63 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_ENTITY_WORLD_H
-#define APOC_ENTITY_WORLD_H
+#ifndef APOC_ENTITY_PHYSICS_H
+#define APOC_ENTITY_PHYSICS_H
 
 #include <Apoc/Entity/Entity.h>
-#include <Apoc/Video/Camera.h>
-#include <Apoc/Particles/Emitter.h>
-#include <Apoc/Physics/Field.h>
-#include <Apoc/Entity/EntityPhysics.h>
-
-#include <vector>
-
-using namespace std;
+#include <Apoc/Math/Vector.h>
 
 /**
- * \brief Describes the world.
+ * \brief Base class for entities which experience physics.
  */
-class World
+class EntityPhysics : public Entity
 {
 private:
-	static vector<Entity*> entities;
-	static vector<Entity*> addQueue;
-	static vector<Emitter*> emitters;
-	static vector<Field*> fields;
-	static Camera *camera;
+	Vector velocity;
+	unsigned int phTimer;
+	float phMass;
+	Vector angularVelocity;
+	float restitution;
 
-	// Make all the fields act on an EntityPhysics.
-	static void ActFields(EntityPhysics *phe, int dt);
+protected:
+	/**
+	 * \brief Sets the coefficient of restitution for this entity.
+	 * \param rest The coefficient of restitution.
+	 *
+	 * The coefficient of restitution is the ratio between the speed after collision
+	 * and the speed before collision.
+	 */
+	void setRestitution(float rest);
 
 public:
 	/**
-	 * \brief Add an entity to the world.
-	 *
-	 * It will appear in the entity list on the next update.
+	 * \brief Construct the entity.
+	 * \sa Entity
 	 */
-	static void addEntity(Entity *ent);
+	EntityPhysics(Model::ObjDef *defs, float mass = 1.0);
+
+	virtual void update();
 
 	/**
-	 * \brief Updates the world.
-	 *
-	 * This function basically calls the update() method of every Entity.
+	 * \brief Returns the mass of this physics entity.
 	 */
-	static void update();
+	float getMass();
 
 	/**
-	 * \brief Render the world.
+	 * \brief Applies an impulse to the entity.
+	 * \param impulse The force to apply (<i><b>F</b> = m<b>a</b></i>).
 	 */
-	static void render(bool setMatrix = true);
+	void applyImpulse(Vector force);
 
 	/**
-	 * \brief Render the particles.
+	 * \brief Returns the velocity of this entity.
 	 */
-	static void renderParticles();
+	Vector getVelocity();
 
 	/**
-	 * \brief Set the Camera.
+	 * \brief Returns the center of this entity.
 	 */
-	static void setCamera(Camera *camera);
-
-	/**
-	 * \brief Add an emitter to the world.
-	 */
-	static void addEmitter(Emitter *emitter);
-
-	/**
-	 * \brief Add a force field to the world.
-	 */
-	static void addField(Field *field);
-
-	friend class Entity;
-	friend class EntityPhysics;
+	Vector getCenter();
 };
 
 #endif
