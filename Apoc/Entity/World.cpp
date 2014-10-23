@@ -63,9 +63,19 @@ void World::update()
 	};
 	addQueue.clear();
 
-	for (it=entities.begin(); it!=entities.end(); ++it)
+	it = entities.begin();
+	while (it != entities.end())
 	{
 		(*it)->update();
+		if ((*it)->shouldRemove)
+		{
+			delete (*it);
+			it = entities.erase(it);
+		}
+		else
+		{
+			it++;
+		};
 	};
 };
 

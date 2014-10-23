@@ -73,6 +73,9 @@ private:
 	bool bbDirty;
 	void unmangleVectors(Vector &a, Vector &b);
 
+	// true if the entity is to be removed after the next update.
+	bool shouldRemove;
+
 protected:
 	/**
 	 * \brief Transform the entity or a single object with a matrix.
@@ -122,6 +125,14 @@ protected:
 	 * \sa Matrix::Rotate
 	 */
 	void rotate(float x, float y, float z, const char *objName = "");
+
+	/**
+	 * \brief Mark the entity for removal.
+	 *
+	 * The entity will actually be deleted after the next call to update() - if it is marked
+	 * for removal during a call to update(), then it will be deleted as soon as update() returns.
+	 */
+	void markForRemoval();
 
 public:
 	/**

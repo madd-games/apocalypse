@@ -33,7 +33,7 @@
 
 extern RenderHandler *apocRenderHandler;
 
-Entity::Entity(Model::ObjDef *defs) : bbDirty(true)
+Entity::Entity(Model::ObjDef *defs) : bbDirty(true), shouldRemove(false)
 {
 	modelMatrix = Matrix::Identity();
 
@@ -170,6 +170,11 @@ void Entity::translate(Vector vec, const char *objName)
 void Entity::rotate(float x, float y, float z, const char *objName)
 {
 	preTransform(objName, Matrix::Rotate(x, y, z));
+};
+
+void Entity::markForRemoval()
+{
+	shouldRemove = true;
 };
 
 void Entity::unmangleVectors(Vector &a, Vector &b)
