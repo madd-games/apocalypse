@@ -126,7 +126,7 @@ void World::render(bool setMatrix)
 void World::renderParticles()
 {
 	vector<Emitter*>::iterator eit = emitters.begin();
-	while (eit != emitters.end());
+	while (eit != emitters.end())
 	{
 		(*eit)->update();
 		if ((*eit)->shouldRemove)
@@ -137,7 +137,7 @@ void World::renderParticles()
 		else
 		{
 			(*eit)->render();
-			eit++;
+			++eit;
 		};
 	};
 };
