@@ -92,6 +92,7 @@ public:
 	} __attribute__ ((packed));
 
 private:
+	bool shouldRemove;
 	vector<Particle> particles;
 	GLuint vao;
 	GLuint vboMesh;
@@ -113,6 +114,11 @@ protected:
 	 * By default, this function shall apply the velocity and acceleration.
 	 */
 	virtual void updateInSoftware(Particle &part);
+
+	/**
+	 * \brief Mark the emitter for removal.
+	 */
+	virtual void markForRemoval();
 
 public:
 	/**
@@ -140,6 +146,8 @@ public:
 	 * \brief Render the particles.
 	 */
 	void render();
+
+	friend class World;
 };
 
 #endif

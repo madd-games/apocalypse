@@ -125,11 +125,20 @@ void World::render(bool setMatrix)
 
 void World::renderParticles()
 {
-	vector<Emitter*>::iterator eit;
-	for (eit=emitters.begin(); eit!=emitters.end(); ++eit)
+	vector<Emitter*>::iterator eit = emitters.begin();
+	while (eit != emitters.end());
 	{
 		(*eit)->update();
-		(*eit)->render();
+		if ((*eit)->shouldRemove)
+		{
+			delete (*eit);
+			eit = emitters.erase(eit);
+		}
+		else
+		{
+			(*eit)->render();
+			eit++;
+		};
 	};
 };
 

@@ -41,7 +41,7 @@ extern cl_context p_context;
 
 Emitter::Emitter(int count, Vector origin, Vector minVelocity, Vector maxVelocity, Vector acceleration, int minAge, int maxAge,
 		const char *texName)
-	: spawnDT(10)
+	: spawnDT(10), shouldRemove(false)
 {
 	tex = Texture::Get(texName);
 	emitterSpawnTime = (int) SDL_GetTicks();
@@ -140,6 +140,11 @@ void Emitter::updateInSoftware(Particle &part)
 		};
 	};
 	part.lastUpdate = (int) SDL_GetTicks();
+};
+
+void Emitter::markForRemoval()
+{
+	shouldRemove = true;
 };
 
 void Emitter::update()
