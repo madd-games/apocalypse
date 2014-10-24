@@ -37,7 +37,6 @@ class EntityPhysics : public Entity
 {
 private:
 	Vector velocity;
-	unsigned int phTimer;
 	float phMass;
 	Vector angularVelocity;
 	float restitution;

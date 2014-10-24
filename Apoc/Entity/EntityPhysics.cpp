@@ -25,14 +25,13 @@
 */
 
 #include <Apoc/Entity/EntityPhysics.h>
-#include <SDL.h>
+#include <Apoc/Utils/Utils.h>
 #include <Apoc/Entity/World.h>
 
 EntityPhysics::EntityPhysics(Model::ObjDef *defs, float mass)
 	: Entity(defs), velocity(0, 0, 0, 0), phMass(mass), angularVelocity(0, 0, 0, 0),
 	  restitution(0.0)
 {
-	phTimer = SDL_GetTicks();
 };
 
 void EntityPhysics::setRestitution(float rest)
@@ -42,7 +41,7 @@ void EntityPhysics::setRestitution(float rest)
 
 void EntityPhysics::update()
 {
-	int dt = SDL_GetTicks() - phTimer;
+	int dt = ApocGetDeltaTime();
 	World::ActFields(this, dt);
 	Entity *collide = move(velocity * dt);
 	if (collide != NULL)
@@ -70,7 +69,6 @@ void EntityPhysics::update()
 		};
 	};
 	rotate(angularVelocity.x(), angularVelocity.y(), angularVelocity.z());
-	phTimer = SDL_GetTicks();
 };
 
 float EntityPhysics::getMass()

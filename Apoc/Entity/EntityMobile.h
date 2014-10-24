@@ -40,7 +40,6 @@ private:
 	Vector eyePos;
 	Vector eyeRef;
 	float theta, phi;
-	unsigned long ticks;
 	Vector getEyeDelta();
 	float deltaFactor;
 

@@ -24,22 +24,49 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/*! \file */
+
 #ifndef APOC_UTILS_UTILS_H
 #define APOC_UTILS_UTILS_H
-
-/** \file Some basic utility functions. */
 
 #include <string>
 #include <iostream>
 
 using namespace std;
 
+/**
+ * \brief Reports an engine crash.
+ * \param x The error message.
+ */
 #define ApocFail(x) ApocFailImpl(__FILE__, __LINE__, (x))
 
+/*! \cond */
 void ApocFailImpl(string filename, int line, string msg);
+/*! \endcond */
+
+/**
+ * \brief Change the mouse positition relative to the window.
+ *
+ * Please note that (0, 0) is the top-left corner of the window.
+ */
 void ApocMoveMouse(int x, int y);
 
+/**
+ * \brief Return the time it took to render the last frame.
+ */
 float ApocGetRenderTime();
+
+/**
+ * \brief Returns the FPS.
+ *
+ * This is the number of frames that would be rendered in one second assuming that
+ * the rendering would be the same speed as the last frame rendered.
+ */
 float ApocGetFPS();
+
+/**
+ * \brief Return the difference in time since the last frame in milliseconds.
+ */
+int ApocGetDeltaTime();
 
 #endif

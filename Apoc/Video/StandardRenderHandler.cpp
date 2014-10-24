@@ -38,7 +38,6 @@
 
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
-unsigned long tmpTimer;
 float lmatheight = -0.3;
 
 const float defImageTexData[] = {
@@ -57,7 +56,6 @@ const float defNormalMapData[] = {
 StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	: numDirLights(0), numPointLights(0), screenWidth(screenWidth), screenHeight(screenHeight)
 {
-	tmpTimer = SDL_GetTicks();
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 
 	// set up the directional light array buffer.
@@ -139,12 +137,6 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 
 void StandardRenderHandler::render()
 {
-	if ((SDL_GetTicks()-tmpTimer) > 100)
-	{
-		//lmatheight -= 0.01;
-		tmpTimer = SDL_GetTicks();
-	};
-
 	Matrix view = Matrix::LookAt(
 		Vector(0.0, lmatheight, -1.0),
 		Vector(0.0, 1.0, 0.0),

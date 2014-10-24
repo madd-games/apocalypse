@@ -59,3 +59,8 @@ float ApocGetFPS()
 {
 	return 1.0/apocRenderTime;
 };
+
+int ApocGetDeltaTime()
+{
+	return (int)(apocRenderTime * 1000.0);
+};
