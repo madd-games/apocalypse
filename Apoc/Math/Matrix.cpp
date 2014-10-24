@@ -32,6 +32,10 @@
 
 using namespace std;
 
+#ifdef __GNUC__
+Matrix::Mask Matrix::MaskTranspose = {0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15};
+#endif
+
 float Matrix::Minor(Matrix &mat, int order)
 {
 	if (order == 2)
@@ -63,6 +67,9 @@ float Matrix::Minor(Matrix &mat, int order)
 
 Matrix::Matrix()
 {
+#ifdef __GNUC__
+	natColumns = (NativeMatrix*) &columns[0][0];
+#endif
 };
 
 Matrix::Matrix(const Matrix &mat)
@@ -72,6 +79,9 @@ Matrix::Matrix(const Matrix &mat)
 	{
 		columns[i] = mat.columns[i];
 	};
+#ifdef __GNUC__
+	natColumns = (NativeMatrix*) &columns[0][0];
+#endif
 };
 
 Matrix& Matrix::operator=(Matrix mat)
@@ -93,6 +103,9 @@ Vector& Matrix::operator[](int i)
 Matrix Matrix::transpose()
 {
 	Matrix out;
+#ifdef __GNUC__
+	*out.natColumns = __builtin_shuffle(*natColumns, MaskTranspose);
+#else
 	int i, j;
 	for (i=0; i<4; i++)
 	{
@@ -101,6 +114,7 @@ Matrix Matrix::transpose()
 			out[i][j] = columns[j][i];
 		};
 	};
+#endif
 	
 	return out;
 };

@@ -38,6 +38,12 @@ using namespace std;
 class Matrix
 {
 private:
+#ifdef __GNUC__
+	typedef float NativeMatrix __attribute__ ((vector_size(sizeof(float)*4*4)));
+	typedef int   Mask         __attribute__ ((vector_size(sizeof(int)*4*4)));
+	static Mask MaskTranspose;
+	NativeMatrix *natColumns;
+#endif
 	Vector columns[4];
 	static float Minor(Matrix &mat, int order);
 
