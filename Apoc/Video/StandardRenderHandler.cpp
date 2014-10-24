@@ -144,7 +144,6 @@ void StandardRenderHandler::render()
 	);
 	lightMatrix = Matrix::Ortho(20, -20, 20, -20, -20, 10) * view;
 
-	//glDepthFunc(GL_LESS);
 	glUniform1i(getUniformLocation("uIsParticle"), 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFramebuffer);
@@ -157,11 +156,9 @@ void StandardRenderHandler::render()
 	glUniformMatrix4fv(getUniformLocation("uProjectionMatrix"), 1, GL_FALSE, &identity[0][0]);
 	glUniformMatrix4fv(getUniformLocation("uViewMatrix"), 1, GL_FALSE, &lightMatrix[0][0]);
 	World::render(false);
-	//return;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, screenWidth, screenHeight);
-	//glUseProgram(renderProgram);
 	glDrawBuffer(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUniformMatrix4fv(getUniformLocation("uLightMatrix"), 1, GL_FALSE, &lightMatrix[0][0]);
