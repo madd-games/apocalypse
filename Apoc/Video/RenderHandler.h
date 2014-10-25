@@ -157,6 +157,11 @@ public:
 	 * \brief Binds all the defaults textures.
 	 */
 	virtual void bindDefaultTextures() = 0;
+
+	/**
+	 * \brief Sets the amount of ambient light.
+	 */
+	virtual void setAmbientLight(Vector ambient) = 0;
 };
 
 #endif

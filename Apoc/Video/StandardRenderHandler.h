@@ -36,6 +36,8 @@
 class StandardRenderHandler : public RenderHandler
 {
 private:
+	Vector ambient;
+
 	GLuint shadowFramebuffer;
 	GLuint shadowTex;
 
@@ -73,6 +75,7 @@ public:
 	virtual void setDirLights(DirLight *array, int count);
 	virtual void setPointLights(PointLight *array, int count);
 	virtual void bindDefaultTextures();
+	virtual void setAmbientLight(Vector ambient);
 };
 
 #endif

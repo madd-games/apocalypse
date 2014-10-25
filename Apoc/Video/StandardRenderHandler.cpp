@@ -54,7 +54,8 @@ const float defNormalMapData[] = {
 };
 
 StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
-	: numDirLights(0), numPointLights(0), screenWidth(screenWidth), screenHeight(screenHeight)
+	: numDirLights(0), numPointLights(0), screenWidth(screenWidth), screenHeight(screenHeight),
+	  ambient(0.1, 0.1, 0.1, 1.0)
 {
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 
@@ -144,6 +145,8 @@ void StandardRenderHandler::render()
 	);
 	lightMatrix = Matrix::Ortho(20, -20, 20, -20, -20, 10) * view;
 
+	Matrix identity = Matrix::Identity();
+
 	glUniform1i(getUniformLocation("uIsParticle"), 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFramebuffer);
@@ -152,7 +155,6 @@ void StandardRenderHandler::render()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glUniform1i(getUniformLocation("uIsShadowMap"), 1);
 	glDrawBuffer(GL_NONE);
-	Matrix identity = Matrix::Identity();
 	glUniformMatrix4fv(getUniformLocation("uProjectionMatrix"), 1, GL_FALSE, &identity[0][0]);
 	glUniformMatrix4fv(getUniformLocation("uViewMatrix"), 1, GL_FALSE, &lightMatrix[0][0]);
 	World::render(false);
@@ -163,7 +165,7 @@ void StandardRenderHandler::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUniformMatrix4fv(getUniformLocation("uLightMatrix"), 1, GL_FALSE, &lightMatrix[0][0]);
 	glUniform1i(getUniformLocation("uIsShadowMap"), 0);
-	glUniform4f(getUniformLocation("uAmbientLight"), 0.1, 0.1, 0.1, 1.0);
+	glUniform4fv(getUniformLocation("uAmbientLight"), 1, &ambient[0]);
 	glUniform1i(getUniformLocation("uDirLightArray"), 1);
 	glUniform1i(getUniformLocation("uPointLightArray"), 2);
 	glUniform1i(getUniformLocation("uShadowMap"), 3);
@@ -227,4 +229,9 @@ void StandardRenderHandler::bindDefaultTextures()
 	glBindTexture(GL_TEXTURE_2D, defSpecularMap);
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, defNormalMap);
+};
+
+void StandardRenderHandler::setAmbientLight(Vector ambient)
+{
+	this->ambient = ambient;
 };
