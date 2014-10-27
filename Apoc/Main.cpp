@@ -60,6 +60,7 @@ void ApocMoveMouse(int x, int y)
 };
 
 float apocRenderTime;		// used by ApocGetRenderTime() and ApocGetFPS() in Apoc/Utils/Utils.cpp
+int   apocDeltaTime;		// used by ApocGetDeltaTime()
 
 int main(int argc, char *argv[])
 {
@@ -203,6 +204,8 @@ int main(int argc, char *argv[])
 		
 		glFlush();
 		SDL_GL_SwapWindow(apocWindow);
+
+		apocDeltaTime = SDL_GetTicks() - lastTicks;
 	};
 
 #ifdef ENABLE_OPENCL

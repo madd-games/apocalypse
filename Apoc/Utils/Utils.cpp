@@ -36,6 +36,7 @@
 using namespace std;
 
 extern float apocRenderTime;		// Main.cpp
+extern int   apocDeltaTime;
 
 void ApocFailImpl(string filename, int line, string msg)
 {
@@ -62,5 +63,5 @@ float ApocGetFPS()
 
 int ApocGetDeltaTime()
 {
-	return (int)(apocRenderTime * 1000.0);
+	return apocDeltaTime;
 };
