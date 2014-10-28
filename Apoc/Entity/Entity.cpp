@@ -33,7 +33,7 @@
 
 extern RenderHandler *apocRenderHandler;
 
-Entity::Entity(Model::ObjDef *defs) : bbDirty(true), shouldRemove(false)
+Entity::Entity(Model::ObjDef *defs) : bbDirty(true), shouldRemove(false), isStatic(true)
 {
 	modelMatrix = Matrix::Identity();
 
@@ -101,6 +101,7 @@ void Entity::transform(string obj, Matrix mat)
 		objects[obj].matrix = mat * objects[obj].matrix;
 	};
 	bbDirty = true;
+	isStatic = false;
 };
 
 void Entity::preTransform(string obj, Matrix mat)
@@ -114,6 +115,7 @@ void Entity::preTransform(string obj, Matrix mat)
 		objects[obj].matrix = objects[obj].matrix * mat;
 	};
 	bbDirty = true;
+	isStatic = false;
 };
 
 Matrix Entity::getModelMatrix()
@@ -124,6 +126,11 @@ Matrix Entity::getModelMatrix()
 bool& Entity::visible(string name)
 {
 	return objects[name].visible;
+};
+
+bool& Entity::collideable(string name)
+{
+	return objects[name].collideable;
 };
 
 void Entity::update()

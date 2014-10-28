@@ -111,20 +111,40 @@ bool CollisionCheck::TriTri(Vector a0, Vector a1, Vector a2, Vector b0, Vector b
 		||	SegTri(a2, a0, b0, b1, b2);
 };
 
-bool CollisionCheck::Models(Matrix &mat0, Model *mod0, Matrix &mat1, Model *mod1)
+bool CollisionCheck::Models(Matrix &mat0, Model *mod0, Matrix &mat1, Model *mod1, bool trans)
 {
 	int i, j;
 	for (i=0; i<mod0->vertexCount; i+=3)
 	{
-		Vector a0 = mat0 * mod0->data[i+0].pos;
-		Vector a1 = mat0 * mod0->data[i+1].pos;
-		Vector a2 = mat0 * mod0->data[i+2].pos;
+		Vector a0, a1, a2;
+		if (trans)
+		{
+			a0 = mat0 * mod0->data[i+0].pos;
+			a1 = mat0 * mod0->data[i+1].pos;
+			a2 = mat0 * mod0->data[i+2].pos;
+		}
+		else
+		{
+			a0 = mod0->data[i+0].pos;
+			a1 = mod0->data[i+1].pos;
+			a2 = mod0->data[i+2].pos;
+		};
 
 		for (j=0; j<mod1->vertexCount; j+=3)
 		{
-			Vector b0 = mat1 * mod1->data[j+0].pos;
-			Vector b1 = mat1 * mod1->data[j+1].pos;
-			Vector b2 = mat1 * mod1->data[j+2].pos;
+			Vector b0, b1, b2;
+			if (trans)
+			{
+				b0 = mat1 * mod1->data[j+0].pos;
+				b1 = mat1 * mod1->data[j+1].pos;
+				b2 = mat1 * mod1->data[j+2].pos;
+			}
+			else
+			{
+				b0 = mod1->data[j+0].pos;
+				b1 = mod1->data[j+1].pos;
+				b2 = mod1->data[j+2].pos;
+			};
 
 			if (TriTri(a0, a1, a2, b0, b1, b2))
 			{
@@ -162,10 +182,11 @@ bool CollisionCheck::Entities(Entity *a, Entity *b)
 			{
 				if (itB->second.collideable)
 				{
-					Matrix mat1 = b->modelMatrix * itB->second.matrix;
+					Matrix mat1;
+					mat1 = b->modelMatrix * itB->second.matrix;
 					Model *mod1 = itB->second.model;
 
-					if (Models(mat0, mod0, mat1, mod1))
+					if (Models(mat0, mod0, mat1, mod1, (!a->isStatic) || (!b->isStatic)))
 					{
 						return true;
 					};

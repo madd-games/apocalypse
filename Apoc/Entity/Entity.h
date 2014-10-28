@@ -76,6 +76,8 @@ private:
 	// true if the entity is to be removed after the next update.
 	bool shouldRemove;
 
+	bool isStatic;
+
 protected:
 	/**
 	 * \brief Transform the entity or a single object with a matrix.
@@ -106,6 +108,15 @@ protected:
 	 * visible (the default), whereas when set to false, the object will not be drawn.
 	 */
 	bool& visible(string name);
+
+	/**
+	 * \brief Access an object's collideability property.
+	 * \param name The name of the object.
+	 *
+	 * This function returns a reference to a variable, which when set to true causes the object to be
+	 * collideable (the default), whereas when set to false, the object will not be collision tested.
+	 */
+	bool& collideable(string name);
 
 	/**
 	 * \brief Translate the entity with collision checking.

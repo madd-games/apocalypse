@@ -43,6 +43,9 @@ private:
 	Vector getEyeDelta();
 	float deltaFactor;
 
+protected:
+	float walkingSpeed;
+
 public:
 	bool forward, backwards, left, right;
 

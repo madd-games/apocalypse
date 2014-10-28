@@ -30,7 +30,7 @@
 
 EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref)
 	: EntityPhysics(defs, mass), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
-	  forward(false), backwards(false), left(false), right(false)
+	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015)
 {
 };
 
@@ -76,7 +76,7 @@ void EntityMobile::update()
 {
 	EntityPhysics::update();
 
-	float speed = 0.015 * ApocGetDeltaTime();
+	float speed = walkingSpeed * ApocGetDeltaTime();
 	if (forward || backwards || left || right)
 	{
 		deltaFactor += 0.007 * ApocGetDeltaTime();

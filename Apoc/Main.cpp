@@ -62,6 +62,8 @@ void ApocMoveMouse(int x, int y)
 float apocRenderTime;		// used by ApocGetRenderTime() and ApocGetFPS() in Apoc/Utils/Utils.cpp
 int   apocDeltaTime;		// used by ApocGetDeltaTime()
 
+extern Entity *entTest;
+
 int main(int argc, char *argv[])
 {
 #ifdef CLIENT
@@ -162,6 +164,7 @@ int main(int argc, char *argv[])
 	bool quit = false;
 	unsigned long lastTicks;
 	game->onGameStart();
+
 	while (!quit)
 	{
 		lastTicks = SDL_GetTicks();
@@ -198,6 +201,10 @@ int main(int argc, char *argv[])
 		game->update();
 		World::update();
 		apocRenderHandler->render();
+
+		while ((SDL_GetTicks() - lastTicks) < 2);		// cap the framerate
+									// jesus christ, this thing goes above 1000 FPS on an
+									// old laptop, what the fuck?
 
 		// Measure the time needed to render this frame.
 		if (!quit) apocRenderTime = (float)(SDL_GetTicks() - lastTicks) / 1000.0;

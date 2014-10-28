@@ -55,8 +55,9 @@ public:
 
 	/**
 	 * \brief Checks if 2 models are currently colliding when transformed by the specified matrices.
+	 * \param trans If false, the transformations are not applied and mat0 and mat1 are assumed to be identity.
 	 */
-	static bool Models(Matrix &mat0, Model *mod0, Matrix &mat1, Model *mod1);
+	static bool Models(Matrix &mat0, Model *mod0, Matrix &mat1, Model *mod1, bool trans = true);
 
 	/**
 	 * \brief Checks if 2 entities are currently colliding.

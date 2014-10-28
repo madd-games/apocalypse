@@ -63,5 +63,6 @@ float ApocGetFPS()
 
 int ApocGetDeltaTime()
 {
+	if (apocDeltaTime == 0) return 1;
 	return apocDeltaTime;
 };
