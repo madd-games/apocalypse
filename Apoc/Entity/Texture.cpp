@@ -27,6 +27,7 @@
 #include <Apoc/Entity/Texture.h>
 #include <Apoc/Video/OpenGL.h>
 #include <Apoc/Utils/Utils.h>
+#include <Apoc/Utils/Archive.h>
 
 map<string, Texture*> Texture::texMap;
 
@@ -38,7 +39,7 @@ void Texture::Init()
 	while (iter->name != NULL)
 	{
 		string name(iter->name);
-		texMap[name] = new Texture(iter->width, iter->height, iter->data, iter->allowMipmaps);
+		texMap[name] = new Texture(iter->width, iter->height, iter->filename, iter->allowMipmaps);
 		iter++;
 	};
 };
@@ -52,17 +53,23 @@ Texture* Texture::Get(string name)
 	return texMap[name];
 };
 
-Texture::Texture(const int width, const int height, const Texture::Texel *data, bool allowMipmaps)
+Texture::Texture(const int width, const int height, string filename, bool allowMipmaps)
 {
+	DataFile file(filename);
+	uint8_t *data = new uint8_t[width * height * 4];
+	file.read(data, width * height * 4);
+
 	glEnable(GL_TEXTURE_2D);		// work around AMD bugs, apparently.
 						// (idk, i have nVidia).
 	glGenTextures(1, &texObj);
 	glBindTexture(GL_TEXTURE_2D, texObj);
 	glTexStorage2D(GL_TEXTURE_2D, allowMipmaps ? 8:1, GL_RGBA8, width, height);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_FLOAT, data);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	delete data;
 };
 
 Texture::~Texture()

@@ -25,6 +25,7 @@
 */
 
 #include <Apoc/Video/OpenGL.h>
+#include <Apoc/Utils/Archive.h>
 #include <Apoc/Utils/Utils.h>
 #include <Apoc/Video/StandardRenderHandler.h>
 #include <Apoc/Entity/Model.h>
@@ -74,12 +75,21 @@ int main(int argc, char *argv[])
 
 	bool allowCL = true;
 	int i;
-	for (i=0; i<argc; i++)
+	for (i=1; i<argc; i++)
 	{
 		string str = argv[i];
 		if (str == "--no-cl")
 		{
 			allowCL = false;
+		}
+		else if (str.substr(str.size()-4, 4) == ".tar")
+		{
+			ApocAddToPath(str);
+		}
+		else
+		{
+			cerr << "[APOC] Unrecognised command-line option: " << str << endl;
+			return 1;
 		};
 	};
 

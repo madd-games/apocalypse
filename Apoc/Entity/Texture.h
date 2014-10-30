@@ -30,6 +30,7 @@
 #include <Apoc/Video/OpenGL.h>
 #include <map>
 #include <string>
+#include <inttypes.h>
 
 using namespace std;
 
@@ -58,7 +59,7 @@ public:
 	 */
 	struct Texel
 	{
-		float red, green, blue, alpha;
+		uint8_t red, green, blue, alpha;
 	};
 
 	/**
@@ -69,7 +70,7 @@ public:
 		const char *name;
 		int width;
 		int height;
-		const Texel *data;
+		const char *filename;
 		bool allowMipmaps;
 	};
 
@@ -77,9 +78,9 @@ public:
 	 * \brief Constructor.
 	 * \param width The width of the texture.
 	 * \param height The height of the texture.
-	 * \param data Texel data loaded by image.py.
+	 * \param filename Name of the texture file (in the path).
 	 */
-	Texture(const int width, const int height, const Texel *data, bool allowMipmaps = true);
+	Texture(const int width, const int height, string filename, bool allowMipmaps = true);
 
 	/**
 	 * \brief Destructor.

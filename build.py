@@ -41,6 +41,7 @@ if len(sys.argv) > 1:
 os.system("mkdir -p build-%s" % target)
 os.system("mkdir -p out")
 os.system("mkdir -p cpptemp")
+os.system("mkdir -p gdata")
 
 objectFiles = []
 
@@ -151,20 +152,28 @@ for i in range(0, len(textureNames)):
 	f.write("extern const Texture::Texel imgTexels_%d[];\n" % i)
 f.write("Texture::Map apocTextureMap[] = {\n")
 i = 0
+expectedContents = []
 for name in textureNames:
 	inFileName = name
-	outFileName = "cpptemp/tex%d.cpp" % i
+	#outFileName = "cpptemp/tex%d.cpp" % i
+	outFileName = "gdata/tex%d" % i
 	if name in dirtyTextures:
 		print ">Compile texture %s" % inFileName
-	width, height = compileImage(inFileName, outFileName, str(i), name not in dirtyTextures)
+	width, height = compileImage(inFileName, outFileName, str(i), (name not in dirtyTextures) and os.path.exists(outFileName))
 	allowMipmaps = "true"
 	if inFileName.startswith("Game/Images"):
 		allowMipmaps = "false"
-	f.write("\t{\"%s\", %d, %d, imgTexels_%d, %s},\n" % (name, width, height, i, allowMipmaps))
+	f.write("\t{\"%s\", %d, %d, \"gdata/tex%d\", %s},\n" % (name, width, height, i, allowMipmaps))
+	expectedContents.append("tex%d" % i)
 	i += 1
 f.write("\t{NULL, 0, 0, NULL}\n")
 f.write("};")
 f.close()
+
+for filename in os.listdir("gdata"):
+	if filename not in expectedContents:
+		print ">Delete gdata/%s" % filename
+		os.system("rm gdata/%s" % filename)
 
 listfiles("cpptemp")
 
@@ -223,4 +232,7 @@ f.write("\t@$(CXX) -o $@ $(OBJFILES) $(LDFLAGS)\n")
 f.write("\n".join(rules))
 f.close()
 
+print ">Package data as out/%s.tar" % target
+if os.system("tar -cf out/%s.tar gdata" % target) != 0:
+	print "!BUILD FAILED!"
 sys.exit(os.system("make -f build.mk"))
