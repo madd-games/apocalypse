@@ -211,7 +211,8 @@ void main()
 		specularLight.w = 1.0;
 		vec4 color = texture(uSampler, passTexCoords) * diffuseLight
 				+ texture(uSpecularMap, passTexCoords) * specularLight;
-		float fogFactor = clamp(exp2(-uFogDensity * uFogDensity * passFragCoord.z * passFragCoord.z * 1.442695), 0, 1);
+		vec3 vVertex = vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
+		float fogFactor = clamp(exp2(-uFogDensity * uFogDensity * dot(vVertex, vVertex) * 1.442695), 0, 1);
 		color = mix(uFogColor, color, fogFactor);
 		outColor = color;
 		if (uIsParticle == 1)
