@@ -28,6 +28,7 @@
 #define APOC_GAME_H
 
 #include <Apoc/Video/OpenGL.h>
+#include <Apoc/Video/Display.h>
 
 /**
  * \brief Base for main game classes.
@@ -76,6 +77,12 @@ public:
 	 * \brief Returns true if a fullscreen mode is desired.
 	 */
 	virtual bool isFullscreen();
+
+	/**
+	 * \brief Called when the overlay shall be drawn.
+	 * \param disp The overlay Display.
+	 */
+	virtual void onOverlay(Display &disp);
 };
 
 #endif

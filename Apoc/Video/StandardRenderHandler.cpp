@@ -41,8 +41,7 @@ extern "C" const char *stdFragmentShader;
 float lmatheight = -0.3;
 
 const float defImageTexData[] = {
-	0.3, 0.3, 1.0, 1.0,		1.0, 1.0, 1.0, 1.0,
-	1.0, 1.0, 1.0, 1.0,		0.3, 0.3, 1.0, 1.0
+	1.0, 1.0, 1.0, 1.0
 };
 
 const float defSpecularMapData[] = {
@@ -79,7 +78,7 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	glGenTextures(1, &defImageTex);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, defImageTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_FLOAT, defImageTexData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, defImageTexData);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -119,9 +118,33 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFramebuffer);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTex, 0);
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	GLenum status = glCheckFramebufferStatus(status);
+	switch (status)
 	{
-		ApocFail("The shadowmap framebuffer is incomplete!");
+	case GL_FRAMEBUFFER_UNDEFINED:
+		ApocFail("GL_FRAMEBUFFER_UNDEFINED");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+		ApocFail("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+		ApocFail("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+		ApocFail("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+		ApocFail("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
+		break;
+	case GL_FRAMEBUFFER_UNSUPPORTED:
+		ApocFail("GL_FRAMEBUFFER_UNSUPPORTED");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+		ApocFail("GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+		ApocFail("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS");
+		break;
 	};
 
 	Matrix view = Matrix::LookAt(
@@ -138,6 +161,8 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 
 void StandardRenderHandler::render()
 {
+	glEnable(GL_DEPTH_TEST);
+
 	Matrix view = Matrix::LookAt(
 		Vector(0.0, lmatheight, -1.0),
 		Vector(0.0, 1.0, 0.0),
@@ -175,6 +200,8 @@ void StandardRenderHandler::render()
 	glUniform1i(getUniformLocation("uNumPointLights"), numPointLights);
 	glUniform4fv(getUniformLocation("uFogColor"), 1, &fogColor[0]);
 	glUniform1f(getUniformLocation("uFogDensity"), fogDensity);
+	glUniform4f(getUniformLocation("uDiffuseColor"), 1.0, 1.0, 1.0, 1.0);
+	glUniform4f(getUniformLocation("uSpecularColor"), 1.0, 1.0, 1.0, 1.0);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glEnable(GL_CULL_FACE);

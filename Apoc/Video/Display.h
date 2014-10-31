@@ -24,41 +24,66 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <Apoc/Game.h>
+#ifndef APOC_VIDEO_DISPLAY_H
+#define APOC_VIDEO_DISPLAY_H
 
-void Game::onGameStart()
+#include <Apoc/Math/Matrix.h>
+#include <Apoc/Math/Vector.h>
+#include <Apoc/Video/OpenGL.h>
+#include <string>
+
+using namespace std;
+
+/**
+ * \brief Handles the display of 2D overlays.
+ *
+ * Never make instances of this class! Only use the reference passed to onOverlay()
+ * in Game.
+ */
+class Display
 {
+private:
+	int screenWidth;
+	int screenHeight;
+
+	Matrix matProj;
+	GLuint uIsParticle;		// we set uIsParticle to 2 in the fragment shader to draw overlays.
+	GLuint uDiffuseColor;
+	GLuint uProjMatrix;
+	GLuint uViewMatrix;
+
+	GLuint vao, vbo;
+
+public:
+	/**
+	 * \brief Constructor. Do not use.
+	 */
+	Display(int width, int height);
+
+	/**
+	 * \brief Do not use.
+	 */
+	void beginDisplay();
+
+	/**
+	 * \brief Set the color to draw things with.
+	 */
+	void color(Vector col);
+
+	/**
+	 * \brief Set the texture to draw stuff with.
+	 */
+	void texture(string name);
+
+	/**
+	 * \brief Set the texture to "plain".
+	 */
+	void notex();
+
+	/**
+	 * \brief Draw a rectangle.
+	 */
+	void rect(int x, int y, int width, int height);
 };
 
-void Game::onKeyPress(SDL_Keycode key)
-{
-	(void)key;
-};
-
-void Game::onKeyRelease(SDL_Keycode key)
-{
-	(void)key;
-};
-
-void Game::update()
-{
-};
-
-void Game::onMouseMove()
-{
-};
-
-void Game::getScreenSize(int &width, int &height)
-{
-	width = 640;
-	height = 480;
-};
-
-bool Game::isFullscreen()
-{
-	return false;
-};
-
-void Game::onOverlay(Display &disp)
-{
-};
+#endif

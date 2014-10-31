@@ -28,6 +28,7 @@
 #include <Apoc/Utils/Archive.h>
 #include <Apoc/Utils/Utils.h>
 #include <Apoc/Video/StandardRenderHandler.h>
+#include <Apoc/Video/Display.h>
 #include <Apoc/Entity/Model.h>
 #include <Apoc/Math/Matrix.h>
 #include <Apoc/Entity/Texture.h>
@@ -142,6 +143,8 @@ int main(int argc, char *argv[])
 	apocRenderHandler = new StandardRenderHandler(screenWidth, screenHeight);
 	apocRenderHandler->bindProgram();
 
+	Display gameDisplay(screenWidth, screenHeight);
+
 #ifdef ENABLE_OPENCL
 	if (allowCL)
 	{
@@ -215,6 +218,8 @@ int main(int argc, char *argv[])
 		game->update();
 		World::update();
 		apocRenderHandler->render();
+		gameDisplay.beginDisplay();
+		game->onOverlay(gameDisplay);
 
 		while ((SDL_GetTicks() - lastTicks) < 2);		// cap the framerate
 									// jesus christ, this thing goes above 1000 FPS on an

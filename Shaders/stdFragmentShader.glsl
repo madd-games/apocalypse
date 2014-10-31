@@ -218,7 +218,12 @@ void main()
 		if (uIsParticle == 1)
 		{
 			outColor = texture(uSampler, passTexCoords);
+		}
+		else if (uIsParticle == 2)
+		{
+			outColor = texture(uSampler, passTexCoords) * uDiffuseColor;
 		};
+
 		//float c = dot(passVTan, normalPolygonSpace);
 		//outColor = vec4(passVTan+vec3(1.0, 1.0, 1.0)*vec3(0.5, 0.5, 0.5), 1.0);
 	}
