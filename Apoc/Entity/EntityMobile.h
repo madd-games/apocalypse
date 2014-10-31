@@ -46,6 +46,14 @@ private:
 protected:
 	float walkingSpeed;
 
+	/**
+	 * \brief Called when the entity collides with something while walking.
+	 *
+	 * This function shall return true if the entity shall continue walking despite
+	 * the obstacle, or false if it shall stop. Returns false by default.
+	 */
+	virtual bool onWalkInto(Entity *entity);
+
 public:
 	bool forward, backwards, left, right;
 

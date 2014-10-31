@@ -57,6 +57,10 @@ private:
 
 	int screenWidth, screenHeight;
 
+	// fog
+	Vector fogColor;
+	float fogDensity;
+
 public:
 	/**
 	 * \brief Standard render params.
@@ -76,6 +80,7 @@ public:
 	virtual void setPointLights(PointLight *array, int count);
 	virtual void bindDefaultTextures();
 	virtual void setAmbientLight(Vector ambient);
+	virtual void setFog(Vector color, float density);
 };
 
 #endif

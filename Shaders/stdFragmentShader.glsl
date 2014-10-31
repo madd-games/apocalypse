@@ -67,6 +67,10 @@ uniform sampler2D uShadowMap;
 // Particle systems
 uniform int uIsParticle;
 
+// Fog
+uniform vec4 uFogColor;
+uniform float uFogDensity;
+
 in vec2 passTexCoords;
 in vec3 passNormal;
 in vec4 passVertex;
@@ -207,6 +211,8 @@ void main()
 		specularLight.w = 1.0;
 		vec4 color = texture(uSampler, passTexCoords) * diffuseLight
 				+ texture(uSpecularMap, passTexCoords) * specularLight;
+		float fogFactor = clamp(exp2(-uFogDensity * uFogDensity * passFragCoord.z * passFragCoord.z * 1.442695), 0, 1);
+		color = mix(uFogColor, color, fogFactor);
 		outColor = color;
 		if (uIsParticle == 1)
 		{

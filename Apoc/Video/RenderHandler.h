@@ -162,6 +162,11 @@ public:
 	 * \brief Sets the amount of ambient light.
 	 */
 	virtual void setAmbientLight(Vector ambient) = 0;
+
+	/**
+	 * \brief Set the color and density of fog.
+	 */
+	virtual void setFog(Vector color, float density) = 0;
 };
 
 #endif

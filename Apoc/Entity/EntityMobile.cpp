@@ -34,6 +34,11 @@ EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector r
 {
 };
 
+bool EntityMobile::onWalkInto(Entity *entity)
+{
+	return false;
+};
+
 Vector EntityMobile::getEyeDelta()
 {
 	return Vector(0, 0.5 * (sin(deltaFactor) + 1), 0, 0);
@@ -115,12 +120,30 @@ void EntityMobile::update()
 		sz = -1;
 	};
 
-	if (move(Vector(vmove.x()+sx, 0, 0)) == NULL)
+	Entity *a, *b;
+	a = move(Vector(vmove.x()+sx, 0, 0));
+	if (a == NULL)
 	{
 		translate(Vector(-sx, 0, 0));
+	}
+	else
+	{
+		if (onWalkInto(a))
+		{
+			translate(Vector(vmove.x(), 0, 0));
+		};
 	};
-	if (move(Vector(0, 0, vmove.z()+sz)) == NULL)
+
+	b = move(Vector(0, 0, vmove.z()+sz));
+	if (b == NULL)
 	{
 		translate(Vector(0, 0, -sz));
+	}
+	else
+	{
+		if (onWalkInto(b))
+		{
+			translate(Vector(0, 0, sz));
+		};
 	};
 };
