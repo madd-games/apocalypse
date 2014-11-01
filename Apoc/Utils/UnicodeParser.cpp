@@ -40,6 +40,7 @@ unsigned long UnicodeParser::next()
 	unsigned char b = *data;
 	if (b < 128)
 	{
+		data++;
 		return (unsigned long) b;
 	};
 

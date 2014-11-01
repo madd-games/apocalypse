@@ -51,10 +51,30 @@ private:
 	GLuint uDiffuseColor;
 	GLuint uProjMatrix;
 	GLuint uViewMatrix;
+	GLuint uTexMatrix;
 
 	GLuint vao, vbo;
 
 public:
+	/**
+	 * \brief Arrays of glyphs are used as fonts.
+	 *
+	 * Terminate the list of glyphs with a glyph for codepoint 0.
+	 */
+	struct Glyph
+	{
+		/**
+		 * \brief The Unicode codepoint for this glyph.
+		 */
+		unsigned long codepoint;
+		int x, y, width, height;
+		int fontWidth, fontHeight;
+	};
+
+private:
+	Glyph* findGlyph(Glyph *font, unsigned long codepoint);
+public:
+
 	/**
 	 * \brief Constructor. Do not use.
 	 */
@@ -81,9 +101,23 @@ public:
 	void notex();
 
 	/**
+	 * \brief Sets which part of the texture to apply.
+	 *
+	 * The coordinates and size are normalized.
+	 */
+	void texcrop(float x, float y, float width, float height);
+
+	/**
 	 * \brief Draw a rectangle.
 	 */
 	void rect(int x, int y, int width, int height);
+
+	/**
+	 * \brief Draw text.
+	 * \param font An array of Glyph structures, terminated with a glyph for codepoint 0.
+	 * \param str UTF-8 formatted string.
+	 */
+	void text(int x, int y, Glyph *font, string str);
 };
 
 #endif

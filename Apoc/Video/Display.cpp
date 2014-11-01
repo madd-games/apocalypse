@@ -28,6 +28,10 @@
 #include <Apoc/Video/RenderHandler.h>
 #include <Apoc/Video/OpenGL.h>
 #include <Apoc/Entity/Texture.h>
+#include <Apoc/Utils/UnicodeParser.h>
+#include <iostream>
+
+using namespace std;
 
 extern RenderHandler *apocRenderHandler;
 
@@ -52,6 +56,17 @@ DisplayVertex apocDisplayBuffer[4] = {
 	}
 };
 
+Display::Glyph *Display::findGlyph(Glyph *font, unsigned long codepoint)
+{
+	while (font->codepoint != codepoint)
+	{
+		if (font->codepoint == 0) return NULL;
+		font++;
+	};
+
+	return font;
+};
+
 Display::Display(int width, int height) : screenWidth(width), screenHeight(height)
 {
 	matProj = Matrix::Ortho(0.0, (float)width, 0.0, (float)height, 0.0, 1.0);
@@ -59,6 +74,7 @@ Display::Display(int width, int height) : screenWidth(width), screenHeight(heigh
 	uDiffuseColor = apocRenderHandler->getUniformLocation("uDiffuseColor");
 	uProjMatrix = apocRenderHandler->getUniformLocation("uProjectionMatrix");
 	uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
+	uTexMatrix = apocRenderHandler->getUniformLocation("uModelMatrix");
 
 	GLint attrVertex, attrTexCoords, attrNormal;
 	apocRenderHandler->getAttrLocations(attrVertex, attrTexCoords, attrNormal);
@@ -96,12 +112,22 @@ void Display::texture(string name)
 {
 	Texture *tex = Texture::Get(name);
 	tex->bind();
+	Matrix identity = Matrix::Identity();
+	glUniformMatrix4fv(uTexMatrix, 1, GL_FALSE, &identity[0][0]);
 };
 
 void Display::notex()
 {
 	apocRenderHandler->bindDefaultTextures();
 	glActiveTexture(GL_TEXTURE0);
+	Matrix identity = Matrix::Identity();
+	glUniformMatrix4fv(uTexMatrix, 1, GL_FALSE, &identity[0][0]);
+};
+
+void Display::texcrop(float x, float y, float width, float height)
+{
+	Matrix mat = Matrix::Translate(x, y, 0.0) * Matrix::Scale(width, height, 1.0);
+	glUniformMatrix4fv(uTexMatrix, 1, GL_FALSE, &mat[0][0]);
 };
 
 void Display::rect(int x, int y, int width, int height)
@@ -109,4 +135,21 @@ void Display::rect(int x, int y, int width, int height)
 	Matrix matView = Matrix::Translate((float)x, (float)y, 0.0) * Matrix::Scale((float)width, (float)height, 1.0);
 	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+};
+
+void Display::text(int x, int y, Glyph *font, string str)
+{
+	UnicodeParser unicode(str);
+	while (!unicode.end())
+	{
+		unsigned long codepoint = unicode.next();
+		Glyph *glyph = findGlyph(font, codepoint);
+		if (glyph != NULL)
+		{
+			texcrop((float)glyph->x/(float)glyph->fontWidth, (float)glyph->y/(float)glyph->fontHeight,
+					(float)glyph->width/(float)glyph->fontWidth, (float)glyph->height/(float)glyph->fontHeight);
+			rect(x, y, glyph->width, glyph->height);
+			x += glyph->width;
+		};
+	};
 };

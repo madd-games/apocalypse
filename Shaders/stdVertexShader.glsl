@@ -53,11 +53,20 @@ void main()
 {
 	passVertex = inVertex;
 	passTexCoords = inTexCoords;
+	if (uIsParticle == 2)
+	{
+		// For overlays, we use uModelMatrix as the texture coordinates matrix.
+		passTexCoords = vec2(uModelMatrix * vec4(inTexCoords, 0.0, 1.0));
+	};
 	passNormal = inNormal;
 	passShadowCoord = uLightMatrix * uModelMatrix * uObjectMatrix * inVertex;
 	passVTan = inVTan;
 	passUTan = inUTan;
 	vec4 fragCoord = uProjectionMatrix * uViewMatrix * uModelMatrix * uObjectMatrix * inVertex;
+	if (uIsParticle == 2)
+	{
+		fragCoord = uProjectionMatrix * uViewMatrix * inVertex;
+	};
 	if (uIsParticle == 1)
 	{
 		float xradius = 0.025;

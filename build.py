@@ -156,15 +156,19 @@ expectedContents = []
 for name in textureNames:
 	inFileName = name
 	#outFileName = "cpptemp/tex%d.cpp" % i
-	outFileName = "gdata/tex%d" % i
-	if name in dirtyTextures:
+	#outFileName = "gdata/tex%d" % i
+	basename = os.path.basename(inFileName)
+	if "." in basename:
+		basename = basename.rsplit(".", 1)[0]
+	outFileName = "gdata/tex%d_%s" % (i, basename)
+	if (name in dirtyTextures) or not os.path.exists(outFileName):
 		print ">Compile texture %s" % inFileName
 	width, height = compileImage(inFileName, outFileName, str(i), (name not in dirtyTextures) and os.path.exists(outFileName))
 	allowMipmaps = "true"
 	if inFileName.startswith("Game/Images"):
 		allowMipmaps = "false"
-	f.write("\t{\"%s\", %d, %d, \"gdata/tex%d\", %s},\n" % (name, width, height, i, allowMipmaps))
-	expectedContents.append("tex%d" % i)
+	f.write("\t{\"%s\", %d, %d, \"gdata/tex%d_%s\", %s},\n" % (name, width, height, i, basename, allowMipmaps))
+	expectedContents.append("tex%d_%s" % (i, basename))
 	i += 1
 f.write("\t{NULL, 0, 0, NULL}\n")
 f.write("};")
