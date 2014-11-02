@@ -119,8 +119,8 @@ void computeDirLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout ve
 			specular = pow(NdotHV, uShininess) * uSpecularColor * getDirLightSpecular(i);
 		};
 	};
-	diffuseLight = max(diffuseLight, NdotL * uDiffuseColor * getDirLightDiffuse(i));
-	specularLight = max(specularLight, specular);
+	diffuseLight += NdotL * uDiffuseColor * getDirLightDiffuse(i);
+	specularLight += specular;
 };
 
 // POINT LIGHTS
@@ -164,8 +164,8 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 			specular = factor * pow(NdotHV, uShininess) * uSpecularColor * getPointLightSpecular(i);
 		};
 	};
-	diffuseLight = max(diffuseLight, factor * NdotL * uDiffuseColor * getPointLightDiffuse(i));
-	specularLight = max(specularLight, specular);
+	diffuseLight += factor * NdotL * uDiffuseColor * getPointLightDiffuse(i);
+	specularLight += specular;
 };
 
 void main()
