@@ -77,7 +77,9 @@ public:
 	virtual GLint getAttrLocation(const char *name);
 	virtual void bindProgram();
 	virtual void setDirLights(DirLight *array, int count);
+	virtual void updateDirLights(DirLight *array, int index, int count);
 	virtual void setPointLights(PointLight *array, int count);
+	virtual void updatePointLights(PointLight *array, int index, int count);
 	virtual void bindDefaultTextures();
 	virtual void setAmbientLight(Vector ambient);
 	virtual void setFog(Vector color, float density);

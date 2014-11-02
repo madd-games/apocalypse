@@ -147,11 +147,33 @@ public:
 	virtual void setDirLights(DirLight *array, int count) = 0;
 
 	/**
+	 * \brief Modify part of the directional lights array.
+	 * \param array The array to copy from.
+	 * \param index Index of the first element to copy.
+	 * \param count Number of lights from index to copy.
+	 *
+	 * Raises an ApocFail() if setDirLights() was not previously called,
+	 * or the new array is out of bounds of the previous array.
+	 */
+	virtual void updateDirLights(DirLight *array, int index, int count) = 0;
+
+	/**
 	 * \brief Set the array of point lights.
 	 * \param array The array.
 	 * \param count The number of lights.
 	 */
 	virtual void setPointLights(PointLight *array, int count) = 0;
+
+	/**
+	 * \brief Modify part of the point lights array.
+	 * \param array The array to copy from.
+	 * \param index Index of the first element to copy.
+	 * \param count Number of lights from index to copy.
+	 *
+	 * Raises an ApocFail() if setPointLights() was not previously called,
+	 * or the new array is out of bounds of the previous array.
+	 */
+	virtual void updatePointLights(PointLight *array, int index, int count) = 0;
 
 	/**
 	 * \brief Binds all the defaults textures.

@@ -243,11 +243,33 @@ void StandardRenderHandler::setDirLights(RenderHandler::DirLight *array, int cou
 	numDirLights = count;
 };
 
+void StandardRenderHandler::updateDirLights(RenderHandler::DirLight *array, int index, int count)
+{
+	while (glGetError() != GL_NO_ERROR);
+	glBindBuffer(GL_TEXTURE_BUFFER, dirLightBuffer);
+	glBufferSubData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::DirLight)*index, sizeof(RenderHandler::DirLight)*count, &array[index]);
+	if (glGetError() != GL_NO_ERROR)
+	{
+		ApocFail("updateDirLights(): setDirLights() was not previously called, or the new array is out of bounds of the previous array");
+	};
+};
+
 void StandardRenderHandler::setPointLights(RenderHandler::PointLight *array, int count)
 {
 	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
 	glBufferData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::PointLight)*count, array, GL_DYNAMIC_COPY);
 	numPointLights = count;
+};
+
+void StandardRenderHandler::updatePointLights(RenderHandler::PointLight *array, int index, int count)
+{
+	while (glGetError() != GL_NO_ERROR);
+	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
+	glBufferSubData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::PointLight)*index, sizeof(RenderHandler::PointLight)*count, &array[index]);
+	if (glGetError() != GL_NO_ERROR)
+	{
+		ApocFail("updatePointLights(): setPointLights() was not previously called, or the new array is out of bounds of the previous array");
+	};
 };
 
 void StandardRenderHandler::bindDefaultTextures()
