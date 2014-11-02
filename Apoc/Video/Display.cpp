@@ -30,6 +30,7 @@
 #include <Apoc/Entity/Texture.h>
 #include <Apoc/Utils/UnicodeParser.h>
 #include <iostream>
+#include <SDL.h>
 
 using namespace std;
 
@@ -146,10 +147,18 @@ void Display::text(int x, int y, Glyph *font, string str)
 		Glyph *glyph = findGlyph(font, codepoint);
 		if (glyph != NULL)
 		{
-			texcrop((float)glyph->x/(float)glyph->fontWidth, (float)glyph->y/(float)glyph->fontHeight,
+			texcrop((float)glyph->x/(float)glyph->fontWidth,
+				1.0-((float)glyph->y/(float)glyph->fontHeight+(float)glyph->height/(float)glyph->fontHeight),
 					(float)glyph->width/(float)glyph->fontWidth, (float)glyph->height/(float)glyph->fontHeight);
 			rect(x, y, glyph->width, glyph->height);
 			x += glyph->width;
 		};
 	};
+};
+
+void Display::cursor(int width, int height)
+{
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	rect(x, y, width, height);
 };

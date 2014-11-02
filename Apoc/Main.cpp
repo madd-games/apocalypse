@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
 		Vector(0.0, 1.0, 0.0, 0.0),
 		Vector(0.0, 0.0, 0.0, 1.0)
 	);
-	Matrix matProj = Matrix::Perspective(1366.0, 768.0, 1.0, 100.0, 60.0*M_PI/180.0);
+	Matrix matProj = Matrix::Perspective(1366.0, 768.0, 0.1, 100.0, 60.0*M_PI/180.0);
 
 	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &matModel[0][0]);
 	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);

@@ -118,6 +118,13 @@ public:
 	 * \param str UTF-8 formatted string.
 	 */
 	void text(int x, int y, Glyph *font, string str);
+
+	/**
+	 * \brief Draw the mouse cursor using the current texture.
+	 * \param width Width of the cursor.
+	 * \param height Height of the cursor.
+	 */
+	void cursor(int width, int height);
 };
 
 #endif
