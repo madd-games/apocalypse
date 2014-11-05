@@ -42,6 +42,10 @@
 #include <Apoc/Compute/Compute.h>
 #endif
 
+#ifdef ENABLE_OPENAL
+#include <AL/alut.h>
+#endif
+
 #include <math.h>
 #include <string>
 #include <iostream>
@@ -73,6 +77,16 @@ int main(int argc, char *argv[])
 	cout << "[APOC] GCC Vector Extensions are enabled" << endl;
 #endif
 	Game *game = new GameImpl;
+
+#ifdef ENABLE_OPENAL
+	cout << "[APOC] [AUDIO] Initialising OpenAL" << endl;
+	alutInit(0, NULL);
+	alGetError();
+	alDopplerFactor(0.2);
+	alDopplerVelocity(0.2);
+#else
+	cout << "[APOC] [AUDIO] OpenAL was disabled at compile-time" << endl;
+#endif
 
 	bool allowCL = true;
 	int i;
@@ -236,6 +250,10 @@ int main(int argc, char *argv[])
 
 #ifdef ENABLE_OPENCL
 	QuitCompute();
+#endif
+
+#ifdef ENABLE_OPENAL
+	alutExit();
 #endif
 
 	SDL_GL_DeleteContext(apocContext);

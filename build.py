@@ -219,6 +219,10 @@ else:
 	sdl_ldflags="-L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread -lm -ldl -lrt  -lGLEW -lGL"
 	sdl_cflags="-I/usr/local/include/SDL2 -D_REENTRANT"
 
+if sysinfo["openal_enable"]:
+	sdl_cflags += " -DENABLE_OPENAL"
+	sdl_ldflags += " -lalut -lopenal"
+
 f = open("build.mk", "wb")
 f.write("CXX=%s\n" % sysinfo["cpp_compiler"])
 f.write("CFLAGS=-D_USE_MATH_DEFINES -w -D%s -I. %s -ggdb %s -std=c++11\n" % (target.upper(), sdl_cflags, ccopencl))

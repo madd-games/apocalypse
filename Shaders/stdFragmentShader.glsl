@@ -217,10 +217,11 @@ void main()
 		outColor = color;
 		if (uIsParticle == 1)
 		{
-			outColor = texture(uSampler, passTexCoords);
+			outColor = mix(uFogColor, texture(uSampler, passTexCoords), fogFactor);
 		}
 		else if (uIsParticle == 2)
 		{
+			// GUI
 			outColor = texture(uSampler, passTexCoords) * uDiffuseColor;
 		};
 

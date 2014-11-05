@@ -45,6 +45,18 @@ def checkForOpenCL(cpp_compiler):
 		print "--!OpenCL disabled!"
 	return opencl_enable
 
+def checkForOpenAL(cpp_compiler):
+	print ">Checking if OpenAL is available"
+	f = open("temp.cpp", "wb")
+	f.write("#include <AL/alut.h>")
+	f.close()
+	openal_enable = ((os.system("%s -c temp.cpp -o temp.o >/dev/null 2>&1" % cpp_compiler) == 0) and ("--disable-al" not in sys.argv))
+	if openal_enable:
+		print "--OpenAL enabled"
+	else:
+		print "--!OpenAL disabled!"
+	return openal_enable
+
 def loadSystemInfo(target):
 	sysinfo = {}
 	try:
@@ -62,6 +74,9 @@ def loadSystemInfo(target):
 
 	if not sysinfo.has_key("opencl_enable"):
 		sysinfo["opencl_enable"] = checkForOpenCL(sysinfo["cpp_compiler"])
+
+	if not sysinfo.has_key("openal_enable"):
+		sysinfo["openal_enable"] = checkForOpenAL(sysinfo["cpp_compiler"])
 
 	f = open("build-%s/sys.info" % target, "wb")
 	pickle.dump(sysinfo, f)
