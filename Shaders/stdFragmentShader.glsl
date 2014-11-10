@@ -178,7 +178,7 @@ void main()
 
 		vec4 diffuseLight = uAmbientLight;
 		vec4 specularLight = vec4(0.0, 0.0, 0.0, 1.0);
-		vec3 tmpNormal = passNormal;
+		//vec3 tmpNormal = passNormal;
 		/*vec3 tmpNormalSample = vec3(texture(uNormalMap, passTexCoords)) * vec3(2.0, 2.0, 1.0) + vec3(-1.0, -1.0, 0.0);
 		vec3 normalPolygonSpace = normalize(tmpNormalSample);
 		vec3 tmpNormal = vec3(
@@ -186,6 +186,14 @@ void main()
 			dot(normalize(passUTan), normalPolygonSpace),
 			dot(normalize(passNormal), normalPolygonSpace)
 		);*/
+		vec3 tmpNormalSample = vec3(texture(uNormalMap, passTexCoords)) * vec3(2.0, 2.0, 1.0) + vec3(-1.0, -1.0, 0.0);
+		vec3 normalPolygonSpace = normalize(tmpNormalSample);
+		mat3 normalMatrix = mat3(
+			passVTan,
+			passUTan,
+			passNormal
+		);
+		vec3 tmpNormal = normalMatrix * normalPolygonSpace;
 		vec3 normal = normalize(vec3(uModelMatrix * uObjectMatrix * vec4(tmpNormal, 0.0)));
 
 		int i;
