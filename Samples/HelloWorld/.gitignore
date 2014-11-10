@@ -3,3 +3,6 @@ Shaders
 Makefile
 scripts
 build.rule
+build-client
+gdata
+cpptemp
