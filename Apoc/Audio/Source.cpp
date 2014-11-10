@@ -31,6 +31,8 @@ Source::Source()
 {
 #ifdef ENABLE_OPENAL
 	alGenSources(1, &source);
+	alSourcef(source, AL_PITCH, 1.0f);
+	alSourcef(source, AL_GAIN, 1.0f);
 #endif
 };
 
@@ -66,5 +68,19 @@ void Source::attach(string sound)
 {
 #ifdef ENABLE_OPENAL
 	alSourcei(source, AL_BUFFER, Sounds::Get(sound));
+#endif
+};
+
+void Source::play()
+{
+#ifdef ENABLE_OPENAL
+	alSourcePlay(source);
+#endif
+};
+
+void Source::stop()
+{
+#ifdef ENABLE_OPENAL
+	alSourceStop(source);
 #endif
 };

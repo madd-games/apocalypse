@@ -30,6 +30,7 @@
 #include <Apoc/Entity/EntityPhysics.h>
 #include <Apoc/Video/Camera.h>
 #include <Apoc/Math/Vector.h>
+#include <Apoc/Audio/Source.h>
 
 /**
  * \brief Mobile entities ("mobs").
@@ -42,6 +43,10 @@ private:
 	float theta, phi;
 	Vector getEyeDelta();
 	float deltaFactor;
+	int deltaFactorTendency;
+	Source srcStep;
+
+	int getFloatSign(float x);
 
 protected:
 	float walkingSpeed;
@@ -53,6 +58,11 @@ protected:
 	 * the obstacle, or false if it shall stop. Returns false by default.
 	 */
 	virtual bool onWalkInto(Entity *entity);
+
+	/**
+	 * \brief Get the sound of the next footstep.
+	 */
+	virtual string getNextStepSound();
 
 public:
 	bool forward, backwards, left, right;

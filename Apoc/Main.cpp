@@ -44,6 +44,7 @@
 
 #ifdef ENABLE_OPENAL
 #include <AL/alut.h>
+#include <Apoc/Audio/Sounds.h>
 #endif
 
 #include <math.h>
@@ -107,6 +108,10 @@ int main(int argc, char *argv[])
 			return 1;
 		};
 	};
+
+#ifdef ENABLE_OPENAL
+	Sounds::Init();
+#endif
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{

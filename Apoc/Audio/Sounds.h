@@ -49,6 +49,7 @@ private:
 public:
 	static void Load(string name, string filename);
 	static ALuint Get(string name);
+	static void Init();
 };
 
 #endif			// ENABLE_OPENAL

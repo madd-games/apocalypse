@@ -79,6 +79,16 @@ public:
 	 * \brief Attach a sound to this source.
 	 */
 	void attach(string sound);
+
+	/**
+	 * \brief Play the currently-attached sound from the source.
+	 */
+	void play();
+
+	/**
+	 * \brief Stop playing from the source.
+	 */
+	void stop();
 };
 
 #endif

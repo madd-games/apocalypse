@@ -27,10 +27,13 @@
 #ifdef ENABLE_OPENAL
 
 #include <Apoc/Audio/Sounds.h>
+#include <Apoc/Utils/Utils.h>
 #include <Apoc/Utils/Archive.h>
 #include <stdlib.h>
 
 map<string, ALuint> Sounds::sounds;
+
+extern const char *apocSoundList[];
 
 void Sounds::Load(string name, string filename)
 {
@@ -43,7 +46,22 @@ void Sounds::Load(string name, string filename)
 
 ALuint Sounds::Get(string name)
 {
+	if (sounds.count(name) == 0)
+	{
+		ApocFail(string("this sound was not found: ") + name);
+	};
+
 	return sounds[name];
+};
+
+void Sounds::Init()
+{
+	const char **sound = apocSoundList;
+	while (*sound != NULL)
+	{
+		Load(*sound, *sound);
+		sound++;
+	};
 };
 
 #endif // ENABLE_OPENAL

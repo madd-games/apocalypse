@@ -168,7 +168,7 @@ void StandardRenderHandler::render()
 		Vector(0.0, 1.0, 0.0),
 		Vector(0.0, 0.0, 0.0)
 	);
-	lightMatrix = Matrix::Ortho(20, -20, 20, -20, -20, 10) * view;
+	lightMatrix = Matrix::Ortho(500, -500, 500, -500, -500, 10) * view;
 
 	Matrix identity = Matrix::Identity();
 

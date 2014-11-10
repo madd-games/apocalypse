@@ -179,6 +179,16 @@ for filename in os.listdir("gdata"):
 		print ">Delete gdata/%s" % filename
 		os.system("rm gdata/%s" % filename)
 
+os.system("mkdir -p Game/Sounds")
+f = open("cpptemp/SoundList.cpp", "wb")
+f.write("#include <stdlib.h>\n\n")
+f.write("const char *apocSoundList[] = {\n")
+for name in os.listdir("Game/Sounds"):
+	f.write("\t\"Game/Sounds/%s\",\n" % name)
+	f.write("\tNULL\n")
+f.write("};")
+f.close()
+
 listfiles("cpptemp")
 
 f = open("build.rule", "rb")
@@ -241,6 +251,6 @@ f.write("\n".join(rules))
 f.close()
 
 print ">Package data as out/%s.tar" % target
-if os.system("tar -cf out/%s.tar gdata" % target) != 0:
+if os.system("tar -cf out/%s.tar gdata Game/Sounds" % target) != 0:
 	print "!BUILD FAILED!"
 sys.exit(os.system("make -f build.mk"))

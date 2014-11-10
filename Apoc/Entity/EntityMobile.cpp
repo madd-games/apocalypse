@@ -27,9 +27,20 @@
 #include <Apoc/Entity/EntityMobile.h>
 #include <Apoc/Utils/Utils.h>
 #include <math.h>
+#include <iostream>
+
+using namespace std;
+
+int EntityMobile::getFloatSign(float x)
+{
+	if (x > 0) return 1;
+	if (x < 0) return -1;
+	return 0;
+};
 
 EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref)
 	: EntityPhysics(defs, mass), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
+	  deltaFactorTendency(1),
 	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015)
 {
 };
@@ -37,6 +48,11 @@ EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector r
 bool EntityMobile::onWalkInto(Entity *entity)
 {
 	return false;
+};
+
+string EntityMobile::getNextStepSound()
+{
+	return "";
 };
 
 Vector EntityMobile::getEyeDelta()
@@ -80,11 +96,30 @@ void EntityMobile::moveCamera(float deltaTheta, float deltaPhi)
 void EntityMobile::update()
 {
 	EntityPhysics::update();
+	srcStep.setPosition(getEye() + Vector(0.0, -1.0, 0.0));
+	srcStep.setOrientation(Vector(0.0, 1.0, 0.0));
 
 	float speed = walkingSpeed * ApocGetDeltaTime();
 	if (forward || backwards || left || right)
 	{
+		float s1 = sin(deltaFactor);
 		deltaFactor += 0.007 * ApocGetDeltaTime();
+
+		int tend = getFloatSign(sin(deltaFactor) - s1);
+		if ((tend == 1) && (deltaFactorTendency == -1))
+		{
+			string snd = getNextStepSound();
+			if (snd != "")
+			{
+				srcStep.attach(snd);
+				srcStep.play();
+			};
+		};
+
+		if (tend != deltaFactorTendency)
+		{
+			deltaFactorTendency = tend;
+		};
 	};
 
 	Vector vmove(0, 0, 0, 0);

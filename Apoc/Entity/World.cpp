@@ -28,6 +28,10 @@
 #include <Apoc/Video/RenderHandler.h>
 #include <math.h>
 
+#ifdef ENABLE_OPENAL
+#include <AL/alut.h>
+#endif
+
 #ifndef M_PI
 #define	M_PI 3.14159265359
 #endif
@@ -100,6 +104,14 @@ void World::render(bool setMatrix)
 				camera->getUpVector(),
 				camera->getRef()
 			);
+
+#ifdef ENABLE_OPENAL
+			Vector pos = camera->getEye();
+			Vector orient = camera->getRef() - camera->getEye();
+
+			alListenerfv(AL_POSITION, &pos[0]);
+			alListenerfv(AL_ORIENTATION, &orient[0]);
+#endif
 		}
 		else
 		{
