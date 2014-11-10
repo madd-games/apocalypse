@@ -45,6 +45,7 @@ private:
 	float deltaFactor;
 	int deltaFactorTendency;
 	Source srcStep;
+	float nextStepX;
 
 	int getFloatSign(float x);
 

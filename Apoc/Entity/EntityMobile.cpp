@@ -40,7 +40,7 @@ int EntityMobile::getFloatSign(float x)
 
 EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref)
 	: EntityPhysics(defs, mass), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
-	  deltaFactorTendency(1),
+	  deltaFactorTendency(1), nextStepX(-5.0),
 	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015)
 {
 };
@@ -96,7 +96,8 @@ void EntityMobile::moveCamera(float deltaTheta, float deltaPhi)
 void EntityMobile::update()
 {
 	EntityPhysics::update();
-	srcStep.setPosition(getEye() + Vector(0.0, -1.0, 0.0));
+	Vector vleft = Vector(sin(theta), 0, cos(theta), 0).cross(Vector(0, 1, 0));
+	srcStep.setPosition(getEye() + Vector(0.0, -1.0, 0.0) + (vleft * nextStepX));
 	srcStep.setOrientation(Vector(0.0, 1.0, 0.0));
 
 	float speed = walkingSpeed * ApocGetDeltaTime();
@@ -114,6 +115,7 @@ void EntityMobile::update()
 				srcStep.attach(snd);
 				srcStep.play();
 			};
+			nextStepX *= -1;
 		};
 
 		if (tend != deltaFactorTendency)
