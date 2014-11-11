@@ -41,7 +41,7 @@ int EntityMobile::getFloatSign(float x)
 EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref)
 	: EntityPhysics(defs, mass), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
 	  deltaFactorTendency(1), nextStepX(-5.0),
-	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015)
+	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015), footstepHeight(0.5)
 {
 };
 
@@ -57,7 +57,7 @@ string EntityMobile::getNextStepSound()
 
 Vector EntityMobile::getEyeDelta()
 {
-	return Vector(0, 0.5 * (sin(deltaFactor) + 1), 0, 0);
+	return Vector(0, footstepHeight * (sin(deltaFactor) + 1), 0, 0);
 };
 
 Vector EntityMobile::getEye()

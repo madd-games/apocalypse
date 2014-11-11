@@ -50,7 +50,15 @@ private:
 	int getFloatSign(float x);
 
 protected:
+	/**
+	 * \brief The speed at which the character shall walk.
+	 */
 	float walkingSpeed;
+
+	/**
+	 * \brief The height of footsteps.
+	 */
+	float footstepHeight;
 
 	/**
 	 * \brief Called when the entity collides with something while walking.
