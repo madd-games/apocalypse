@@ -41,7 +41,8 @@ int EntityMobile::getFloatSign(float x)
 EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref)
 	: EntityPhysics(defs, mass), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
 	  deltaFactorTendency(1), nextStepX(-5.0),
-	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015), footstepHeight(0.5)
+	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015), walkingHesitationFactor(0.9)
+	  footstepHeight(0.5)
 {
 };
 
@@ -101,9 +102,19 @@ void EntityMobile::update()
 	srcStep.setOrientation(Vector(0.0, 1.0, 0.0));
 
 	float speed = walkingSpeed * ApocGetDeltaTime();
+	if (backwards || left || right)
+	{
+		speed *= walkingHesitationFactor;
+	};
+
 	if (forward || backwards || left || right)
 	{
 		float s1 = sin(deltaFactor);
+		float ddf = 0.007;
+		if (backwards || left || right)
+		{
+			ddf *= walkingHesitationFactor;
+		};
 		deltaFactor += 0.007 * ApocGetDeltaTime();
 
 		int tend = getFloatSign(sin(deltaFactor) - s1);

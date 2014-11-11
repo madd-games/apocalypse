@@ -51,9 +51,14 @@ private:
 
 protected:
 	/**
-	 * \brief The speed at which the character shall walk.
+	 * \brief The speed at which the character shall walk forward.
 	 */
 	float walkingSpeed;
+
+	/**
+	 * \brief This value is multiplied with the walkingSpeed for sideways/backwards walks.
+	 */
+	float walkingHesitationFactor;
 
 	/**
 	 * \brief The height of footsteps.
