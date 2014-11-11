@@ -189,6 +189,15 @@ public:
 	 * \brief Set the color and density of fog.
 	 */
 	virtual void setFog(Vector color, float density) = 0;
+
+	/**
+	 * \brief Enable or disable normal-vector-coloring (NVC) mode.
+	 *
+	 * When NVC is off (the default) all polygons are appropriately colored,
+	 * but when it is on, their color visualizes the normal vector. Useful
+	 * for debugging.
+	 */
+	virtual void setNVC(bool nvc) = 0;
 };
 
 #endif

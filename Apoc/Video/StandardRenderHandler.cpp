@@ -54,7 +54,7 @@ const float defNormalMapData[] = {
 
 StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	: numDirLights(0), numPointLights(0), screenWidth(screenWidth), screenHeight(screenHeight),
-	  ambient(0.1, 0.1, 0.1, 1.0), fogDensity(0.0)
+	  ambient(0.1, 0.1, 0.1, 1.0), fogDensity(0.0), nvcMode(false)
 {
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 
@@ -200,6 +200,7 @@ void StandardRenderHandler::render()
 	glUniform1i(getUniformLocation("uNumPointLights"), numPointLights);
 	glUniform4fv(getUniformLocation("uFogColor"), 1, &fogColor[0]);
 	glUniform1f(getUniformLocation("uFogDensity"), fogDensity);
+	glUniform1i(getUniformLocation("uDebugNormals"), nvcMode ? 1:0);
 	glUniform4f(getUniformLocation("uDiffuseColor"), 1.0, 1.0, 1.0, 1.0);
 	glUniform4f(getUniformLocation("uSpecularColor"), 1.0, 1.0, 1.0, 1.0);
 	glActiveTexture(GL_TEXTURE3);
@@ -291,4 +292,9 @@ void StandardRenderHandler::setFog(Vector color, float density)
 {
 	fogColor = color;
 	fogDensity = density;
+};
+
+void StandardRenderHandler::setNVC(bool nvc)
+{
+	nvcMode = nvc;
 };

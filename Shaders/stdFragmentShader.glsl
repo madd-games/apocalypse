@@ -71,6 +71,9 @@ uniform int uIsParticle;
 uniform vec4 uFogColor;
 uniform float uFogDensity;
 
+// Debugging
+uniform int uDebugNormals;
+
 in vec2 passTexCoords;
 in vec3 passNormal;
 in vec4 passVertex;
@@ -225,8 +228,10 @@ void main()
 			outColor = texture(uSampler, passTexCoords) * uDiffuseColor;
 		};
 
-		//float c = dot(passVTan, normalPolygonSpace);
-		//outColor = vec4(passVTan+vec3(1.0, 1.0, 1.0)*vec3(0.5, 0.5, 0.5), 1.0);
+		if ((uIsParticle == 0) && (uDebugNormals == 1))
+		{
+			outColor = vec4((normal + vec3(1.0, 1.0, 1.0)) * vec3(0.5, 0.5, 0.5), 1.0);
+		};
 	}
 	else
 	{

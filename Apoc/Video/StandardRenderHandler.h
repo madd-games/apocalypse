@@ -61,6 +61,8 @@ private:
 	Vector fogColor;
 	float fogDensity;
 
+	bool nvcMode;
+
 public:
 	/**
 	 * \brief Standard render params.
@@ -83,6 +85,7 @@ public:
 	virtual void bindDefaultTextures();
 	virtual void setAmbientLight(Vector ambient);
 	virtual void setFog(Vector color, float density);
+	virtual void setNVC(bool nvc);
 };
 
 #endif
