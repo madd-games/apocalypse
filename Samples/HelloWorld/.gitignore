@@ -6,3 +6,4 @@ build.rule
 build-client
 gdata
 cpptemp
+build.mk
