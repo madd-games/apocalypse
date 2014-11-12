@@ -70,7 +70,9 @@ public:
 		DBG_SPECULAR_LIGHT = 4,
 		DBG_VTAN = 5,
 		DBG_UTAN = 6,
-		DBG_NUM_MODES = 7,
+		DBG_DIFFUSE_TEXTURE = 7,
+		DBG_PASS_VERTEX = 8,
+		DBG_NUM_MODES = 9,
 	};
 
 	/**

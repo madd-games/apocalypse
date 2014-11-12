@@ -51,7 +51,7 @@ out vec3 passUTan;
 
 void main()
 {
-	passVertex = inVertex;
+	passVertex = uModelMatrix * uObjectMatrix * inVertex;
 	passTexCoords = inTexCoords;
 	if (uIsParticle == 2)
 	{

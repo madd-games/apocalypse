@@ -214,7 +214,7 @@ void main()
 		specularLight.w = 1.0;
 		vec4 color = texture(uSampler, passTexCoords) * diffuseLight
 				+ texture(uSpecularMap, passTexCoords) * specularLight;
-		vec3 vVertex = vec3(uViewMatrix * uModelMatrix * uObjectMatrix * passVertex);
+		vec3 vVertex = vec3(uViewMatrix * passVertex);
 		float fogFactor = clamp(exp2(-uFogDensity * uFogDensity * dot(vVertex, vVertex) * 1.442695), 0, 1);
 		color = mix(uFogColor, color, fogFactor);
 		outColor = color;
@@ -253,6 +253,14 @@ void main()
 			else if (uDebugMode == 6)
 			{
 				outColor = vec4((passUTan + vec3(1.0, 1.0, 1.0)) * vec3(0.5, 0.5, 0.5), 1.0);
+			}
+			else if (uDebugMode == 7)
+			{
+				outColor = uDiffuseColor * texture(uSampler, passTexCoords);
+			}
+			else if (uDebugMode == 8)
+			{
+				outColor = (passVertex + vec4(10.0, 10.0, 10.0, 0.0)) * vec4(0.05, 0.05, 0.05, 1.0);
 			};
 		};
 	}
