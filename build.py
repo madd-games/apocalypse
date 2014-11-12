@@ -33,6 +33,7 @@ from scripts.entity import compileEntity
 from scripts.image import compileImage
 from scripts.sysinfo import loadSystemInfo
 from scripts.kernel import compileKernels
+import json
 
 target = "client"
 if len(sys.argv) > 1:
@@ -155,8 +156,6 @@ i = 0
 expectedContents = []
 for name in textureNames:
 	inFileName = name
-	#outFileName = "cpptemp/tex%d.cpp" % i
-	#outFileName = "gdata/tex%d" % i
 	basename = os.path.basename(inFileName)
 	if "." in basename:
 		basename = basename.rsplit(".", 1)[0]
@@ -167,6 +166,14 @@ for name in textureNames:
 	allowMipmaps = "true"
 	if inFileName.startswith("Game/Images"):
 		allowMipmaps = "false"
+	else:
+		jsonfilename = inFileName.rsplit(".", 1)[0] + ".json"
+		if os.path.exists(jsonfilename):
+			print ">Reading %s" % jsonfilename
+			jf = open(jsonfilename, "rb")
+			options = json.load(jf)
+			jf.close()
+			allowMipmaps = options.get("allowMipmaps", allowMipmaps)
 	f.write("\t{\"%s\", %d, %d, \"gdata/tex%d_%s\", %s},\n" % (name, width, height, i, basename, allowMipmaps))
 	expectedContents.append("tex%d_%s" % (i, basename))
 	i += 1
@@ -250,7 +257,9 @@ f.write("\t@$(CXX) -o $@ $(OBJFILES) $(LDFLAGS)\n")
 f.write("\n".join(rules))
 f.close()
 
+os.system("mkdir -p Game/Resources")
 print ">Package data as out/%s.tar" % target
-if os.system("tar -cf out/%s.tar gdata Game/Sounds" % target) != 0:
+if os.system("tar -cf out/%s.tar gdata Game/Sounds Game/Resources" % target) != 0:
 	print "!BUILD FAILED!"
-sys.exit(os.system("make -f build.mk"))
+if "--no-make" not in sys.argv:
+	sys.exit(os.system("make -f build.mk"))
