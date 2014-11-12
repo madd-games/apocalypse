@@ -248,11 +248,11 @@ void main()
 			}
 			else if (uDebugMode == 5)
 			{
-				outColor = vec4(passVTan, 1.0);
+				outColor = vec4((passVTan + vec3(1.0, 1.0, 1.0)) * vec3(0.5, 0.5, 0.5), 1.0);
 			}
 			else if (uDebugMode == 6)
 			{
-				outColor = vec4(passUTan, 1.0);
+				outColor = vec4((passUTan + vec3(1.0, 1.0, 1.0)) * vec3(0.5, 0.5, 0.5), 1.0);
 			};
 		};
 	}
