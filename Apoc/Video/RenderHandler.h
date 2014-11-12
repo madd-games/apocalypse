@@ -70,6 +70,7 @@ public:
 		DBG_SPECULAR_LIGHT = 4,
 		DBG_VTAN = 5,
 		DBG_UTAN = 6,
+		DBG_NUM_MODES = 7,
 	};
 
 	/**
