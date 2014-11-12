@@ -61,6 +61,17 @@ protected:
 	GLuint createProgram(string glslVertex, string glslFragment);
 	
 public:
+	enum
+	{
+		DBG_OFF = 0,
+		DBG_NORMALS = 1,
+		DBG_TEX_COORDS = 2,
+		DBG_DIFFUSE_LIGHT = 3,
+		DBG_SPECULAR_LIGHT = 4,
+		DBG_VTAN = 5,
+		DBG_UTAN = 6,
+	};
+
 	/**
 	 * \brief An element of the directional light array.
 	 */
@@ -191,13 +202,9 @@ public:
 	virtual void setFog(Vector color, float density) = 0;
 
 	/**
-	 * \brief Enable or disable normal-vector-coloring (NVC) mode.
-	 *
-	 * When NVC is off (the default) all polygons are appropriately colored,
-	 * but when it is on, their color visualizes the normal vector. Useful
-	 * for debugging.
+	 * \brief Change the debugging mode.
 	 */
-	virtual void setNVC(bool nvc) = 0;
+	virtual void setDebugMode(int mode) = 0;
 };
 
 #endif

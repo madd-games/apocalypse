@@ -72,7 +72,7 @@ uniform vec4 uFogColor;
 uniform float uFogDensity;
 
 // Debugging
-uniform int uDebugNormals;
+uniform int uDebugMode;
 
 in vec2 passTexCoords;
 in vec3 passNormal;
@@ -228,9 +228,32 @@ void main()
 			outColor = texture(uSampler, passTexCoords) * uDiffuseColor;
 		};
 
-		if ((uIsParticle == 0) && (uDebugNormals == 1))
+		if ((uIsParticle == 0) && (uDebugMode != 0))
 		{
-			outColor = vec4((normal + vec3(1.0, 1.0, 1.0)) * vec3(0.5, 0.5, 0.5), 1.0);
+			if (uDebugMode == 1)
+			{
+				outColor = vec4((normal + vec3(1.0, 1.0, 1.0)) * vec3(0.5, 0.5, 0.5), 1.0);
+			}
+			else if (uDebugMode == 2)
+			{
+				outColor = vec4(passTexCoords, 0.0, 1.0);
+			}
+			else if (uDebugMode == 3)
+			{
+				outColor = diffuseLight;
+			}
+			else if (uDebugMode == 4)
+			{
+				outColor = specularLight;
+			}
+			else if (uDebugMode == 5)
+			{
+				outColor = vec4(passVTan, 1.0);
+			}
+			else if (uDebugMode == 6)
+			{
+				outColor = vec4(passUTan, 1.0);
+			};
 		};
 	}
 	else
