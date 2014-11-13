@@ -191,7 +191,7 @@ void EntityMobile::update()
 	{
 		if (onWalkInto(b))
 		{
-			translate(Vector(0, 0, sz));
+			translate(Vector(0, 0, vmove.z()));
 		};
 	};
 };
