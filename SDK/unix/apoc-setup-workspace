@@ -6,4 +6,4 @@ ln -s /usr/src/madd-games/apoc/Shaders Shaders
 
 echo ".PHONY: game">Makefile
 echo "game:">>Makefile
-echo "	@python /usr/src/madd-games/apoc/build.py">>Makefile
+echo "	@python /usr/src/madd-games/apoc/build.py $@">>Makefile

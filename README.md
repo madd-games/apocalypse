@@ -32,6 +32,7 @@ The only target supported right now is `client`, which is also the default. Ther
 * `--enable-cl` tells the engine to use the EXPERIMENTAL OpenCL support if possible. Currently not recommended.
 * `--disable-al` tells the engine not to use OpenAL even if it is available. This will cause sound to be muted. By default, if OpenAL is available, it is used; but if it is not available, the engine will still build without audio support.
 * `--host=` specifies what operating system the engine shall be built for. This causes cross-compilation.
+* `--no-make` causes all build files to be generated, but `make` will not be ran to build the engine/game. You can still continue by running `make -f build.mk`.
 
 If you want to run the engine on Windows and build from a Linux system, we recommend using the MinGW-W64 cross-compiler:
 `i686-w64-mingw32` for 32-bit Windows and `x86_64-w64-mingw32` for 64-bit Windows.
@@ -40,4 +41,6 @@ If you want to run the engine on Windows and build from a Linux system, we recom
 To build the engine, you need SDL2, GLEW, OpenGL (which should be installed by default), and optionally an OpenCL SDK and OpenAL.
 
 ## Building a game
-To build a game, you should install the SDK - you can do this by running the `install-sdk` script in its directory. Next, go to an empty directroy, or a directory that already contains a `Game` subdirectroy you want to build, and run `apoc-setup-workspace`. You can then build by running `make` - if there is no `Game` directory, then `make` will automatically generate a template for your game. You can also edit your `Makefile` to add more options to `build.py` as shown above.
+To build a game, you should install the SDK - you can do this by running the `install-sdk` script in its directory. Next, go to an empty directroy, or a directory that already contains a `Game` subdirectroy you want to build, and run `apoc-setup-workspace`. You can then build by running `make` - if there is no `Game` directory, then `make` will automatically generate a template for your game.
+
+Passing command-line arguments to `apoc-setup-workspace` causes them to be passed to `build.py` when `make` is ran.
