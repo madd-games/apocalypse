@@ -174,7 +174,7 @@ bool CollisionCheck::Entities(Entity *a, Entity *b)
 	{
 		if (itA->second.collideable)
 		{
-			Matrix mat0 = a->modelMatrix * itA->second.matrix;
+			Matrix mat0 = a->getModelMatrix() * itA->second.matrix;
 			Model *mod0 = itA->second.model;
 
 			map<string, Entity::Object>::iterator itB;
@@ -183,7 +183,7 @@ bool CollisionCheck::Entities(Entity *a, Entity *b)
 				if (itB->second.collideable)
 				{
 					Matrix mat1;
-					mat1 = b->modelMatrix * itB->second.matrix;
+					mat1 = b->getModelMatrix() * itB->second.matrix;
 					Model *mod1 = itB->second.model;
 
 					if (Models(mat0, mod0, mat1, mod1, (!a->isStatic) || (!b->isStatic)))

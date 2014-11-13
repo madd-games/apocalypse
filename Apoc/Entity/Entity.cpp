@@ -33,7 +33,7 @@
 
 extern RenderHandler *apocRenderHandler;
 
-Entity::Entity(Model::ObjDef *defs) : bbDirty(true), shouldRemove(false), isStatic(true)
+Entity::Entity(Model::ObjDef *defs) : bbDirty(true), shouldRemove(false), isStatic(true), entParent(NULL)
 {
 	modelMatrix = Matrix::Identity();
 
@@ -120,6 +120,10 @@ void Entity::preTransform(string obj, Matrix mat)
 
 Matrix Entity::getModelMatrix()
 {
+	if (entParent != NULL)
+	{
+		return entParent->getModelMatrix() * modelMatrix;
+	};
 	return modelMatrix;
 };
 
@@ -145,7 +149,8 @@ void Entity::renderObjects()
 	GLint uSpecularColor = apocRenderHandler->getUniformLocation("uSpecularColor");
 	GLint uShininess = apocRenderHandler->getUniformLocation("uShininess");
 
-	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &modelMatrix[0][0]);
+	Matrix matModel = getModelMatrix();
+	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &matModel[0][0]);
 
 	map<string, Object>::iterator it;
 	for (it=objects.begin(); it!=objects.end(); ++it)
@@ -182,6 +187,11 @@ void Entity::rotate(float x, float y, float z, const char *objName)
 void Entity::markForRemoval()
 {
 	shouldRemove = true;
+};
+
+void Entity::attachTo(Entity *parent)
+{
+	entParent = parent;
 };
 
 void Entity::unmangleVectors(Vector &a, Vector &b)

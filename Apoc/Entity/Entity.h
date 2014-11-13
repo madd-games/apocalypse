@@ -78,6 +78,9 @@ private:
 
 	bool isStatic;
 
+	// the parent entity (a child is always in it's parent's model space).
+	Entity *entParent;
+
 protected:
 	/**
 	 * \brief Transform the entity or a single object with a matrix.
@@ -144,6 +147,14 @@ protected:
 	 * for removal during a call to update(), then it will be deleted as soon as update() returns.
 	 */
 	void markForRemoval();
+
+	/**
+	 * \brief Attach this entity to a parent.
+	 *
+	 * This means that this entity will follow its parent and orbit it as it moves, as if this whole
+	 * entity were an object within the parent.
+	 */
+	void attachTo(Entity *parent);
 
 public:
 	/**
