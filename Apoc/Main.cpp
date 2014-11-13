@@ -73,6 +73,7 @@ extern Entity *entTest;
 
 int main(int argc, char *argv[])
 {
+	cout << "[APOC] Starting" << endl;
 #ifdef CLIENT
 #ifdef __GNUC__
 	cout << "[APOC] GCC Vector Extensions are enabled" << endl;
@@ -110,9 +111,11 @@ int main(int argc, char *argv[])
 	};
 
 #ifdef ENABLE_OPENAL
+	cout << "[APOC] Loading sounds" << endl;
 	Sounds::Init();
 #endif
 
+	cout << "[APOC] Initializing SDL and OpenGL" << endl;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		ApocFail("Cannot initialize SDL!");
@@ -163,6 +166,7 @@ int main(int argc, char *argv[])
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
+	cout << "[APOC] Initializing the renderer" << endl;
 	apocRenderHandler = new StandardRenderHandler(screenWidth, screenHeight);
 	apocRenderHandler->bindProgram();
 
@@ -184,27 +188,13 @@ int main(int argc, char *argv[])
 	cout << "[APOC] Loading textures" << endl;
 	Texture::Init();
 
-	GLint uModelMatrix = apocRenderHandler->getUniformLocation("uModelMatrix");
-	GLint uViewMatrix = apocRenderHandler->getUniformLocation("uViewMatrix");
-	GLint uProjectionMatrix = apocRenderHandler->getUniformLocation("uProjectionMatrix");
-
-	Matrix matModel = Matrix::Identity();
-	Matrix matView = Matrix::LookAt(
-		Vector(0.0, 2.0, -10.0, 1.0),
-		Vector(0.0, 1.0, 0.0, 0.0),
-		Vector(0.0, 0.0, 0.0, 1.0)
-	);
-	Matrix matProj = Matrix::Perspective(1366.0, 768.0, 0.1, 100.0, 60.0*M_PI/180.0);
-
-	glUniformMatrix4fv(uModelMatrix, 1, GL_FALSE, &matModel[0][0]);
-	glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &matView[0][0]);
-	glUniformMatrix4fv(uProjectionMatrix, 1, GL_FALSE, &matProj[0][0]);
-
 	SDL_Event event;
 	bool quit = false;
 	unsigned long lastTicks;
+	cout << "[APOC] Initialising game (onGameStart)" << endl;
 	game->onGameStart();
 
+	cout << "[APOC] Starting simulation" << endl;
 	while (!quit)
 	{
 		lastTicks = SDL_GetTicks();
@@ -258,20 +248,21 @@ int main(int argc, char *argv[])
 	};
 
 #ifdef ENABLE_OPENCL
+	cout << "[APOC] [COMPUTE] Shutting down the compute context" << endl;
 	QuitCompute();
 #endif
 
 #ifdef ENABLE_OPENAL
+	cout << "[APOC] [AUDIO] Shutting down the audio subsystem" << endl;
 	alutExit();
 #endif
 
+	cout << "[APOC] Shutting down SDL and OpenGL" << endl;
 	SDL_GL_DeleteContext(apocContext);
 	SDL_DestroyWindow(apocWindow);
 	SDL_Quit();
 #endif
 
-	cout << "[APOC] Last render time: " << apocRenderTime << endl;
-	cout << "[APOC] Therefore last FPS: " << (1.0/apocRenderTime) << endl;
-
+	cout << "[APOC] Exiting" << endl;
 	return 0;
 };

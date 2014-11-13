@@ -63,7 +63,7 @@ GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
 		}
 		else
 		{
-			cout << buffer << endl;
+			cout << buffer;
 		};
 	};
 
@@ -85,7 +85,7 @@ GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
 		}
 		else
 		{
-			cout << buffer << endl;
+			cout << buffer;
 		};
 	};
 
@@ -110,7 +110,7 @@ GLuint RenderHandler::createProgram(string glslVertex, string glslFragment)
 		}
 		else
 		{
-			cout << buffer << endl;
+			cout << buffer;
 		};
 	};
 	
