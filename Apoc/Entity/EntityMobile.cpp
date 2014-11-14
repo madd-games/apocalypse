@@ -147,14 +147,14 @@ void EntityMobile::update()
 	if (left)
 	{
 		Vector forward = Vector(sin(theta), 0, cos(theta), 0);
-		Vector left = Vector(0, 1, 0, 0).cross(forward);
-		vmove = vmove + left * speed;
+		Vector right = Vector(0, 1, 0, 0).cross(forward);
+		vmove = vmove + right * -speed;
 	};
 	if (right)
 	{
 		Vector forward = Vector(sin(theta), 0, cos(theta), 0);
-		Vector left = Vector(0, 1, 0, 0).cross(forward);
-		vmove = vmove + left * -speed;
+		Vector right = Vector(0, 1, 0, 0).cross(forward);
+		vmove = vmove + right * speed;
 	};
 
 	float sx = 1;

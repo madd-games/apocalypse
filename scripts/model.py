@@ -2,6 +2,10 @@
 # Compiles an OBJ model file into a C++ file that can be linked
 # with Apocalypse.
 
+# !!! DEPRECATED !!!
+# Get rid of the Wavefront importer in favour of the APM format!
+# !!! DEPRECATED !!!
+
 from material import parseMaterialFile
 import sys, os
 
@@ -63,7 +67,7 @@ def compileModel(inFileName, outFileName, modelName, textureNames):
 					w = float(tokens[4])
 				except IndexError:
 					pass
-				vertices.append((x, y, z, w))
+				vertices.append((-x, y, z, w))
 			elif cmd == "vt":
 				u = float(tokens[1])
 				v = float(tokens[2])
@@ -77,7 +81,7 @@ def compileModel(inFileName, outFileName, modelName, textureNames):
 				x = float(tokens[1])
 				y = float(tokens[2])
 				z = float(tokens[3])
-				normals.append((x, y, z))
+				normals.append((-x, y, z))
 			elif cmd == "f":
 				if (len(tokens) != 4):
 					print "ERROR: All faces must be triangles! (line %d)" % lineno
