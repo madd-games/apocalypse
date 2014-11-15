@@ -82,12 +82,23 @@ public:
 	bool forward, backwards, left, right;
 
 	/**
-	 * \brief Constructor.
+	 * \brief Deprecated constructor.
 	 * \param defs The object definitions, passed to the constructor of Entity.
 	 * \param eye The position of the eye in model space.
 	 * \param ref The point of reference in model space.
+	 * \deprecated Use the other constructor.
 	 */
 	EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector ref);
+
+	/**
+	 * \brief Deprecated constructor.
+	 * \param entname Entity name, passed to the constructor of Entity.
+	 * \param mass The entity's mass (passed to EntityPhysics).
+	 * \param eye The position of the eye in model space.
+	 * \param ref The point of reference in model space.
+	 * \deprecated Use the other constructor.
+	 */
+	EntityMobile(string entname, float mass, Vector eye, Vector ref);
 
 	virtual Vector getEye();
 	virtual Vector getRef();

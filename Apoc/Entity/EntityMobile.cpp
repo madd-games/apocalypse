@@ -46,6 +46,14 @@ EntityMobile::EntityMobile(Model::ObjDef *defs, float mass, Vector eye, Vector r
 {
 };
 
+EntityMobile::EntityMobile(string entname, float mass, Vector eye, Vector ref)
+	: EntityPhysics(entname, mass), eyePos(eye), eyeRef(ref), theta(0.0), phi(0.0), deltaFactor(0.0),
+	  deltaFactorTendency(1), nextStepX(-5.0),
+	  forward(false), backwards(false), left(false), right(false), walkingSpeed(0.015), walkingHesitationFactor(0.9),
+	  footstepHeight(0.5)
+{
+};
+
 bool EntityMobile::onWalkInto(Entity *entity)
 {
 	return false;
