@@ -36,6 +36,8 @@
 #include <map>
 #include <string>
 
+#include <inttypes.h>
+
 using namespace std;
 
 /**
@@ -51,6 +53,37 @@ public:
 	};
 
 private:
+	struct APM_Header
+	{
+		char     magic[3];
+		uint8_t  rev;
+		uint32_t offObjDefs;
+		uint32_t numObjDefs;
+		uint32_t szVertex;
+		uint32_t offTex;
+		uint32_t numTex;
+	} __attribute__ ((packed));
+
+	struct APM_ObjHeader
+	{
+		uint32_t numVertices;
+		uint32_t idxColor;
+		uint32_t idxSpecular;
+		uint32_t idxNormals;
+		uint8_t  colDiffuse[4];
+		uint8_t  colSpecular[4];
+		float    shininess;
+		uint32_t szThis;
+	} __attribute__ ((packed));
+
+	struct APM_TexHeader
+	{
+		uint32_t idx;
+		uint32_t width;
+		uint32_t height;
+		uint16_t flags;
+	} __attribute__ ((packed));
+
 	struct Object
 	{
 		Model *model;
@@ -64,6 +97,9 @@ private:
 		bool visible;
 		bool collideable;		// true if this is included as a collision model.
 	};
+
+	// A cache to store all loaded entities (from APM files).
+	static map<string, map<string, Object> > apocEntityCache;
 
 	// Maps object names to their descriptions.
 	map<string, Object> objects;
@@ -151,18 +187,28 @@ protected:
 	/**
 	 * \brief Attach this entity to a parent.
 	 *
-	 * This means that this entity will follow its parent and orbit it as it moves, as if this whole
+	 * This means that this entity will follow its parent and orbit it as it rotates, as if this whole
 	 * entity were an object within the parent.
 	 */
 	void attachTo(Entity *parent);
 
 public:
 	/**
-	 * \brief Constructor.
+	 * \brief Deprecated constructor.
 	 * \param defs The model description.
+	 * \deprecated Use the other constructor because OBJ files will soon not be supported!
 	 */
 	Entity(Model::ObjDef *defs);
-	
+
+	/**
+	 * \brief Constructor.
+	 * \param name Name of the entity.
+	 *
+	 * The model file is "Game/Models/<name>.apm". ApocFail() is raised if the model file
+	 * does not exist or is invalid.
+	 */
+	Entity(string entname);
+
 	/**
 	 * \brief Virtual destructor.
 	 */

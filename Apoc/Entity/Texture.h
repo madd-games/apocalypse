@@ -42,6 +42,7 @@ class Texture
 private:
 	static map<string, Texture*> texMap;
 	GLuint texObj;
+	void doLoad(const int width, const int height, void *data, bool allowMipmaps);
 
 public:
 	/**
@@ -79,8 +80,18 @@ public:
 	 * \param width The width of the texture.
 	 * \param height The height of the texture.
 	 * \param filename Name of the texture file (in the path).
+	 * \param allowMipmaps Whether to allow mipmaps or not.
 	 */
 	Texture(const int width, const int height, string filename, bool allowMipmaps = true);
+
+	/**
+	 * \brief Constructor.
+	 * \param width Width of the texture.
+	 * \param height Height of the texture.
+	 * \param data The pixel data.
+	 * \param allowMipmaps Whether to allow mipmaps or not.
+	 */
+	Texture(const int width, const int height, void *data, bool allowMipmaps = true);
 
 	/**
 	 * \brief Destructor.

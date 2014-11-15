@@ -1,6 +1,10 @@
 # entity.py
 # Compiles entities.
 
+# !DEPRECATED!
+# This is not needed with APM, please try to get rid of this file.
+# !DEPRECATED!
+
 import sys, os
 
 from image import compileImage

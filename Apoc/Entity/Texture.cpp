@@ -53,12 +53,8 @@ Texture* Texture::Get(string name)
 	return texMap[name];
 };
 
-Texture::Texture(const int width, const int height, string filename, bool allowMipmaps)
+void Texture::doLoad(const int width, const int height, void *data, bool allowMipmaps)
 {
-	DataFile file(filename);
-	uint8_t *data = new uint8_t[width * height * 4];
-	file.read(data, width * height * 4);
-
 	glEnable(GL_TEXTURE_2D);		// work around AMD bugs, apparently.
 						// (idk, i have nVidia).
 	glGenTextures(1, &texObj);
@@ -68,8 +64,20 @@ Texture::Texture(const int width, const int height, string filename, bool allowM
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+};
 
+Texture::Texture(const int width, const int height, string filename, bool allowMipmaps)
+{
+	DataFile file(filename);
+	uint8_t *data = new uint8_t[width * height * 4];
+	file.read(data, width * height * 4);
+	doLoad(width, height, data, allowMipmaps);
 	delete data;
+};
+
+Texture::Texture(const int width, const int height, void *data, bool allowMipmaps)
+{
+	doLoad(width, height, data, allowMipmaps);
 };
 
 Texture::~Texture()

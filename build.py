@@ -99,29 +99,31 @@ except:
 
 if os.path.isdir("Game/Entities"):
 	for name in os.listdir("Game/Entities"):
-		dirty = False
-		newTable = {}
-		for filename in os.listdir("Game/Entities/%s" % name):
-			mtime = int(os.stat("Game/Entities/%s/%s" % (name, filename)).st_mtime)
-			newTable[filename] = mtime
-			if not entityDiary.has_key(name):
-				dirty = True
-			else:
-				if not entityDiary[name].has_key(filename):
+		if os.path.exists("Game/Entities/%s/model.obj" % name):
+			print "!Entity '%s' uses a deprecated format!" % name
+			dirty = False
+			newTable = {}
+			for filename in os.listdir("Game/Entities/%s" % name):
+				mtime = int(os.stat("Game/Entities/%s/%s" % (name, filename)).st_mtime)
+				newTable[filename] = mtime
+				if not entityDiary.has_key(name):
 					dirty = True
 				else:
-					if entityDiary[name][filename] < mtime:
+					if not entityDiary[name].has_key(filename):
 						dirty = True
+					else:
+						if entityDiary[name][filename] < mtime:
+							dirty = True
 
-		if not cleanTextureNames.has_key(name):
-			dirty = True
+			if not cleanTextureNames.has_key(name):
+				dirty = True
 
-		if dirty:
-			print ">Compile entity %s" % name
-			cleanTextureNames[name] = []
-			compileEntity(name, cleanTextureNames[name])
-			dirtyTextures.extend(cleanTextureNames[name])
-			entityDiary[name] = newTable
+			if dirty:
+				print ">Compile entity %s" % name
+				cleanTextureNames[name] = []
+				compileEntity(name, cleanTextureNames[name])
+				dirtyTextures.extend(cleanTextureNames[name])
+				entityDiary[name] = newTable
 
 if os.path.isdir("Game/Images"):
 	for name in os.listdir("Game/Images"):
@@ -258,8 +260,9 @@ f.write("\n".join(rules))
 f.close()
 
 os.system("mkdir -p Game/Resources")
+os.system("mkdir -p Game/Models")
 print ">Package data as out/%s.tar" % target
-if os.system("tar -cf out/%s.tar gdata Game/Sounds Game/Resources" % target) != 0:
+if os.system("tar -cf out/%s.tar gdata Game/Sounds Game/Resources Game/Models" % target) != 0:
 	print "!BUILD FAILED!"
 if "--no-make" not in sys.argv:
 	sys.exit(os.system("make -f build.mk"))

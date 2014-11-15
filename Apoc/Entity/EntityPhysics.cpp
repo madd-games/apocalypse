@@ -34,6 +34,12 @@ EntityPhysics::EntityPhysics(Model::ObjDef *defs, float mass)
 {
 };
 
+EntityPhysics::EntityPhysics(string entname, float mass)
+	: Entity(entname), velocity(0, 0, 0, 0), phMass(mass), angularVelocity(0, 0, 0, 0),
+	  restitution(0.0)
+{
+};
+
 void EntityPhysics::setRestitution(float rest)
 {
 	restitution = rest;

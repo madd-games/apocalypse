@@ -53,10 +53,17 @@ protected:
 
 public:
 	/**
+	 * \brief (deprecated) Construct the entity.
+	 * \sa Entity
+	 * \deprecated Use the other constructor.
+	 */
+	EntityPhysics(Model::ObjDef *defs, float mass = 1.0);
+
+	/**
 	 * \brief Construct the entity.
 	 * \sa Entity
 	 */
-	EntityPhysics(Model::ObjDef *defs, float mass = 1.0);
+	EntityPhysics(string entname, float mass = 1.0);
 
 	virtual void update();
 

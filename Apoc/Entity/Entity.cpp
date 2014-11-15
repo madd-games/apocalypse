@@ -30,11 +30,21 @@
 #include <Apoc/Physics/CollisionCheck.h>
 #include <inttypes.h>
 #include <Apoc/Video/RenderHandler.h>
+#include <Apoc/Utils/Archive.h>
+#include <string.h>
+#include <iostream>
+#include <stddef.h>
+
+using namespace std;
 
 extern RenderHandler *apocRenderHandler;
+map<string, map<string, Entity::Object> > Entity::apocEntityCache;
 
+// XXX: Don't worry guys, this constructor is going away soon.
 Entity::Entity(Model::ObjDef *defs) : bbDirty(true), shouldRemove(false), isStatic(true), entParent(NULL)
 {
+	cerr << "[APOC] [WARNING] The deprecated Entity constructor was used to load an embedded OBJ file!" << endl;
+
 	modelMatrix = Matrix::Identity();
 
 	while (defs->vertices != NULL)
@@ -83,6 +93,110 @@ Entity::Entity(Model::ObjDef *defs) : bbDirty(true), shouldRemove(false), isStat
 		{
 			it->second.collideable = true;
 		};
+	};
+};
+
+Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(true), entParent(NULL)
+{
+	modelMatrix = Matrix::Identity();
+
+	if (apocEntityCache.count(entname) != 0)
+	{
+		objects = apocEntityCache[entname];
+	}
+	else
+	{
+		DataFile file(string("Game/Models/") + entname + ".apm");
+		uint8_t *data = new uint8_t[file.getSize()];
+		file.read(data, file.getSize());
+
+		APM_Header *header = (APM_Header*) data;
+		if (memcmp(header->magic, "APM", 3) != 0)
+		{
+			ApocFail(string(entname) + " does not have a valid APM file");
+		};
+
+		map<uint32_t, Texture*> modelTextures;
+		uint32_t count = header->numTex;
+		APM_TexHeader *texHeader = (APM_TexHeader*) &data[header->offTex];
+
+		while (count--)
+		{
+			uint8_t *texdata = (uint8_t*) (texHeader+1);
+			modelTextures[texHeader->idx] = new Texture(texHeader->width, texHeader->height, texdata, (texHeader->flags & 1) == 0);
+			texHeader = (APM_TexHeader*) &texdata[4 * texHeader->width * texHeader->height];
+		};
+
+		count = header->numObjDefs;
+		uint8_t *objscan = &data[header->offObjDefs];
+
+		while (count--)
+		{
+			string name((const char*)objscan);
+			objscan += name.size();
+			objscan++;
+			APM_ObjHeader *objHeader = (APM_ObjHeader*) objscan;
+
+			// unroll the vertices
+			Model::Vertex *vertices = new Model::Vertex[objHeader->numVertices];
+			Model::Vertex *vunroll = vertices;
+			uint8_t *mdlv = (uint8_t*) objHeader + objHeader->szThis;
+			uint32_t vcnt = objHeader->numVertices;
+
+			while (vcnt--)
+			{
+				memcpy(vunroll, mdlv, header->szVertex);
+				vunroll++;
+				mdlv += header->szVertex;
+			};
+
+			Object obj;
+			obj.model = new Model(vertices, objHeader->numVertices);
+			obj.matrix = Matrix::Identity();
+			if (objHeader->idxColor != 0)
+			{
+				obj.textures[0] = modelTextures[objHeader->idxColor];
+			};
+			if (objHeader->idxSpecular != 0)
+			{
+				obj.textures[4] = modelTextures[objHeader->idxSpecular];
+			};
+			if (objHeader->idxNormals != 0)
+			{
+				obj.textures[5] = modelTextures[objHeader->idxNormals];
+			};
+			obj.diffuseColor = Vector(
+				(float) objHeader->colDiffuse[0] / 255.0,
+				(float) objHeader->colDiffuse[1] / 255.0,
+				(float) objHeader->colDiffuse[2] / 255.0,
+				(float) objHeader->colDiffuse[3] / 255.0
+			);
+			obj.specularColor = Vector(
+				(float) objHeader->colSpecular[0] / 255.0,
+				(float) objHeader->colSpecular[1] / 255.0,
+				(float) objHeader->colSpecular[2] / 255.0,
+				(float) objHeader->colSpecular[3] / 255.0
+			);
+			obj.shininess = objHeader->shininess;
+			obj.visible = (name != "ApocColl");
+			obj.collideable = (name == "ApocColl");
+			objects[name] = obj;
+
+			objscan = mdlv;
+		};
+
+		delete data;
+
+		if (objects.count("ApocColl") == 0)
+		{
+			map<string, Object>::iterator it;
+			for (it=objects.begin(); it!=objects.end(); ++it)
+			{
+				it->second.collideable = true;
+			};
+		};
+
+		apocEntityCache[entname] = objects;
 	};
 };
 

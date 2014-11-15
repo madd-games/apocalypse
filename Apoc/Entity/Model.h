@@ -56,7 +56,7 @@ public:
 		Vector normal;
 		Vector vtan;
 		Vector utan;
-	};
+	} __attribute__ ((packed));
 	Vertex *data;
 
 	/**
@@ -83,8 +83,7 @@ public:
 	 * \brief Constructor.
 	 * 
 	 * Given a list of vertices and the size, this will create the VAO and VBO to store
-	 * the model on the GPU. The vertices array may be deleted after the Model object is
-	 * constructed.
+	 * the model on the GPU. Do not delete the vertices.
 	 */
 	Model(Vertex *vertices, const int count);
 
