@@ -96,7 +96,6 @@ public:
 	 * \param mass The entity's mass (passed to EntityPhysics).
 	 * \param eye The position of the eye in model space.
 	 * \param ref The point of reference in model space.
-	 * \deprecated Use the other constructor.
 	 */
 	EntityMobile(string entname, float mass, Vector eye, Vector ref);
 

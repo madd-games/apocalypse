@@ -35,6 +35,8 @@
 // 3 = shadow map
 // 4 = specular map
 // 5 = normal map
+// 6 = illumination map
+// 7 = warp map
 
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
@@ -50,6 +52,14 @@ const float defSpecularMapData[] = {
 
 const float defNormalMapData[] = {
 	0.5, 0.5, 1.0, 0.0
+};
+
+const float defIllumMapData[] = {
+	0.0, 0.0, 0.0, 0.0
+};
+
+const float defWarpMapData[] = {
+	0.0, 0.0, 0.0, 1.0,
 };
 
 StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
@@ -103,7 +113,27 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	
+
+	// default illumination map.
+	glGenTextures(1, &defIllumMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, defIllumMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, defIllumMapData);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// default warp map.
+	glGenTextures(1, &defWarpMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, defWarpMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, defWarpMapData);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
 	// the shadowmap framebuffer
 	glGenFramebuffers(1, &shadowFramebuffer);
 	glGenTextures(1, &shadowTex);
@@ -196,6 +226,8 @@ void StandardRenderHandler::render()
 	glUniform1i(getUniformLocation("uShadowMap"), 3);
 	glUniform1i(getUniformLocation("uSpecularMap"), 4);
 	glUniform1i(getUniformLocation("uNormalMap"), 5);
+	glUniform1i(getUniformLocation("uIllumMap"), 6);
+	glUniform1i(getUniformLocation("uWarpMap"), 7);
 	glUniform1i(getUniformLocation("uNumDirLights"), numDirLights);
 	glUniform1i(getUniformLocation("uNumPointLights"), numPointLights);
 	glUniform4fv(getUniformLocation("uFogColor"), 1, &fogColor[0]);
@@ -281,6 +313,10 @@ void StandardRenderHandler::bindDefaultTextures()
 	glBindTexture(GL_TEXTURE_2D, defSpecularMap);
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, defNormalMap);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, defIllumMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, defWarpMap);
 };
 
 void StandardRenderHandler::setAmbientLight(Vector ambient)

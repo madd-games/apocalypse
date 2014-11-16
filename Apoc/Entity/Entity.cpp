@@ -150,6 +150,19 @@ Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(tr
 				mdlv += header->szVertex;
 			};
 
+			uint32_t idxIllumMap = 0;
+			uint32_t idxWarpMap = 0;
+
+			if (objHeader->szThis >= 36)
+			{
+				idxIllumMap = objHeader->idxIllumMap;
+			};
+
+			if (objHeader->szThis >= 40)
+			{
+				idxWarpMap = objHeader->idxWarpMap;
+			};
+
 			Object obj;
 			obj.model = new Model(vertices, objHeader->numVertices);
 			obj.matrix = Matrix::Identity();

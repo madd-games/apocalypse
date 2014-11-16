@@ -54,6 +54,8 @@ private:
 	GLuint defImageTex;
 	GLuint defSpecularMap;
 	GLuint defNormalMap;
+	GLuint defIllumMap;
+	GLuint defWarpMap;
 
 	int screenWidth, screenHeight;
 

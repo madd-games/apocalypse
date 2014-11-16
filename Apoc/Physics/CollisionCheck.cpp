@@ -106,9 +106,20 @@ bool CollisionCheck::SegTri(Vector p0, Vector p1, Vector t0, Vector t1, Vector t
 
 bool CollisionCheck::TriTri(Vector a0, Vector a1, Vector a2, Vector b0, Vector b1, Vector b2)
 {
-	return		SegTri(a0, a1, b0, b1, b2)
+	// fails in some cases FIXME
+	// (sometimes reports true when it shouldn't)
+	// a temporary fix is here but we should probably find better ways of
+	// collision checking anyway.
+
+	return	(	SegTri(a0, a1, b0, b1, b2)
 		||	SegTri(a1, a2, b0, b1, b2)
-		||	SegTri(a2, a0, b0, b1, b2);
+		||	SegTri(a2, a0, b0, b1, b2))
+		&&
+		(
+			SegTri(b0, b1, a0, a1, a2)
+		||	SegTri(b1, b2, a0, a1, a2)
+		||	SegTri(b2, b0, a0, a1, a2)
+		);
 };
 
 bool CollisionCheck::Models(Matrix &mat0, Model *mod0, Matrix &mat1, Model *mod1, bool trans)
@@ -148,6 +159,17 @@ bool CollisionCheck::Models(Matrix &mat0, Model *mod0, Matrix &mat1, Model *mod1
 
 			if (TriTri(a0, a1, a2, b0, b1, b2))
 			{
+#if 0
+				cout << "Triangles colliding: " << endl;
+				cout << "First: " << endl;
+				cout << "\t" << a0 << endl;
+				cout << "\t" << a1 << endl;
+				cout << "\t" << a2 << endl;
+				cout << "Second: " << endl;
+				cout << "\t" << b0 << endl;
+				cout << "\t" << b1 << endl;
+				cout << "\t" << b2 << endl;
+#endif
 				return true;
 			};
 		};
@@ -186,8 +208,9 @@ bool CollisionCheck::Entities(Entity *a, Entity *b)
 					mat1 = b->getModelMatrix() * itB->second.matrix;
 					Model *mod1 = itB->second.model;
 
-					if (Models(mat0, mod0, mat1, mod1, (!a->isStatic) || (!b->isStatic)))
+					if (Models(mat0, mod0, mat1, mod1, true))
 					{
+						//cout << "COLLISION between " << itA->first << " and " << itB->first << endl;
 						return true;
 					};
 				};

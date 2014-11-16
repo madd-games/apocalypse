@@ -74,6 +74,8 @@ private:
 		uint8_t  colSpecular[4];
 		float    shininess;
 		uint32_t szThis;
+		uint32_t idxIllumMap;		// only if (szThis >= 36)
+		uint32_t idxWarpMap;		// only if (szThis >= 40)
 	} __attribute__ ((packed));
 
 	struct APM_TexHeader

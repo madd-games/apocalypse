@@ -46,6 +46,12 @@ uniform sampler2D uSpecularMap;
 // The normal map sampler.
 uniform sampler2D uNormalMap;
 
+// The illumination map sampler.
+uniform sampler2D uIllumMap;
+
+// The warp map sampler.
+uniform sampler2D uWarpMap;
+
 // Directional lights
 // Each light is specified by 3 texels:
 // the light's direction, the diffuse component, and the specular component.
@@ -175,13 +181,14 @@ void main()
 {
 	if (uIsShadowMap == 0)
 	{
+		vec2 texCoords = passTexCoords + vec2(texture(uWarpMap, passTexCoords));
 		vec4 shadowCoord = vec4(((passShadowCoord.x/passShadowCoord.w)+1)/2, ((passShadowCoord.y/passShadowCoord.w)+1)/2,
 					passShadowCoord.z/passShadowCoord.w, 1.0);
 		float depth = texture(uShadowMap, shadowCoord.xy).r;
 
 		vec4 diffuseLight = uAmbientLight;
 		vec4 specularLight = vec4(0.0, 0.0, 0.0, 1.0);
-		vec3 tmpNormalSample = vec3(texture(uNormalMap, passTexCoords)) * vec3(2.0, 2.0, 1.0) + vec3(-1.0, -1.0, 0.0);
+		vec3 tmpNormalSample = vec3(texture(uNormalMap, texCoords)) * vec3(2.0, 2.0, 1.0) + vec3(-1.0, -1.0, 0.0);
 		vec3 normalPolygonSpace = normalize(tmpNormalSample);
 		mat3 normalMatrix = mat3(
 			passVTan,
@@ -208,24 +215,26 @@ void main()
 			specularLight = vec4(0.0, 0.0, 0.0, 1.0);
 		};*/
 
-		diffuseLight = clamp(diffuseLight, 0, 1);
+		vec4 illumination = texture(uIllumMap, texCoords);
+		illumination[3] = 0.0;
+		diffuseLight = clamp(diffuseLight + illumination, 0, 1);
 		specularLight = clamp(specularLight, 0, 1);
 		diffuseLight.w = 1.0;
 		specularLight.w = 1.0;
-		vec4 color = texture(uSampler, passTexCoords) * diffuseLight
-				+ texture(uSpecularMap, passTexCoords) * specularLight;
+		vec4 color = texture(uSampler, texCoords) * diffuseLight
+				+ texture(uSpecularMap, texCoords) * specularLight;
 		vec3 vVertex = vec3(uViewMatrix * passVertex);
 		float fogFactor = clamp(exp2(-uFogDensity * uFogDensity * dot(vVertex, vVertex) * 1.442695), 0, 1);
 		color = mix(uFogColor, color, fogFactor);
 		outColor = color;
 		if (uIsParticle == 1)
 		{
-			outColor = mix(uFogColor, texture(uSampler, passTexCoords), fogFactor);
+			outColor = mix(uFogColor, texture(uSampler, texCoords), fogFactor);
 		}
 		else if (uIsParticle == 2)
 		{
 			// GUI
-			outColor = texture(uSampler, passTexCoords) * uDiffuseColor;
+			outColor = texture(uSampler, texCoords) * uDiffuseColor;
 		};
 
 		if ((uIsParticle == 0) && (uDebugMode != 0))
@@ -236,7 +245,7 @@ void main()
 			}
 			else if (uDebugMode == 2)
 			{
-				outColor = vec4(passTexCoords, 0.0, 1.0);
+				outColor = vec4(texCoords, 0.0, 1.0);
 			}
 			else if (uDebugMode == 3)
 			{
@@ -256,7 +265,7 @@ void main()
 			}
 			else if (uDebugMode == 7)
 			{
-				outColor = uDiffuseColor * texture(uSampler, passTexCoords);
+				outColor = uDiffuseColor * texture(uSampler, texCoords);
 			}
 			else if (uDebugMode == 8)
 			{
