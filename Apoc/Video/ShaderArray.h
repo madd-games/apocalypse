@@ -142,6 +142,19 @@ public:
 		glBindBuffer(GL_TEXTURE_BUFFER, vbo);
 		glBufferSubData(GL_TEXTURE_BUFFER, sizeof(T)*index, sizeof(T), &cpuBuffer[index]);
 	};
+	
+	/**
+	 * \brief Bind this array to the current active texture unit.
+	 * 
+	 * Please note that if you created the texture while the texture unit was active,
+	 * and have not bound or created other arrays to this texture unit afterwards, then
+	 * there is no need to re-bind this array to that unit, even if you update the array
+	 * contents.
+	 */
+	void bind()
+	{
+		glBindTexture(GL_TEXTURE_BUFFER, tex);
+	};
 };
 
 #endif
