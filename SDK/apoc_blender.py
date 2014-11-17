@@ -17,6 +17,7 @@ DEBUG = True
 import bpy
 import struct
 import sys, os
+import json
 from PIL import Image
 
 from bpy.props import (StringProperty,
@@ -118,13 +119,19 @@ class ExportAPM(bpy.types.Operator, ExportHelper):
 			colorIndex = 0
 			specularIndex = 0
 			normalIndex = 0
-			if uvdata is not None:
-				filepath = uvdata[0].image.filepath
+			illumIndex = 0
+			warpIndex = 0
+			try:
+				filepath = obj.active_material.active_texture.image.filepath
 				colorIndex = getTextureIndex(filepath)
 				if filepath.endswith(".png"):
 					basename = filepath[:-4]
 					specularIndex = getTextureIndex(basename+"_spec.png")
 					normalIndex = getTextureIndex(basename+"_normal.png")
+					illumIndex = getTextureIndex(basename+"_illum.png")
+					warpIndex = getTextureIndex(basename+"_warp.png")
+			except:
+				pass
 
 			f.write(struct.pack("I", len(vertices)))		# number of vertices
 			f.write(struct.pack("I", colorIndex))			# index of the color texture
@@ -133,7 +140,9 @@ class ExportAPM(bpy.types.Operator, ExportHelper):
 			f.write(struct.pack("BBBB", *diffuseColor))		# the diffuse color
 			f.write(struct.pack("BBBB", *specularColor))		# the specular color
 			f.write(struct.pack("f", shininess))			# the specular exponent
-			f.write(struct.pack("I", 32))				# size of this structure
+			f.write(struct.pack("I", 40))				# size of this structure
+			f.write(struct.pack("I", illumIndex))			# index of the illumination map
+			f.write(struct.pack("I", warpIndex))			# index of the warp map
 
 			for i, verti in enumerate(vertices):
 				uv = (0.0, 0.0)
@@ -155,9 +164,20 @@ class ExportAPM(bpy.types.Operator, ExportHelper):
 
 		# So yeah, write the texture table.
 		for filepath, index in texIndices.items():
+			texflags = 0
+			if filepath.endswith(".png"):
+				try:
+					jf = open(filepath[:-4]+".json", "r")
+					data = json.load(jf)
+					jf.close()
+					if data["allowMipmaps"] == "false":
+						texflags = texflags | 1
+				except:
+					pass
+
 			img = Image.open(filepath)
 			width, height = img.size
-			f.write(struct.pack("IIIH", index, width, height, 0))
+			f.write(struct.pack("IIIH", index, width, height, texflags))
 
 			for y in range(0, height):
 				for x in range(0, width):
