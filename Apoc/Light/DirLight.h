@@ -24,64 +24,65 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_VIDEO_STANDARD_RENDER_HANDLER_H
-#define APOC_VIDEO_STANDARD_RENDER_HANDLER_H
+#ifndef APOC_DIR_LIGHT_H
+#define APOC_DIR_LIGHT_H
 
+#include <Apoc/Light/Light.h>
 #include <Apoc/Video/RenderHandler.h>
-#include <Apoc/Math/Matrix.h>
 
 /**
- * \brief The standard render handler.
+ * \brief Directional light.
+ *
+ * A directional light glows in a specified direction from everywhere at once, with all light rays being
+ * parallel.
  */
-class StandardRenderHandler : public RenderHandler
+class DirLight : public Light
 {
 private:
-	Vector ambient;
-
-	GLuint shadowFramebuffer;
-	GLuint shadowTex;
-
-	GLuint renderProgram;
-	ShaderArray<RenderHandler::PointLight> *pointLightArray;
 	ShaderArray<RenderHandler::DirLight> *dirLightArray;
-	Matrix lightMatrix;
-
-	// default textures
-	GLuint defImageTex;
-	GLuint defSpecularMap;
-	GLuint defNormalMap;
-	GLuint defIllumMap;
-	GLuint defWarpMap;
-
-	int screenWidth, screenHeight;
-
-	// fog
-	Vector fogColor;
-	float fogDensity;
-
-	int debugMode;
+	RenderHandler::DirLight data;
+	int key;
 
 public:
 	/**
-	 * \brief Standard render params.
+	 * \brief Constructor.
+	 * \param dir Direction in which the last is cast.
+	 * \param diffuse Intensity of the diffuse light source (for each component).
+	 * \param specular Intensity of the specular light source (for each component).
 	 */
-	struct RenderParams
-	{
-		
-	};
+	DirLight(Vector dir, Vector diffuse, Vector specular);
 
-	StandardRenderHandler(int screenWidth, int screenHeight);
-	virtual void render();
-	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
-	virtual GLint getUniformLocation(const char *name);
-	virtual GLint getAttrLocation(const char *name);
-	virtual void bindProgram();
-	virtual ShaderArray<PointLight> *getPointLightArray();
-	virtual ShaderArray<DirLight> *getDirLightArray();
-	virtual void bindDefaultTextures();
-	virtual void setAmbientLight(Vector ambient);
-	virtual void setFog(Vector color, float density);
-	virtual void setDebugMode(int mode);
+	virtual ~DirLight();
+
+	/**
+	 * \brief Set the direction of the light source.
+	 */
+	void setDirection(Vector dir);
+
+	/**
+	 * \brief Get the direction of the light source.
+	 */
+	Vector getDirection();
+
+	/**
+	 * \brief Set the diffuse itensity of the light source.
+	 */
+	void setDiffuse(Vector diffuse);
+
+	/**
+	 * \brief Get the diffuse intensity of the light source.
+	 */
+	Vector getDiffuse();
+
+	/**
+	 * \brief Set the specular intensity of the light source.
+	 */
+	void setSpecular(Vector specular);
+
+	/**
+	 * \brief Get the specular intensity of the light source.
+	 */
+	Vector getSpecular();
 };
 
 #endif

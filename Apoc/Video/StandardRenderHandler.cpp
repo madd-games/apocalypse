@@ -63,26 +63,15 @@ const float defWarpMapData[] = {
 };
 
 StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
-	: numDirLights(0), numPointLights(0), screenWidth(screenWidth), screenHeight(screenHeight),
+	: screenWidth(screenWidth), screenHeight(screenHeight),
 	  ambient(0.1, 0.1, 0.1, 1.0), fogDensity(0.0), debugMode(0)
 {
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 
-	// set up the directional light array buffer.
-	glActiveTexture(GL_TEXTURE1);
-	glGenTextures(1, &dirLightTex);
-	glBindTexture(GL_TEXTURE_BUFFER, dirLightTex);
-	glGenBuffers(1, &dirLightBuffer);
-	glBindBuffer(GL_TEXTURE_BUFFER, dirLightBuffer);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, dirLightBuffer);
-
-	// set up the point light array buffer.
 	glActiveTexture(GL_TEXTURE2);
-	glGenTextures(1, &pointLightTex);
-	glBindTexture(GL_TEXTURE_BUFFER, pointLightTex);
-	glGenBuffers(1, &pointLightBuffer);
-	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, pointLightBuffer);
+	pointLightArray = new ShaderArray<RenderHandler::PointLight>();
+	glActiveTexture(GL_TEXTURE1);
+	dirLightArray = new ShaderArray<RenderHandler::DirLight>();
 
 	// default image texture.
 	glGenTextures(1, &defImageTex);
@@ -228,8 +217,8 @@ void StandardRenderHandler::render()
 	glUniform1i(getUniformLocation("uNormalMap"), 5);
 	glUniform1i(getUniformLocation("uIllumMap"), 6);
 	glUniform1i(getUniformLocation("uWarpMap"), 7);
-	glUniform1i(getUniformLocation("uNumDirLights"), numDirLights);
-	glUniform1i(getUniformLocation("uNumPointLights"), numPointLights);
+	glUniform1i(getUniformLocation("uNumDirLights"), dirLightArray->count());
+	glUniform1i(getUniformLocation("uNumPointLights"), pointLightArray->count());
 	glUniform4fv(getUniformLocation("uFogColor"), 1, &fogColor[0]);
 	glUniform1f(getUniformLocation("uFogDensity"), fogDensity);
 	glUniform1i(getUniformLocation("uDebugMode"), debugMode);
@@ -269,40 +258,14 @@ void StandardRenderHandler::bindProgram()
 	glUniform4f(getUniformLocation("uAmbientLight"), 0.1, 0.1, 0.1, 1.0);
 };
 
-void StandardRenderHandler::setDirLights(RenderHandler::DirLight *array, int count)
+ShaderArray<RenderHandler::PointLight>* StandardRenderHandler::getPointLightArray()
 {
-	glBindBuffer(GL_TEXTURE_BUFFER, dirLightBuffer);
-	glBufferData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::DirLight)*count, array, GL_DYNAMIC_COPY);
-	numDirLights = count;
+	return pointLightArray;
 };
 
-void StandardRenderHandler::updateDirLights(RenderHandler::DirLight *array, int index, int count)
+ShaderArray<RenderHandler::DirLight>* StandardRenderHandler::getDirLightArray()
 {
-	while (glGetError() != GL_NO_ERROR);
-	glBindBuffer(GL_TEXTURE_BUFFER, dirLightBuffer);
-	glBufferSubData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::DirLight)*index, sizeof(RenderHandler::DirLight)*count, &array[index]);
-	if (glGetError() != GL_NO_ERROR)
-	{
-		ApocFail("updateDirLights(): setDirLights() was not previously called, or the new array is out of bounds of the previous array");
-	};
-};
-
-void StandardRenderHandler::setPointLights(RenderHandler::PointLight *array, int count)
-{
-	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
-	glBufferData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::PointLight)*count, array, GL_DYNAMIC_COPY);
-	numPointLights = count;
-};
-
-void StandardRenderHandler::updatePointLights(RenderHandler::PointLight *array, int index, int count)
-{
-	while (glGetError() != GL_NO_ERROR);
-	glBindBuffer(GL_TEXTURE_BUFFER, pointLightBuffer);
-	glBufferSubData(GL_TEXTURE_BUFFER, sizeof(RenderHandler::PointLight)*index, sizeof(RenderHandler::PointLight)*count, &array[index]);
-	if (glGetError() != GL_NO_ERROR)
-	{
-		ApocFail("updatePointLights(): setPointLights() was not previously called, or the new array is out of bounds of the previous array");
-	};
+	return dirLightArray;
 };
 
 void StandardRenderHandler::bindDefaultTextures()

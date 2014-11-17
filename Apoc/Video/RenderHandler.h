@@ -29,6 +29,7 @@
 
 #include <Apoc/Video/OpenGL.h>
 #include <Apoc/Math/Vector.h>
+#include <Apoc/Video/ShaderArray.h>
 
 #include <string>
 
@@ -75,45 +76,17 @@ public:
 		DBG_NUM_MODES = 9,
 	};
 
-	/**
-	 * \brief An element of the directional light array.
-	 */
 	struct DirLight
 	{
-		/**
-		 * \brief The direction in which the light is cast.
-		 */
 		Vector dir;
-
-		/**
-		 * \brief The diffuse component of the light.
-		 */
 		Vector diffuse;
-
-		/**
-		 * \brief The specular component of the light.
-		 */
 		Vector specular;
 	};
 
-	/**
-	 * \brief An element of the point light array.
-	 */
 	struct PointLight
 	{
-		/**
-		 * \brief The position of the light source.
-		 */
 		Vector pos;
-
-		/**
-		 * \brief The diffuse component of the light.
-		 */
 		Vector diffuse;
-
-		/**
-		 * \brief The specular component of the light.
-		 */
 		Vector specular;
 	};
 
@@ -154,40 +127,18 @@ public:
 	virtual void bindProgram() = 0;
 
 	/**
-	 * \brief Set the array of directional lights.
-	 * \param array The array.
-	 * \param count The number of lights.
-	 */
-	virtual void setDirLights(DirLight *array, int count) = 0;
-
-	/**
-	 * \brief Modify part of the directional lights array.
-	 * \param array The array to copy from.
-	 * \param index Index of the first element to copy.
-	 * \param count Number of lights from index to copy.
+	 * \brief Do not use directly.
 	 *
-	 * Raises an ApocFail() if setDirLights() was not previously called,
-	 * or the new array is out of bounds of the previous array.
+	 * Returns a ShaderArray of point lights. Use the PointLight class to wrap around this.
 	 */
-	virtual void updateDirLights(DirLight *array, int index, int count) = 0;
+	virtual ShaderArray<PointLight> *getPointLightArray() = 0;
 
 	/**
-	 * \brief Set the array of point lights.
-	 * \param array The array.
-	 * \param count The number of lights.
-	 */
-	virtual void setPointLights(PointLight *array, int count) = 0;
-
-	/**
-	 * \brief Modify part of the point lights array.
-	 * \param array The array to copy from.
-	 * \param index Index of the first element to copy.
-	 * \param count Number of lights from index to copy.
+	 * \brief Do not use directly.
 	 *
-	 * Raises an ApocFail() if setPointLights() was not previously called,
-	 * or the new array is out of bounds of the previous array.
+	 * Returns a ShaderArray of directional lights. Use the DirLight class to wrap around this.
 	 */
-	virtual void updatePointLights(PointLight *array, int index, int count) = 0;
+	virtual ShaderArray<DirLight> *getDirLightArray() = 0;
 
 	/**
 	 * \brief Binds all the defaults textures.

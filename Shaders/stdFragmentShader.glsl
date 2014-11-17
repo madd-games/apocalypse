@@ -221,11 +221,10 @@ void main()
 		specularLight = clamp(specularLight, 0, 1);
 		diffuseLight.w = 1.0;
 		specularLight.w = 1.0;
-		vec4 color = texture(uSampler, texCoords) * diffuseLight
-				+ texture(uSpecularMap, texCoords) * specularLight;
 		vec3 vVertex = vec3(uViewMatrix * passVertex);
 		float fogFactor = clamp(exp2(-uFogDensity * uFogDensity * dot(vVertex, vVertex) * 1.442695), 0, 1);
-		color = mix(uFogColor, color, fogFactor);
+		vec4 color = mix(uFogColor, texture(uSampler, texCoords), fogFactor) * diffuseLight
+				+ texture(uSpecularMap, texCoords) * specularLight;
 		outColor = color;
 		if (uIsParticle == 1)
 		{

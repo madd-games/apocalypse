@@ -29,6 +29,7 @@
 
 #include <Apoc/Video/OpenGL.h>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -154,6 +155,14 @@ public:
 	void bind()
 	{
 		glBindTexture(GL_TEXTURE_BUFFER, tex);
+	};
+
+	/**
+	 * \brief Return the number of elements in this array.
+	 */
+	int count()
+	{
+		return (int) cpuBuffer.size();
 	};
 };
 

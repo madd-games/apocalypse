@@ -24,64 +24,65 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_VIDEO_STANDARD_RENDER_HANDLER_H
-#define APOC_VIDEO_STANDARD_RENDER_HANDLER_H
+#ifndef APOC_POINT_LIGHT_H
+#define APOC_POINT_LIGHT_H
 
+#include <Apoc/Light/Light.h>
 #include <Apoc/Video/RenderHandler.h>
-#include <Apoc/Math/Matrix.h>
 
 /**
- * \brief The standard render handler.
+ * \brief Point light.
+ *
+ * A point light glows from a specified point in space and its intensity is inversely
+ * proportional to the distance from the source.
  */
-class StandardRenderHandler : public RenderHandler
+class PointLight : public Light
 {
 private:
-	Vector ambient;
-
-	GLuint shadowFramebuffer;
-	GLuint shadowTex;
-
-	GLuint renderProgram;
 	ShaderArray<RenderHandler::PointLight> *pointLightArray;
-	ShaderArray<RenderHandler::DirLight> *dirLightArray;
-	Matrix lightMatrix;
-
-	// default textures
-	GLuint defImageTex;
-	GLuint defSpecularMap;
-	GLuint defNormalMap;
-	GLuint defIllumMap;
-	GLuint defWarpMap;
-
-	int screenWidth, screenHeight;
-
-	// fog
-	Vector fogColor;
-	float fogDensity;
-
-	int debugMode;
+	RenderHandler::PointLight data;
+	int key;
 
 public:
 	/**
-	 * \brief Standard render params.
+	 * \brief Constructor.
+	 * \param pos Position of the source.
+	 * \param diffuse Intensity of the diffuse light source (for each component).
+	 * \param specular Intensity of the specular light source (for each component).
 	 */
-	struct RenderParams
-	{
-		
-	};
+	PointLight(Vector pos, Vector diffuse, Vector specular);
 
-	StandardRenderHandler(int screenWidth, int screenHeight);
-	virtual void render();
-	virtual void getAttrLocations(GLint &attrVertex, GLint &attrTexCoords, GLint &attrNormal);
-	virtual GLint getUniformLocation(const char *name);
-	virtual GLint getAttrLocation(const char *name);
-	virtual void bindProgram();
-	virtual ShaderArray<PointLight> *getPointLightArray();
-	virtual ShaderArray<DirLight> *getDirLightArray();
-	virtual void bindDefaultTextures();
-	virtual void setAmbientLight(Vector ambient);
-	virtual void setFog(Vector color, float density);
-	virtual void setDebugMode(int mode);
+	virtual ~PointLight();
+
+	/**
+	 * \brief Set the position of the light source.
+	 */
+	void setPosition(Vector pos);
+
+	/**
+	 * \brief Get the position of the light source.
+	 */
+	Vector getPosition();
+
+	/**
+	 * \brief Set the diffuse itensity of the light source.
+	 */
+	void setDiffuse(Vector diffuse);
+
+	/**
+	 * \brief Get the diffuse intensity of the light source.
+	 */
+	Vector getDiffuse();
+
+	/**
+	 * \brief Set the specular intensity of the light source.
+	 */
+	void setSpecular(Vector specular);
+
+	/**
+	 * \brief Get the specular intensity of the light source.
+	 */
+	Vector getSpecular();
 };
 
 #endif

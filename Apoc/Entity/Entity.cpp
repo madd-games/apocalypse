@@ -178,6 +178,14 @@ Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(tr
 			{
 				obj.textures[5] = modelTextures[objHeader->idxNormals];
 			};
+			if (idxIllumMap != 0)
+			{
+				obj.textures[6] = modelTextures[idxIllumMap];
+			};
+			if (idxWarpMap != 0)
+			{
+				obj.textures[7] = modelTextures[idxWarpMap];
+			};
 			obj.diffuseColor = Vector(
 				(float) objHeader->colDiffuse[0] / 255.0,
 				(float) objHeader->colDiffuse[1] / 255.0,
