@@ -22,6 +22,8 @@ is used to optimize the engine.
 Building
 ========
 
+Building this package required GCC 4.8.2 at the very least, because some older versions fail to understand all of GCC Vector Extensions in C++.
+
 Currently, all successful builds happened on Linux and Windows systems, targetting Linux and Windows. The building is done by Python using the `build.py` script, which has the following usage:
 
 `build.py [target] [--option=value]`

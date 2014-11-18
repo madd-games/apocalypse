@@ -37,9 +37,6 @@ Vector Vector::Origin(0, 0, 0, 1);
 
 Vector::Vector()
 {
-#ifdef __GNUC__
-	coords = (float*) &coordsVector;
-#endif
 	coords[0] = 0.0;
 	coords[1] = 0.0;
 	coords[2] = 0.0;
@@ -48,9 +45,6 @@ Vector::Vector()
 
 Vector::Vector(float x, float y)
 {
-#ifdef __GNUC__
-	coords = (float*) &coordsVector;
-#endif
 	coords[0] = x;
 	coords[1] = y;
 	coords[2] = 0.0;
@@ -59,9 +53,6 @@ Vector::Vector(float x, float y)
 
 Vector::Vector(float x, float y, float z)
 {
-#ifdef __GNUC__
-	coords = (float*) &coordsVector;
-#endif
 	coords[0] = x;
 	coords[1] = y;
 	coords[2] = z;
@@ -70,9 +61,6 @@ Vector::Vector(float x, float y, float z)
 
 Vector::Vector(float x, float y, float z, float w)
 {
-#ifdef __GNUC__
-	coords = (float*) &coordsVector;
-#endif
 	coords[0] = x;
 	coords[1] = y;
 	coords[2] = z;
@@ -81,9 +69,6 @@ Vector::Vector(float x, float y, float z, float w)
 
 Vector::Vector(const Vector &vec)
 {
-#ifdef __GNUC__
-	coords = (float*) &coordsVector;
-#endif
 	int i;
 	for (i=0; i<4; i++)
 	{
@@ -119,7 +104,7 @@ float& Vector::operator[](int i)
 Vector& Vector::operator=(Vector vec)
 {
 #ifdef __GNUC__
-	coordsVector = vec.coordsVector;
+	coords = vec.coords;
 #else
 	int i;
 	for (i=0; i<4; i++)
@@ -134,7 +119,7 @@ Vector Vector::operator+(Vector b)
 {
 	Vector out;
 #ifdef __GNUC__
-	out.coordsVector = coordsVector + b.coordsVector;
+	out.coords = coords + b.coords;
 #else
 	int i;
 	for (i=0; i<4; i++)
@@ -149,7 +134,7 @@ Vector Vector::operator-(Vector b)
 {
 	Vector out;
 #ifdef __GNUC__
-	out.coordsVector = coordsVector - b.coordsVector;
+	out.coords = coords - b.coords;
 #else
 	int i;
 	for (i=0; i<4; i++)
@@ -164,7 +149,7 @@ Vector Vector::operator*(Vector b)
 {
 	Vector out;
 #ifdef __GNUC__
-	out.coordsVector = coordsVector * b.coordsVector;
+	out.coords = coords * b.coords;
 #else
 	int i;
 	for (i=0; i<4; i++)
@@ -179,7 +164,7 @@ Vector Vector::operator/(Vector b)
 {
 	Vector out;
 #ifdef __GNUC__
-	out.coordsVector = coordsVector / b.coordsVector;
+	out.coords = coords / b.coords;
 #else
 	int i;
 	for (i=0; i<4; i++)
@@ -192,12 +177,9 @@ Vector Vector::operator/(Vector b)
 
 Vector Vector::operator*(float x)
 {
-	// for some reason this won't work on Windows (MingW-W64).
-	// don't even ask me why, we should probably make this feature linux-only,
-	// not too much optimization here anyway, but still.
-#if 0
+#ifdef __GNUC__
 	Vector out;
-	out.coordsVector = coordsVector * x;
+	out.coords = coords * x;
 	return out;
 #else
 	return Vector(coords[0]*x, coords[1]*x, coords[2]*x, coords[3]*x);
@@ -208,7 +190,7 @@ Vector Vector::operator-()
 {
 #ifdef __GNUC__
 	Vector out;
-	out.coordsVector = -coordsVector;
+	out.coords = -coords;
 	return out;
 #else
 	return Vector(-coords[0], -coords[1], -coords[2], coords[3]);
@@ -246,9 +228,8 @@ bool Vector::operator!=(const Vector b)
 float Vector::dot(Vector b)
 {
 #ifdef __GNUC__
-	NativeVector v = coordsVector * b.coordsVector;
-	float *vc = (float*) &vc;
-	return vc[0] + vc[1] + vc[2] + vc[3];
+	NativeVector v = coords * b.coords;
+	return v[0] + v[1] + v[2] + v[3];
 #else
 	float out = 0.0;
 	int i;
@@ -264,7 +245,7 @@ float Vector::dot(Vector b)
 Vector Vector::cross(Vector b)
 {
 	Vector out;
-#if defined(__GNUC__) && defined(__builtin_shuffle)
+#ifdef __GNUC__
 	out.coords = (__builtin_shuffle(coords, MaskYZX) * __builtin_shuffle(b.coords, MaskZXY))
 			- (__builtin_shuffle(coords, MaskZXY) * __builtin_shuffle(b.coords, MaskYZX));
 #else

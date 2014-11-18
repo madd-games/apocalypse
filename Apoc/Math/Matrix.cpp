@@ -103,7 +103,7 @@ Vector& Matrix::operator[](int i)
 Matrix Matrix::transpose()
 {
 	Matrix out;
-#if defined(__GNUC__) && defined(__builtin_shuffle)
+#ifdef __GNUC__
 	*out.natColumns = __builtin_shuffle(*natColumns, MaskTranspose);
 #else
 	int i, j;
