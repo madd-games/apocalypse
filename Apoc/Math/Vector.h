@@ -42,9 +42,10 @@ private:
 #ifdef __GNUC__
 	typedef float NativeVector __attribute__ ((vector_size(4*sizeof(float))));
 	typedef int Mask __attribute__ ((vector_size(4*sizeof(int))));
-	NativeVector coords;
+	NativeVector coordsVector;
 	static Mask MaskYZX;
 	static Mask MaskZXY;
+	float *coords;
 #else
 	float coords[4];
 #endif

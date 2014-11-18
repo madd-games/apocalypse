@@ -1,0 +1,8 @@
+%DEPFILE%: %CPPFILE%
+	@echo ^>Parse $<
+	@$(CXX) -M $(CFLAGS) $< > $@.$$$$
+	@sed "s,%REPLACE%[ :]*,%OBJFILE% $@ : ,g" < $@.$$$$ > $@
+
+%OBJFILE%: %CPPFILE%
+	@echo ^>Compile $<
+	@$(CXX) -c $< -o $@ $(CFLAGS)

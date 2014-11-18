@@ -3,6 +3,10 @@
 import sys, os
 import pickle
 
+system_suffix = ">/dev/null 2>&1"
+if sys.platform.startswith("win"):
+        system_suffix = "2>NUL"
+
 def getCompiler():
 	print ">Deciding what C++ compiler to use"
 	compiler = "g++"
@@ -21,7 +25,7 @@ def checkWindows(cpp_compiler):
 	f.write("#endif\n")
 	f.close()
 
-	if os.system("%s -c temp.cpp -o temp.o >/dev/null 2>&1" % cpp_compiler) == 0:
+	if os.system("%s -c temp.cpp -o temp.o %s" % (cpp_compiler, system_suffix)) == 0:
 		print "--Detected Windows"
 		return True
 	else:
@@ -38,7 +42,7 @@ def checkForOpenCL(cpp_compiler):
 	f.write("#endif\n")
 	f.close()
 
-	opencl_enable = ((os.system("%s -c temp.cpp -o temp.o >/dev/null 2>&1" % cpp_compiler) == 0) and ("--enable-cl" in sys.argv))
+	opencl_enable = ((os.system("%s -c temp.cpp -o temp.o %s" % (cpp_compiler, system_suffix)) == 0) and ("--enable-cl" in sys.argv))
 	if opencl_enable:
 		print "--OpenCL enabled"
 	else:
@@ -50,12 +54,25 @@ def checkForOpenAL(cpp_compiler):
 	f = open("temp.cpp", "wb")
 	f.write("#include <AL/alut.h>")
 	f.close()
-	openal_enable = ((os.system("%s -c temp.cpp -o temp.o >/dev/null 2>&1" % cpp_compiler) == 0) and ("--disable-al" not in sys.argv))
+	openal_enable = ((os.system("%s -c temp.cpp -o temp.o %s" % (cpp_compiler, system_suffix)) == 0) and ("--disable-al" not in sys.argv))
 	if openal_enable:
 		print "--OpenAL enabled"
 	else:
 		print "--!OpenAL disabled!"
 	return openal_enable
+
+def getSystemRoot():
+	# The Windows corss-compilation system root.
+	# Must be explicitly specified on native Windows builds!
+	for par in sys.argv:
+		if par.startswith("--sysroot="):
+			return par[len("--sysroot="):]
+
+	if sys.platform.startswith("win"):
+		print "!You must specify the --sysroot= option on native Windows builds!"
+		sys.exit(1)
+	else:
+		return "/usr/i686-w64-mingw32"
 
 def loadSystemInfo(target):
 	sysinfo = {}
@@ -77,6 +94,9 @@ def loadSystemInfo(target):
 
 	if not sysinfo.has_key("openal_enable"):
 		sysinfo["openal_enable"] = checkForOpenAL(sysinfo["cpp_compiler"])
+
+	if not sysinfo.has_key("sysroot"):
+		sysinfo["sysroot"] = getSystemRoot()
 
 	f = open("build-%s/sys.info" % target, "wb")
 	pickle.dump(sysinfo, f)

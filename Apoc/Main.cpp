@@ -50,6 +50,7 @@
 #include <math.h>
 #include <string>
 #include <iostream>
+#include <fstream>
 
 #ifndef M_PI
 #define M_PI 3.14159265359
@@ -73,6 +74,38 @@ extern Entity *entTest;
 
 int main(int argc, char *argv[])
 {
+	bool allowCL = true;
+	int i;
+	for (i=1; i<argc; i++)
+	{
+		string str = argv[i];
+		if (str == "--no-cl")
+		{
+			allowCL = false;
+		}
+		else if (str.substr(0, 6) == "--log=")
+		{
+			string filename = str.substr(6);
+			ofstream *ofs = new ofstream(filename.c_str());
+			if (ofs->fail())
+			{
+				return 1;
+			};
+
+			cout.rdbuf(ofs->rdbuf());
+			cerr.rdbuf(ofs->rdbuf());
+		}
+		else if (str.substr(str.size()-4, 4) == ".tar")
+		{
+			ApocAddToPath(str);
+		}
+		else
+		{
+			cerr << "[APOC] Unrecognised command-line option: " << str << endl;
+			return 1;
+		};
+	};
+
 	cout << "[APOC] Starting" << endl;
 #ifdef CLIENT
 #ifdef __GNUC__
@@ -89,26 +122,6 @@ int main(int argc, char *argv[])
 #else
 	cout << "[APOC] [AUDIO] OpenAL was disabled at compile-time" << endl;
 #endif
-
-	bool allowCL = true;
-	int i;
-	for (i=1; i<argc; i++)
-	{
-		string str = argv[i];
-		if (str == "--no-cl")
-		{
-			allowCL = false;
-		}
-		else if (str.substr(str.size()-4, 4) == ".tar")
-		{
-			ApocAddToPath(str);
-		}
-		else
-		{
-			cerr << "[APOC] Unrecognised command-line option: " << str << endl;
-			return 1;
-		};
-	};
 
 #ifdef ENABLE_OPENAL
 	cout << "[APOC] Loading sounds" << endl;

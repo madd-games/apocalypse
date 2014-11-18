@@ -35,14 +35,26 @@ from scripts.sysinfo import loadSystemInfo
 from scripts.kernel import compileKernels
 import json
 
+# Figure out which OS we are building on.
+# NOTE: Don't bother porting deprecated stuff to Windows unless we really have to.
+system = "linux"
+if sys.platform.startswith("win"):
+        system = "windows"
+
 target = "client"
 if len(sys.argv) > 1:
 	target = sys.argv[1]
 
-os.system("mkdir -p build-%s" % target)
-os.system("mkdir -p out")
-os.system("mkdir -p cpptemp")
-os.system("mkdir -p gdata")
+def makeDir(name):
+        if system == "linux":
+                os.system("mkdir -p %s" % name)
+        else:
+                os.system("MD " + name.replace("/", "\\") + " 2>NUL")
+
+makeDir("build-%s" % target)
+makeDir("out")
+makeDir("cpptemp")
+makeDir("gdata")
 
 objectFiles = []
 
@@ -65,7 +77,7 @@ def listfiles(dirname):
 		elif path.endswith(".cpp"):
 			files.append(path)
 
-os.system("mkdir -p Game")
+makeDir("Game")
 if not os.path.exists("Game/GameImpl.h"):
 	f = open("Game/GameImpl.h", "wb")
 	f.write("#ifndef GAME_IMPL_H\n")
@@ -188,7 +200,7 @@ for filename in os.listdir("gdata"):
 		print ">Delete gdata/%s" % filename
 		os.system("rm gdata/%s" % filename)
 
-os.system("mkdir -p Game/Sounds")
+makeDir("Game/Sounds")
 f = open("cpptemp/SoundList.cpp", "wb")
 f.write("#include <stdlib.h>\n\n")
 f.write("const char *apocSoundList[] = {\n")
@@ -200,7 +212,10 @@ f.close()
 
 listfiles("cpptemp")
 
-f = open("build.rule", "rb")
+rulefile = "linux.rule"
+if sys.platform.startswith("win"):
+	rulefile = "windows.rule"
+f = open(rulefile, "rb")
 rule = f.read()
 f.close()
 
@@ -231,9 +246,12 @@ def makeRule(cppfile):
 for filename in files:
 	makeRule(filename)
 
+libdirs = "-L" + sysinfo["sysroot"] + "/lib"
+incdirs = "-I" + sysinfo["sysroot"] + "/include/SDL2"
+
 if sysinfo["is_windows"]:
-	sdl_ldflags="-static -L/usr/i686-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -mwindows -Wl,--no-undefined -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion -luuid -static-libgcc -lglew -lopengl32"
-	sdl_cflags="-I/usr/i686-w64-mingw32/include/SDL2 -DGLEW_STATIC"
+	sdl_ldflags="-static " + libdirs + " -lmingw32 -lSDL2main -lSDL2 -mwindows -Wl,--no-undefined -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lshell32 -lversion -luuid -static-libgcc -lglew -lopengl32"
+	sdl_cflags=incdirs + " -DGLEW_STATIC"
 else:
 	sdl_ldflags="-L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread -lm -ldl -lrt  -lGLEW -lGL"
 	sdl_cflags="-I/usr/local/include/SDL2 -D_REENTRANT"
@@ -254,15 +272,22 @@ f.write("all: out/%s\n" % target)
 f.write("-include $(DEPFILES)\n")
 f.write("\n")
 f.write("out/%s: $(OBJFILES)\n" % target)
-f.write("\t@echo \">Link $@\"\n")
+if sys.platform.startswith("win"):
+	f.write("\t@echo ^>Link $@\n")
+else:
+	f.write("\t@echo \">Link $@\"\n")
 f.write("\t@$(CXX) -o $@ $(OBJFILES) $(LDFLAGS)\n")
 f.write("\n".join(rules))
 f.close()
 
-os.system("mkdir -p Game/Resources")
-os.system("mkdir -p Game/Models")
+makeDir("Game/Resources")
+makeDir("Game/Models")
 print ">Package data as out/%s.tar" % target
 if os.system("tar -cf out/%s.tar gdata Game/Sounds Game/Resources Game/Models" % target) != 0:
 	print "!BUILD FAILED!"
+	sys.exit(1)
 if "--no-make" not in sys.argv:
-	sys.exit(os.system("make -f build.mk"))
+	make = "make"
+	if sys.platform.startswith("win"):
+		make = "mingw32-make"
+	sys.exit(os.system("%s -f build.mk" % make))
