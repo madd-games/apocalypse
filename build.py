@@ -260,6 +260,10 @@ if sysinfo["openal_enable"]:
 	sdl_cflags += " -DENABLE_OPENAL"
 	sdl_ldflags += " -lalut -lopenal"
 
+exe = ""
+if sysinfo["is_windows"]:
+	exe = ".exe"
+
 f = open("build.mk", "wb")
 f.write("CXX=%s\n" % sysinfo["cpp_compiler"])
 f.write("CFLAGS=-D_USE_MATH_DEFINES -w -D%s -I. %s -ggdb %s -std=c++11\n" % (target.upper(), sdl_cflags, ccopencl))
@@ -268,10 +272,10 @@ f.write("DEPFILES=%s\n" % " ".join(depFiles))
 f.write("OBJFILES=%s\n" % " ".join(objectFiles))
 f.write("\n")
 f.write(".PHONY: all\n")
-f.write("all: out/%s\n" % target)
+f.write("all: out/%s%s\n" % (target, exe))
 f.write("-include $(DEPFILES)\n")
 f.write("\n")
-f.write("out/%s: $(OBJFILES)\n" % target)
+f.write("out/%s%s: $(OBJFILES)\n" % (target, exe))
 if sys.platform.startswith("win"):
 	f.write("\t@echo ^>Link $@\n")
 else:
