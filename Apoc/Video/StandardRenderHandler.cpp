@@ -64,7 +64,7 @@ const float defWarpMapData[] = {
 
 StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	: screenWidth(screenWidth), screenHeight(screenHeight),
-	  ambient(0.1, 0.1, 0.1, 1.0), fogDensity(0.0), debugMode(0)
+	  ambient(1.0, 1.0, 1.0, 1.0), fogDensity(0.0), debugMode(0)
 {
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 
