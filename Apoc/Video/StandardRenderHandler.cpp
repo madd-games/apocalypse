@@ -37,6 +37,7 @@
 // 5 = normal map
 // 6 = illumination map
 // 7 = warp map
+// 8 = spot light array
 
 extern "C" const char *stdVertexShader;
 extern "C" const char *stdFragmentShader;
@@ -72,6 +73,8 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	pointLightArray = new ShaderArray<RenderHandler::PointLight>();
 	glActiveTexture(GL_TEXTURE1);
 	dirLightArray = new ShaderArray<RenderHandler::DirLight>();
+	glActiveTexture(GL_TEXTURE8);
+	spotLightArray = new ShaderArray<RenderHandler::SpotLight>();
 
 	// default image texture.
 	glGenTextures(1, &defImageTex);
@@ -212,6 +215,7 @@ void StandardRenderHandler::render()
 	glUniform4fv(getUniformLocation("uAmbientLight"), 1, &ambient[0]);
 	glUniform1i(getUniformLocation("uDirLightArray"), 1);
 	glUniform1i(getUniformLocation("uPointLightArray"), 2);
+	glUniform1i(getUniformLocation("uSpotLightArray"), 8);
 	glUniform1i(getUniformLocation("uShadowMap"), 3);
 	glUniform1i(getUniformLocation("uSpecularMap"), 4);
 	glUniform1i(getUniformLocation("uNormalMap"), 5);
@@ -219,6 +223,7 @@ void StandardRenderHandler::render()
 	glUniform1i(getUniformLocation("uWarpMap"), 7);
 	glUniform1i(getUniformLocation("uNumDirLights"), dirLightArray->count());
 	glUniform1i(getUniformLocation("uNumPointLights"), pointLightArray->count());
+	glUniform1i(getUniformLocation("uNumSpotLights"), spotLightArray->count());
 	glUniform4fv(getUniformLocation("uFogColor"), 1, &fogColor[0]);
 	glUniform1f(getUniformLocation("uFogDensity"), fogDensity);
 	glUniform1i(getUniformLocation("uDebugMode"), debugMode);
@@ -266,6 +271,11 @@ ShaderArray<RenderHandler::PointLight>* StandardRenderHandler::getPointLightArra
 ShaderArray<RenderHandler::DirLight>* StandardRenderHandler::getDirLightArray()
 {
 	return dirLightArray;
+};
+
+ShaderArray<RenderHandler::SpotLight>* StandardRenderHandler::getSpotLightArray()
+{
+	return spotLightArray;
 };
 
 void StandardRenderHandler::bindDefaultTextures()

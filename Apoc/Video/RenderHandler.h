@@ -95,8 +95,7 @@ public:
 		Vector pos;
 		Vector diffuse;
 		Vector specular;
-		Vector axis;
-		float cosAngle;
+		Vector axisAndCosAngle;		// first 3 elements = the axis vector, fourth = cos(angle).
 	};
 
 	/**
