@@ -90,7 +90,7 @@ public:
 		Vector specular;
 	};
 	
-	struct Spotlight
+	struct SpotLight
 	{
 		Vector pos;
 		Vector diffuse;
@@ -154,7 +154,7 @@ public:
 	 * 
 	 * Returns a ShaderArray of spotlights. Use the Spotlight class to wrap around this.
 	 */
-	virtual ShaderArray<Spotlight> *getSpotlightArray() = 0;
+	virtual ShaderArray<SpotLight> *getSpotLightArray() = 0;
 	
 	/**
 	 * \brief Binds all the defaults textures.
