@@ -89,6 +89,15 @@ public:
 		Vector diffuse;
 		Vector specular;
 	};
+	
+	struct Spotlight
+	{
+		Vector pos;
+		Vector diffuse;
+		Vector specular;
+		Vector axis;
+		float cosAngle;
+	};
 
 	/**
 	 * \brief Constructor.
@@ -140,6 +149,13 @@ public:
 	 */
 	virtual ShaderArray<DirLight> *getDirLightArray() = 0;
 
+	/**
+	 * \brief Do not use directly.
+	 * 
+	 * Returns a ShaderArray of spotlights. Use the Spotlight class to wrap around this.
+	 */
+	virtual ShaderArray<Spotlight> *getSpotlightArray() = 0;
+	
 	/**
 	 * \brief Binds all the defaults textures.
 	 */
