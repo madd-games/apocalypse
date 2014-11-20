@@ -79,6 +79,7 @@ public:
 	virtual void bindProgram();
 	virtual ShaderArray<PointLight> *getPointLightArray();
 	virtual ShaderArray<DirLight> *getDirLightArray();
+	virtual ShaderArray<SpotLight> *getSpotLightArray();
 	virtual void bindDefaultTextures();
 	virtual void setAmbientLight(Vector ambient);
 	virtual void setFog(Vector color, float density);
