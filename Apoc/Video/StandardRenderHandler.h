@@ -44,6 +44,7 @@ private:
 	GLuint renderProgram;
 	ShaderArray<RenderHandler::PointLight> *pointLightArray;
 	ShaderArray<RenderHandler::DirLight> *dirLightArray;
+	ShaderArray<RenderHandler::SpotLight> *spotLightArray;
 	Matrix lightMatrix;
 
 	// default textures
