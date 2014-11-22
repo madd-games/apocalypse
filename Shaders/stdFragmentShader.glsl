@@ -60,9 +60,16 @@ uniform int uNumDirLights;
 
 // Points lights
 // Each light is specified by 3 texels:
-// the light's source position, the diffuse component, and the specular component.
+// the light source's position, the diffuse component, and the specular component.
 uniform samplerBuffer uPointLightArray;
 uniform int uNumPointLights;
+
+// Spot lights
+// Each light is specified by 4 texels:
+// the light source's position, the diffuse component, the specular component, and a vector V,
+// where the first 3 components specify the axis vector, and the fourth is cos(angle).
+uniform samplerBuffer uSpotLightArray;
+uniform int uNumSpotLights;
 
 // This is 1 for shadow maps.
 uniform int uIsShadowMap;
@@ -177,6 +184,64 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 	specularLight += specular;
 };
 
+// SPOT LIGHTS
+vec4 getSpotLightPos(in int i)
+{
+	return texelFetch(uSpotLightArray, (4*i));
+};
+
+vec4 getSpotLightDiffuse(in int i)
+{
+	return texelFetch(uSpotLightArray, (4*i)+1);
+};
+
+vec4 getSpotLightSpecular(in int i)
+{
+	return texelFetch(uSpotLightArray, (4*i)+2);
+};
+
+vec4 getSpotLightAxisAndCosAngle(in int i)
+{
+	return texelFetch(uSpotLightArray, (4*i)+3);
+};
+
+void computeSpotLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout vec4 specularLight)
+{
+	vec4 lightToPoint = passVertex - getSpotLightPos(i);
+	vec3 lightDir = -normalize(lightToPoint.xyz);
+
+	vec4 axisAndCosAngle = getSpotLightAxisAndCosAngle(i);
+	vec3 axis = axisAndCosAngle.xyz;				// already normalized by the CPU
+	float cosAngle = axisAndCosAngle[3];
+	float cosAngleFromLight = dot(axis, normalize(lightToPoint.xyz));
+	if (cosAngle > cosAngleFromLight)
+	{
+		return;
+	};
+
+	float factor = cosAngleFromLight / (length(lightToPoint) * length(lightToPoint));
+
+	float NdotL = max(dot(normalize(normal), lightDir), 0.0);
+	vec4 specular = vec4(0.0);
+	if (NdotL > 0.0)
+	{
+		vec3 eye = vec3(uEyePos - passVertex);
+		vec3 hv = normalize(eye - lightDir);
+		float NdotHV = max(dot(normal, hv), 0.0);
+		// we must assume that 0^0 = 1.
+		if (uShininess == 0.0)
+		{
+			specular = factor * uSpecularColor * getSpotLightSpecular(i);
+		}
+		else
+		{
+			specular = factor * pow(NdotHV, uShininess) * uSpecularColor * getSpotLightSpecular(i);
+		};
+	};
+	diffuseLight += factor * NdotL * uDiffuseColor * getSpotLightDiffuse(i);
+	specularLight += specular;
+};
+
 void main()
 {
 	if (uIsShadowMap == 0)
@@ -206,6 +271,10 @@ void main()
 		for (i=0; i<uNumPointLights; i++)
 		{
 			computePointLight(i, normal, diffuseLight, specularLight);
+		};
+		for (i=0; i<uNumSpotLights; i++)
+		{
+			computeSpotLight(i, normal, diffuseLight, specularLight);
 		};
 
 		/*bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);

@@ -74,3 +74,8 @@ Vector PointLight::getSpecular()
 {
 	return data.specular;
 };
+
+void PointLight::transform(Matrix mat)
+{
+	setPosition(mat * getPosition());
+};

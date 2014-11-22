@@ -24,45 +24,48 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_DIR_LIGHT_H
-#define APOC_DIR_LIGHT_H
+#ifndef APOC_SPOT_LIGHT_H
+#define APOC_SPOT_LIGHT_H
 
 #include <Apoc/Light/Light.h>
 #include <Apoc/Video/RenderHandler.h>
 
 /**
- * \brief Directional light.
+ * \brief Spot light.
  *
- * A directional light glows in a specified direction from everywhere at once, with all light rays being
- * parallel.
+ * A point light glows from a specified point in space and its intensity is inversely
+ * proportional to the distance from the source. Also, it only casts the light up to a
+ * certain angle from the specified axis vector.
  */
-class DirLight : public Light
+class SpotLight : public Light
 {
 private:
-	ShaderArray<RenderHandler::DirLight> *dirLightArray;
-	RenderHandler::DirLight data;
+	ShaderArray<RenderHandler::SpotLight> *spotLightArray;
+	RenderHandler::SpotLight data;
 	int key;
 
 public:
 	/**
 	 * \brief Constructor.
-	 * \param dir Direction in which the last is cast.
+	 * \param pos Position of the source.
 	 * \param diffuse Intensity of the diffuse light source (for each component).
 	 * \param specular Intensity of the specular light source (for each component).
+	 * \param axis The axis (a line on which the center of each space of light resides).
+	 * \param angle The angle (in radians) from the axis line to cast the light.
 	 */
-	DirLight(Vector dir, Vector diffuse, Vector specular);
+	SpotLight(Vector pos, Vector diffuse, Vector specular, Vector axis, float angle);
 
-	virtual ~DirLight();
-
-	/**
-	 * \brief Set the direction of the light source.
-	 */
-	void setDirection(Vector dir);
+	virtual ~SpotLight();
 
 	/**
-	 * \brief Get the direction of the light source.
+	 * \brief Set the position of the light source.
 	 */
-	Vector getDirection();
+	void setPosition(Vector pos);
+
+	/**
+	 * \brief Get the position of the light source.
+	 */
+	Vector getPosition();
 
 	/**
 	 * \brief Set the diffuse itensity of the light source.
@@ -83,6 +86,26 @@ public:
 	 * \brief Get the specular intensity of the light source.
 	 */
 	Vector getSpecular();
+
+	/**
+	 * \brief Change the axis vector.
+	 */
+	void setAxis(Vector axis);
+
+	/**
+	 * \brief Get the axis vector.
+	 */
+	Vector getAxis();
+
+	/**
+	 * \brief Set the angle.
+	 */
+	void setAngle(float angle);
+
+	/**
+	 * \brief Get the angle.
+	 */
+	float getAngle();
 
 	virtual void transform(Matrix mat);
 };

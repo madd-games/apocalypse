@@ -83,6 +83,8 @@ public:
 	 * \brief Get the specular intensity of the light source.
 	 */
 	Vector getSpecular();
+
+	virtual void transform(Matrix mat);
 };
 
 #endif

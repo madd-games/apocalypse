@@ -24,58 +24,86 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <Apoc/Light/DirLight.h>
+#include <Apoc/Light/SpotLight.h>
+#include <math.h>
 
 extern RenderHandler *apocRenderHandler;
 
-DirLight::DirLight(Vector dir, Vector diffuse, Vector specular)
+SpotLight::SpotLight(Vector pos, Vector diffuse, Vector specular, Vector axis, float angle)
 {
-	dirLightArray = apocRenderHandler->getDirLightArray();
-	data.dir = dir;
+	spotLightArray = apocRenderHandler->getSpotLightArray();
+	data.pos = pos;
 	data.diffuse = diffuse;
 	data.specular = specular;
-	key = dirLightArray->add(data);
+	axis = axis.normalize();
+	data.axisAndCosAngle = Vector(axis[0], axis[1], axis[2], cos(angle));
+	key = spotLightArray->add(data);
 };
 
-DirLight::~DirLight()
+SpotLight::~SpotLight()
 {
-	dirLightArray->remove(key);
+	spotLightArray->remove(key);
 };
 
-void DirLight::setDirection(Vector dir)
+void SpotLight::setPosition(Vector pos)
 {
-	data.dir = dir;
-	dirLightArray->set(key, data);
+	data.pos = pos;
+	spotLightArray->set(key, data);
 };
 
-Vector DirLight::getDirection()
+Vector SpotLight::getPosition()
 {
-	return data.dir;
+	return data.pos;
 };
 
-void DirLight::setDiffuse(Vector diffuse)
+void SpotLight::setDiffuse(Vector diffuse)
 {
 	data.diffuse = diffuse;
-	dirLightArray->set(key, data);
+	spotLightArray->set(key, data);
 };
 
-Vector DirLight::getDiffuse()
+Vector SpotLight::getDiffuse()
 {
 	return data.diffuse;
 };
 
-void DirLight::setSpecular(Vector specular)
+void SpotLight::setSpecular(Vector specular)
 {
 	data.specular = specular;
-	dirLightArray->set(key, data);
+	spotLightArray->set(key, data);
 };
 
-Vector DirLight::getSpecular()
+Vector SpotLight::getSpecular()
 {
 	return data.specular;
 };
 
-void DirLight::transform(Matrix mat)
+void SpotLight::setAxis(Vector axis)
 {
-	setDirection(mat * getDirection());
+	axis = axis.normalize();
+	data.axisAndCosAngle[0] = axis[0];
+	data.axisAndCosAngle[1] = axis[1];
+	data.axisAndCosAngle[2] = axis[2];
+	spotLightArray->set(key, data);
+};
+
+Vector SpotLight::getAxis()
+{
+	return Vector(data.axisAndCosAngle[0], data.axisAndCosAngle[1], data.axisAndCosAngle[2], 0);
+};
+
+void SpotLight::setAngle(float angle)
+{
+	data.axisAndCosAngle[3] = cos(angle);
+};
+
+float SpotLight::getAngle()
+{
+	return acos(data.axisAndCosAngle[3]);
+};
+
+void SpotLight::transform(Matrix mat)
+{
+	setPosition(mat * getPosition());
+	setAxis(mat * getAxis());
 };
