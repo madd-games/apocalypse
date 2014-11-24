@@ -68,6 +68,7 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	  ambient(1.0, 1.0, 1.0, 1.0), fogDensity(0.0), debugMode(0)
 {
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
+	glUseProgram(renderProgram);
 
 	glActiveTexture(GL_TEXTURE2);
 	pointLightArray = new ShaderArray<RenderHandler::PointLight>();
@@ -168,6 +169,8 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 		ApocFail("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS");
 		break;
 	};
+
+	setAttenuation(Vector(0, 0, 1));
 
 	Matrix view = Matrix::LookAt(
 		Vector(0.0, -0.1, -1.0),
@@ -306,4 +309,9 @@ void StandardRenderHandler::setFog(Vector color, float density)
 void StandardRenderHandler::setDebugMode(int mode)
 {
 	debugMode = mode;
+};
+
+void StandardRenderHandler::setAttenuation(Vector att)
+{
+	glUniform3fv(getUniformLocation("uAttFactor"), 1, &att[0]);
 };

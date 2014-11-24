@@ -174,6 +174,16 @@ public:
 	 * \brief Change the debugging mode.
 	 */
 	virtual void setDebugMode(int mode) = 0;
+
+	/**
+	 * \brief Set the attenuation factors.
+	 * \param att A vector of attenuation factors.
+	 *
+	 * The first component of <i>att</i> is the constant attenutation factor, the second one is
+	 * the linear attenuation factor, and the third one is the quadratic attenuation factor.
+	 * The fourth component is ignored. The default value is (0, 0, 1).
+	 */
+	virtual void setAttenuation(Vector att) = 0;
 };
 
 #endif

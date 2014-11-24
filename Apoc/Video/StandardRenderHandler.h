@@ -84,6 +84,7 @@ public:
 	virtual void setAmbientLight(Vector ambient);
 	virtual void setFog(Vector color, float density);
 	virtual void setDebugMode(int mode);
+	virtual void setAttenuation(Vector att);
 };
 
 #endif

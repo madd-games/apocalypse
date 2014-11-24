@@ -28,6 +28,7 @@
 uniform sampler2D uSampler;
 
 uniform vec4 uAmbientLight;
+uniform vec3 uAttFactor;
 
 uniform vec4 uDiffuseColor;
 uniform vec4 uSpecularColor;
@@ -161,7 +162,8 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 	vec4 lightToPoint = passVertex - getPointLight(i);
 	vec3 lightDir = -normalize(lightToPoint.xyz);
 
-	float factor = 1.0 / (length(lightToPoint) * length(lightToPoint));
+	float l = length(lightToPoint);
+	float factor = 1.0 / (uAttFactor[0] + uAttFactor[1] * l + uAttFactor[2] * l * l);
 
 	float NdotL = max(dot(normalize(normal), lightDir), 0.0);
 	vec4 specular = vec4(0.0);
@@ -219,7 +221,8 @@ void computeSpotLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout v
 		return;
 	};
 
-	float factor = cosAngleFromLight / (length(lightToPoint) * length(lightToPoint));
+	float l = length(lightToPoint);
+	float factor = cosAngleFromLight / (uAttFactor[0] + uAttFactor[1] * l + uAttFactor[2] * l * l);
 
 	float NdotL = max(dot(normalize(normal), lightDir), 0.0);
 	vec4 specular = vec4(0.0);
