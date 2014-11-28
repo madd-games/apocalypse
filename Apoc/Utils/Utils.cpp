@@ -40,17 +40,11 @@ extern int   apocDeltaTime;
 
 void ApocFailImpl(string filename, int line, string msg)
 {
-//	SDL_Quit();
 	stringstream ss;
 	ss << filename << ":" << line << ": " << msg;
-/*
-#ifdef _WIN32
-	MessageBox(NULL, ss.str().c_str(), "ApocFail", MB_OK | MB_ICONHAND);
-#else
-	cerr << ss.str() << endl;
-#endif
-*/
+	cerr << "[APOC] [FAIL] " << ss.str() << endl;
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ApocFail", ss.str().c_str(), NULL);
+	SDL_Quit();
 	exit(1);
 };
 
