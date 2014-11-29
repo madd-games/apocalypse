@@ -168,3 +168,20 @@ void World::addField(Field *field)
 {
 	fields.push_back(field);
 };
+
+vector<Entity*> World::findWithinRadius(Vector pos, float r)
+{
+	vector<Entity*> output;
+	vector<Entity*>::iterator it;
+
+	for (it=entities.begin(); it!=entities.end(); ++it)
+	{
+		Vector center = (*it)->getModelMatrix()[3];
+		if ((pos-center).length() <= r)
+		{
+			output.push_back(*it);
+		};
+	};
+
+	return output;
+};

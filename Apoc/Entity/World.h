@@ -92,6 +92,11 @@ public:
 	 */
 	static void addField(Field *field);
 
+	/**
+	 * \brief Return a vector of entities within radius r from the specified position.
+	 */
+	static vector<Entity*> findWithinRadius(Vector pos, float r);
+
 	friend class Entity;
 	friend class EntityPhysics;
 };
