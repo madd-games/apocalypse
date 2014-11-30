@@ -116,9 +116,9 @@ void World::render(bool setMatrix)
 		else
 		{
 			viewMatrix = Matrix::LookAt(
-				Vector(0.0, 2.0, -10.0),
+				Vector(0.0, 0.0, 0.0),
 				Vector(0.0, 1.0, 0.0),
-				Vector(0.0, 0.0, 0.0)
+				Vector(0.0, 0.0, 1.0)
 			);
 		};
 
