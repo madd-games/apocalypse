@@ -34,6 +34,7 @@ PointLight::PointLight(Vector pos, Vector diffuse, Vector specular)
 	data.pos = pos;
 	data.diffuse = diffuse;
 	data.specular = specular;
+	matrix = Matrix::Identity();
 	key = pointLightArray->add(data);
 };
 
@@ -42,10 +43,19 @@ PointLight::~PointLight()
 	pointLightArray->remove(key);
 };
 
+void PointLight::set()
+{
+	RenderHandler::PointLight tdata;
+	tdata.pos = matrix * data.pos;
+	tdata.diffuse = data.diffuse;
+	tdata.specular = data.specular;
+	pointLightArray->set(key, tdata);
+};
+
 void PointLight::setPosition(Vector pos)
 {
 	data.pos = pos;
-	pointLightArray->set(key, data);
+	set();
 };
 
 Vector PointLight::getPosition()
@@ -56,7 +66,7 @@ Vector PointLight::getPosition()
 void PointLight::setDiffuse(Vector diffuse)
 {
 	data.diffuse = diffuse;
-	pointLightArray->set(key, data);
+	set();
 };
 
 Vector PointLight::getDiffuse()
@@ -67,7 +77,7 @@ Vector PointLight::getDiffuse()
 void PointLight::setSpecular(Vector specular)
 {
 	data.specular = specular;
-	pointLightArray->set(key, data);
+	set();
 };
 
 Vector PointLight::getSpecular()
@@ -77,5 +87,6 @@ Vector PointLight::getSpecular()
 
 void PointLight::transform(Matrix mat)
 {
-	setPosition(mat * getPosition());
+	matrix = mat;
+	set();
 };

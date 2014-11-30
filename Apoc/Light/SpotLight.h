@@ -42,7 +42,9 @@ class SpotLight : public Light
 private:
 	ShaderArray<RenderHandler::SpotLight> *spotLightArray;
 	RenderHandler::SpotLight data;
+	Matrix matrix;
 	int key;
+	void set();
 
 public:
 	/**

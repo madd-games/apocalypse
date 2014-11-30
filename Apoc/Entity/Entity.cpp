@@ -237,6 +237,12 @@ void Entity::transform(string obj, Matrix mat)
 	};
 	bbDirty = true;
 	isStatic = false;
+
+	vector<IBindable*>::iterator it;
+	for (it=boundList.begin(); it!=boundList.end(); ++it)
+	{
+		(*it)->transform(getModelMatrix());
+	};
 };
 
 void Entity::preTransform(string obj, Matrix mat)
@@ -251,6 +257,12 @@ void Entity::preTransform(string obj, Matrix mat)
 	};
 	bbDirty = true;
 	isStatic = false;
+
+	vector<IBindable*>::iterator it;
+	for (it=boundList.begin(); it!=boundList.end(); ++it)
+	{
+		(*it)->transform(getModelMatrix());
+	};
 };
 
 Matrix Entity::getModelMatrix()
@@ -327,6 +339,12 @@ void Entity::markForRemoval()
 void Entity::attachTo(Entity *parent)
 {
 	entParent = parent;
+};
+
+void Entity::bind(IBindable *obj)
+{
+	obj->transform(getModelMatrix());
+	boundList.push_back(obj);
 };
 
 void Entity::unmangleVectors(Vector &a, Vector &b)

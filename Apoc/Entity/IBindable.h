@@ -24,69 +24,22 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef APOC_DIR_LIGHT_H
-#define APOC_DIR_LIGHT_H
+#ifndef APOC_ENTITY_IBINDABLE_H
+#define APOC_ENTITY_IBINDABLE_H
 
-#include <Apoc/Light/Light.h>
-#include <Apoc/Video/RenderHandler.h>
+#include <Apoc/Math/Matrix.h>
 
 /**
- * \brief Directional light.
- *
- * A directional light glows in a specified direction from everywhere at once, with all light rays being
- * parallel.
+ * \brief Base class for things that can be bound to entities.
  */
-class DirLight : public Light
+class IBindable
 {
-private:
-	ShaderArray<RenderHandler::DirLight> *dirLightArray;
-	RenderHandler::DirLight data;
-	int key;
-	Matrix matrix;
-	void set();
-
 public:
 	/**
-	 * \brief Constructor.
-	 * \param dir Direction in which the last is cast.
-	 * \param diffuse Intensity of the diffuse light source (for each component).
-	 * \param specular Intensity of the specular light source (for each component).
+	 * \brief Report that the entity has been transformed.
+	 * \param mat The new model matrix.
 	 */
-	DirLight(Vector dir, Vector diffuse, Vector specular);
-
-	virtual ~DirLight();
-
-	/**
-	 * \brief Set the direction of the light source.
-	 */
-	void setDirection(Vector dir);
-
-	/**
-	 * \brief Get the direction of the light source.
-	 */
-	Vector getDirection();
-
-	/**
-	 * \brief Set the diffuse itensity of the light source.
-	 */
-	void setDiffuse(Vector diffuse);
-
-	/**
-	 * \brief Get the diffuse intensity of the light source.
-	 */
-	Vector getDiffuse();
-
-	/**
-	 * \brief Set the specular intensity of the light source.
-	 */
-	void setSpecular(Vector specular);
-
-	/**
-	 * \brief Get the specular intensity of the light source.
-	 */
-	Vector getSpecular();
-
-	virtual void transform(Matrix mat);
+	virtual void transform(Matrix mat) = 0;
 };
 
 #endif

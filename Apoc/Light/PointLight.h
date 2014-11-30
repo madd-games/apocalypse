@@ -41,7 +41,9 @@ class PointLight : public Light
 private:
 	ShaderArray<RenderHandler::PointLight> *pointLightArray;
 	RenderHandler::PointLight data;
+	Matrix matrix;
 	int key;
+	void set();
 
 public:
 	/**

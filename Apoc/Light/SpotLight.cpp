@@ -37,6 +37,7 @@ SpotLight::SpotLight(Vector pos, Vector diffuse, Vector specular, Vector axis, f
 	data.specular = specular;
 	axis = axis.normalize();
 	data.axisAndCosAngle = Vector(axis[0], axis[1], axis[2], cos(angle));
+	matrix = Matrix::Identity();
 	key = spotLightArray->add(data);
 };
 
@@ -45,10 +46,23 @@ SpotLight::~SpotLight()
 	spotLightArray->remove(key);
 };
 
+void SpotLight::set()
+{
+	RenderHandler::SpotLight tdata;
+	tdata.pos = matrix * data.pos;
+	tdata.diffuse = data.diffuse;
+	tdata.specular = data.specular;
+	Vector axis = data.axisAndCosAngle;
+	axis[3] = 0.0;
+	tdata.axisAndCosAngle = matrix * axis;
+	tdata.axisAndCosAngle[3] = data.axisAndCosAngle[3];
+	spotLightArray->set(key, tdata);
+};
+
 void SpotLight::setPosition(Vector pos)
 {
 	data.pos = pos;
-	spotLightArray->set(key, data);
+	set();
 };
 
 Vector SpotLight::getPosition()
@@ -59,7 +73,7 @@ Vector SpotLight::getPosition()
 void SpotLight::setDiffuse(Vector diffuse)
 {
 	data.diffuse = diffuse;
-	spotLightArray->set(key, data);
+	set();
 };
 
 Vector SpotLight::getDiffuse()
@@ -84,7 +98,7 @@ void SpotLight::setAxis(Vector axis)
 	data.axisAndCosAngle[0] = axis[0];
 	data.axisAndCosAngle[1] = axis[1];
 	data.axisAndCosAngle[2] = axis[2];
-	spotLightArray->set(key, data);
+	set();
 };
 
 Vector SpotLight::getAxis()
@@ -95,6 +109,7 @@ Vector SpotLight::getAxis()
 void SpotLight::setAngle(float angle)
 {
 	data.axisAndCosAngle[3] = cos(angle);
+	set();
 };
 
 float SpotLight::getAngle()
@@ -104,6 +119,6 @@ float SpotLight::getAngle()
 
 void SpotLight::transform(Matrix mat)
 {
-	setPosition(mat * getPosition());
-	setAxis(mat * getAxis());
+	matrix = mat;
+	set();
 };

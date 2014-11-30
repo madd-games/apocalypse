@@ -29,6 +29,7 @@
 
 #include <Apoc/Entity/Model.h>
 #include <Apoc/Entity/Texture.h>
+#include <Apoc/Entity/IBindable.h>
 #include <Apoc/Math/Matrix.h>
 #include <Apoc/Video/OpenGL.h>
 
@@ -119,6 +120,9 @@ private:
 	// the parent entity (a child is always in it's parent's model space).
 	Entity *entParent;
 
+	// objects bound to this entity.
+	vector<IBindable*> boundList;
+
 protected:
 	/**
 	 * \brief Transform the entity or a single object with a matrix.
@@ -193,6 +197,11 @@ protected:
 	 * entity were an object within the parent.
 	 */
 	void attachTo(Entity *parent);
+
+	/**
+	 * \brief Bind an object to this entity.
+	 */
+	void bind(IBindable *obj);
 
 public:
 	/**

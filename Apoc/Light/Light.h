@@ -27,23 +27,16 @@
 #ifndef APOC_LIGHT_H
 #define APOC_LIGHT_H
 
+#include <Apoc/Entity/IBindable.h>
 #include <Apoc/Math/Matrix.h>
 
 /**
  * \brief Abstract light source.
  */
-class Light
+class Light : public IBindable
 {
 public:
 	virtual ~Light();
-
-	/**
-	 * \brief Transform this light source.
-	 *
-	 * The matrix passed as an argument is used to move all points and rotate all vectors of this light
-	 * source. The matrix itself is usually not stored.
-	 */
-	virtual void transform(Matrix mat) = 0;
 };
 
 #endif

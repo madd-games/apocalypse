@@ -34,6 +34,7 @@ DirLight::DirLight(Vector dir, Vector diffuse, Vector specular)
 	data.dir = dir;
 	data.diffuse = diffuse;
 	data.specular = specular;
+	matrix = Matrix::Identity();
 	key = dirLightArray->add(data);
 };
 
@@ -42,10 +43,19 @@ DirLight::~DirLight()
 	dirLightArray->remove(key);
 };
 
+void DirLight::set()
+{
+	RenderHandler::DirLight tdata;
+	tdata.dir = matrix * data.dir;
+	tdata.diffuse = data.diffuse;
+	tdata.specular = data.specular;
+	dirLightArray->set(key, data);
+};
+
 void DirLight::setDirection(Vector dir)
 {
 	data.dir = dir;
-	dirLightArray->set(key, data);
+	set();
 };
 
 Vector DirLight::getDirection()
@@ -56,7 +66,7 @@ Vector DirLight::getDirection()
 void DirLight::setDiffuse(Vector diffuse)
 {
 	data.diffuse = diffuse;
-	dirLightArray->set(key, data);
+	set();
 };
 
 Vector DirLight::getDiffuse()
@@ -67,7 +77,7 @@ Vector DirLight::getDiffuse()
 void DirLight::setSpecular(Vector specular)
 {
 	data.specular = specular;
-	dirLightArray->set(key, data);
+	set();
 };
 
 Vector DirLight::getSpecular()
@@ -77,5 +87,6 @@ Vector DirLight::getSpecular()
 
 void DirLight::transform(Matrix mat)
 {
-	setDirection(mat * getDirection());
+	matrix = mat;
+	set();
 };
