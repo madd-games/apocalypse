@@ -104,17 +104,17 @@ vec3 getLightDir(in int i)
 {
 	vec4 sub = texelFetch(uDirLightArray, (3*i));
 	return sub.xyz;
-}
+};
 
 vec4 getDirLightDiffuse(in int i)
 {
 	return texelFetch(uDirLightArray, (3*i)+1);
-}
+};
 
 vec4 getDirLightSpecular(in int i)
 {
 	return texelFetch(uDirLightArray, (3*i)+2);
-}
+};
 
 void computeDirLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout vec4 specularLight)
 {
@@ -134,28 +134,28 @@ void computeDirLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout ve
 		else
 		{
 			specular = pow(NdotHV, uShininess) * uSpecularColor * getDirLightSpecular(i);
-		}
-	}
+		};
+	};
 	diffuseLight += NdotL * uDiffuseColor * getDirLightDiffuse(i);
 	specularLight += specular;
-}
+};
 
 // POINT LIGHTS
 
 vec4 getPointLight(in int i)
 {
 	return texelFetch(uPointLightArray, (3*i));
-}
+};
 
 vec4 getPointLightDiffuse(in int i)
 {
 	return texelFetch(uPointLightArray, (3*i)+1);
-}
+};
 
 vec4 getPointLightSpecular(in int i)
 {
 	return texelFetch(uPointLightArray, (3*i)+2);
-}
+};
 
 void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout vec4 specularLight)
 {
@@ -180,32 +180,32 @@ void computePointLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout 
 		else
 		{
 			specular = factor * pow(NdotHV, uShininess) * uSpecularColor * getPointLightSpecular(i);
-		}
-	}
+		};
+	};
 	diffuseLight += factor * NdotL * uDiffuseColor * getPointLightDiffuse(i);
 	specularLight += specular;
-}
+};
 
 // SPOT LIGHTS
 vec4 getSpotLightPos(in int i)
 {
 	return texelFetch(uSpotLightArray, (4*i));
-}
+};
 
 vec4 getSpotLightDiffuse(in int i)
 {
 	return texelFetch(uSpotLightArray, (4*i)+1);
-}
+};
 
 vec4 getSpotLightSpecular(in int i)
 {
 	return texelFetch(uSpotLightArray, (4*i)+2);
-}
+};
 
 vec4 getSpotLightAxisAndCosAngle(in int i)
 {
 	return texelFetch(uSpotLightArray, (4*i)+3);
-}
+};
 
 void computeSpotLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout vec4 specularLight)
 {
@@ -219,7 +219,7 @@ void computeSpotLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout v
 	if (cosAngle > cosAngleFromLight)
 	{
 		return;
-	}
+	};
 
 	float l = length(lightToPoint);
 	float factor = cosAngleFromLight / (uAttFactor[0] + uAttFactor[1] * l + uAttFactor[2] * l * l);
@@ -239,11 +239,11 @@ void computeSpotLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout v
 		else
 		{
 			specular = factor * pow(NdotHV, uShininess) * uSpecularColor * getSpotLightSpecular(i);
-		}
-	}
+		};
+	};
 	diffuseLight += factor * NdotL * uDiffuseColor * getSpotLightDiffuse(i);
 	specularLight += specular;
-}
+};
 
 void main()
 {
@@ -270,15 +270,15 @@ void main()
 		for (i=0; i<uNumDirLights; i++)
 		{
 			computeDirLight(i, normal, diffuseLight, specularLight);
-		}
+		};
 		for (i=0; i<uNumPointLights; i++)
 		{
 			computePointLight(i, normal, diffuseLight, specularLight);
-		}
+		};
 		for (i=0; i<uNumSpotLights; i++)
 		{
 			computeSpotLight(i, normal, diffuseLight, specularLight);
-		}
+		};
 
 		/*bool withinTex = (shadowCoord.x > 0) && (shadowCoord.x < 1) && (shadowCoord.y > 0) && (shadowCoord.y < 1);
 		if ((depth-0.005) < shadowCoord.z && withinTex)
@@ -306,7 +306,7 @@ void main()
 		{
 			// GUI
 			outColor = texture(uSampler, texCoords) * uDiffuseColor;
-		}
+		};
 
 		if ((uIsParticle == 0) && (uDebugMode != 0))
 		{
@@ -341,12 +341,12 @@ void main()
 			else if (uDebugMode == 8)
 			{
 				outColor = (passVertex + vec4(10.0, 10.0, 10.0, 0.0)) * vec4(0.05, 0.05, 0.05, 1.0);
-			}
-		}
+			};
+		};
 	}
 	else
 	{
 		float z = passFragCoord.z;
 		outColor = vec4(z, z, z, 1.0);
-	}
-}
+	};
+};

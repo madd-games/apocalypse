@@ -254,7 +254,7 @@ if sysinfo["is_windows"]:
 	sdl_cflags=incdirs + " -DGLEW_STATIC"
 else:
 	sdl_ldflags="-L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL2 -lpthread -lm -ldl -lrt  -lGLEW -lGL"
-	sdl_cflags="-I/usr/local/include/SDL2 -D_REENTRANT"
+	sdl_cflags="-I/usr/include/SDL2 -D_REENTRANT"
 
 if sysinfo["openal_enable"]:
 	sdl_cflags += " -DENABLE_OPENAL"

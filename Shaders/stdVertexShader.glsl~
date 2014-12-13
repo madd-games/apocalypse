@@ -57,7 +57,7 @@ void main()
 	{
 		// For overlays, we use uModelMatrix as the texture coordinates matrix.
 		passTexCoords = vec2(uModelMatrix * vec4(inTexCoords, 0.0, 1.0));
-	}
+	};
 	passNormal = inNormal;
 	passShadowCoord = uLightMatrix * uModelMatrix * uObjectMatrix * inVertex;
 	passVTan = inVTan;
@@ -66,7 +66,7 @@ void main()
 	if (uIsParticle == 2)
 	{
 		fragCoord = uProjectionMatrix * uViewMatrix * inVertex;
-	}
+	};
 	if (uIsParticle == 1)
 	{
 		float xradius = 0.025;
@@ -90,9 +90,9 @@ void main()
 		{
 			fragCoord += vec4(xradius, yradius, 0.0, 0.0);
 			passTexCoords = vec2(1.0, 1.0);
-		}
-	}
+		};
+	};
 
 	passFragCoord = fragCoord;
 	gl_Position = fragCoord;
-}
+};
