@@ -24,71 +24,22 @@
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <Game/GameImpl.h>
+#include <Game/Entity/EntityWall.h>
+#include <Apoc/Entity/World.h>
+#include <Apoc/Light/SpotLight.h>
 #include <Apoc/Light/PointLight.h>
+#include <Apoc/Light/DirLight.h>
 
 extern RenderHandler *apocRenderHandler;
 
-PointLight::PointLight(Vector pos, Vector diffuse, Vector specular)
+void GameImpl::onGameStart()
 {
-	pointLightArray = apocRenderHandler->getPointLightArray();
-	data.pos = pos;
-	data.diffuse = diffuse;
-	data.specular = specular;
-	matrix = Matrix::Identity();
-	cout << "Adding diffuse: " << data.diffuse << endl;
-	key = pointLightArray->add(data);
-};
+	World::addEntity(new EntityWall());
+	apocRenderHandler->setAmbientLight(Vector(0.1, 0.1, 0.1));
 
-PointLight::~PointLight()
-{
-	pointLightArray->remove(key);
-};
-
-void PointLight::set()
-{
-	RenderHandler::PointLight tdata;
-	tdata.pos = matrix * data.pos;
-	tdata.diffuse = data.diffuse;
-	tdata.specular = data.specular;
-	cout << "Diffuse: " << tdata.diffuse << endl;
-	pointLightArray->set(key, tdata);
-};
-
-void PointLight::setPosition(Vector pos)
-{
-	data.pos = pos;
-	set();
-};
-
-Vector PointLight::getPosition()
-{
-	return data.pos;
-};
-
-void PointLight::setDiffuse(Vector diffuse)
-{
-	data.diffuse = diffuse;
-	set();
-};
-
-Vector PointLight::getDiffuse()
-{
-	return data.diffuse;
-};
-
-void PointLight::setSpecular(Vector specular)
-{
-	data.specular = specular;
-	set();
-};
-
-Vector PointLight::getSpecular()
-{
-	return data.specular;
-};
-
-void PointLight::transform(Matrix mat)
-{
-	matrix = mat;
-	set();
+	float angle = 90.0*3.14/180.0;
+	//SpotLight *red = new SpotLight(Vector(0.0, 0.0, 0.0), Vector(1.0, 1.0, 1.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), angle);
+	//PointLight *red = new PointLight(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0));
+	new DirLight(Vector(0.0, 0.0, 1.0), Vector(1.0, 1.0, 1.0), Vector(0.0, 0.0, 0.0));
 };

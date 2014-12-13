@@ -2,8 +2,12 @@ Apoc
 Shaders
 Makefile
 scripts
-build.rule
+linux.rule
+windows.rule
 build-client
 gdata
 cpptemp
 build.mk
+out
+temp.cpp
+temp.o

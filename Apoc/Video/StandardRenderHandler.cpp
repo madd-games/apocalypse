@@ -226,6 +226,7 @@ void StandardRenderHandler::render()
 	glUniform1i(getUniformLocation("uWarpMap"), 7);
 	glUniform1i(getUniformLocation("uNumDirLights"), dirLightArray->count());
 	glUniform1i(getUniformLocation("uNumPointLights"), pointLightArray->count());
+	cout << pointLightArray->count() << endl;
 	glUniform1i(getUniformLocation("uNumSpotLights"), spotLightArray->count());
 	glUniform4fv(getUniformLocation("uFogColor"), 1, &fogColor[0]);
 	glUniform1f(getUniformLocation("uFogDensity"), fogDensity);
