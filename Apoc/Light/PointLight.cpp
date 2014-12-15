@@ -35,7 +35,6 @@ PointLight::PointLight(Vector pos, Vector diffuse, Vector specular)
 	data.diffuse = diffuse;
 	data.specular = specular;
 	matrix = Matrix::Identity();
-	cout << "Adding diffuse: " << data.diffuse << endl;
 	key = pointLightArray->add(data);
 };
 
