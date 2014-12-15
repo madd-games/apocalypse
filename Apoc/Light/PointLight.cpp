@@ -50,7 +50,6 @@ void PointLight::set()
 	tdata.pos = matrix * data.pos;
 	tdata.diffuse = data.diffuse;
 	tdata.specular = data.specular;
-	cout << "Diffuse: " << tdata.diffuse << endl;
 	pointLightArray->set(key, tdata);
 };
 
