@@ -65,7 +65,7 @@ private:
 	void refreshBuffer()
 	{
 		glActiveTexture(texUnit);
-		glBindTexture(GL_TEXTURE_BUFFER);
+		glBindTexture(GL_TEXTURE_BUFFER, tex);
 		glBindBuffer(GL_TEXTURE_BUFFER, vbo);
 		glBufferData(GL_TEXTURE_BUFFER, sizeof(T)*cpuBuffer.size(), &cpuBuffer[0], GL_DYNAMIC_DRAW);
 	};
