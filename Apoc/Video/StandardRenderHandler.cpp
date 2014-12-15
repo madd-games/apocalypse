@@ -70,12 +70,9 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 	renderProgram = createProgram(stdVertexShader, stdFragmentShader);
 	glUseProgram(renderProgram);
 
-	glActiveTexture(GL_TEXTURE2);
-	pointLightArray = new ShaderArray<RenderHandler::PointLight>();
-	glActiveTexture(GL_TEXTURE1);
-	dirLightArray = new ShaderArray<RenderHandler::DirLight>();
-	glActiveTexture(GL_TEXTURE8);
-	spotLightArray = new ShaderArray<RenderHandler::SpotLight>();
+	pointLightArray = new ShaderArray<RenderHandler::PointLight>(GL_TEXTURE2);
+	dirLightArray = new ShaderArray<RenderHandler::DirLight>(GL_TEXTURE1);
+	spotLightArray = new ShaderArray<RenderHandler::SpotLight>(GL_TEXTURE8);
 
 	// default image texture.
 	glGenTextures(1, &defImageTex);
