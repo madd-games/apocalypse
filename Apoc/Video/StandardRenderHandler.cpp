@@ -172,6 +172,11 @@ StandardRenderHandler::StandardRenderHandler(int screenWidth, int screenHeight)
 
 	setAttenuation(Vector(0, 0, 1));
 
+	// we should probably set the active texture unit to 0 so that operations
+	// like loading textures (which do not use glActiveTexture) do not break
+	// the sutff we've created here.
+	glActiveTexture(GL_TEXTURE0);
+	
 	Matrix view = Matrix::LookAt(
 		Vector(0.0, -0.1, -1.0),
 		Vector(0.0, 1.0, 0.0),
