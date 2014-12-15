@@ -49,6 +49,7 @@ class ShaderArray
 private:
 	GLuint vbo;
 	GLuint tex;
+	GLuint texUnit;
 	vector<T> cpuBuffer;
 	
 	// Maps element keys to indices into the cpuBuffer vector.
@@ -68,8 +69,9 @@ private:
 	};
 	
 public:
-	ShaderArray()
+	ShaderArray(GLuint texUnit) : texUnit(texUnit)
 	{
+		glActiveTexture(texUnit);
 		glGenTextures(1, &tex);
 		glBindTexture(GL_TEXTURE_BUFFER, tex);
 		glGenBuffers(1, &vbo);
