@@ -113,7 +113,7 @@ Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(tr
 		APM_Header *header = (APM_Header*) data;
 		if (memcmp(header->magic, "APM", 3) != 0)
 		{
-			ApocFail(string(entname) + " does not have a valid APM file");
+			ApocFail(string(entname) + " does not have a valid APM header");
 		};
 
 		map<uint32_t, Texture*> modelTextures;

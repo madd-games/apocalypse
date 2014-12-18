@@ -36,10 +36,26 @@ extern RenderHandler *apocRenderHandler;
 void GameImpl::onGameStart()
 {
 	World::addEntity(new EntityWall());
-	apocRenderHandler->setAmbientLight(Vector(0.1, 0.1, 0.1));
+	World::setCamera(this);
+	apocRenderHandler->setAmbientLight(Vector(0.0, 0.0, 0.0));
 
-	float angle = 90.0*3.14/180.0;
-	//SpotLight *red = new SpotLight(Vector(0.0, 0.0, 0.0), Vector(1.0, 1.0, 1.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), angle);
-	//PointLight *red = new PointLight(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0));
-	new DirLight(Vector(0.0, 0.0, 1.0), Vector(1.0, 1.0, 1.0), Vector(0.0, 0.0, 0.0));
+	float a = 30.0*3.14/180.0;
+	SpotLight *red = new SpotLight(Vector(-0.5, 0.0, 0.0), Vector(2.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
+	SpotLight *green = new SpotLight(Vector(0.5, 0.0, 0.0), Vector(0.0, 2.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
+	SpotLight *blue = new SpotLight(Vector(0.0, -0.5, 0.0), Vector(0.0, 0.0, 2.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
+};
+
+Vector GameImpl::getEye()
+{
+	return Vector(0.0, 0.0, -1.0);
+};
+
+Vector GameImpl::getRef()
+{
+	return Vector(0.0, 0.0, 0.0);
+};
+
+Vector GameImpl::getUpVector()
+{
+	return Vector(0.0, 1.0, 0.0);
 };

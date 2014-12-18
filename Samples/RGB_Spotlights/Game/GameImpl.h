@@ -28,11 +28,15 @@
 #define GAME_IMPL_H
 
 #include <Apoc/Game.h>
+#include <Apoc/Video/Camera.h>
 
-class GameImpl : public Game
+class GameImpl : public Game, public Camera
 {
 public:
 	virtual void onGameStart();
+	virtual Vector getEye();
+	virtual Vector getRef();
+	virtual Vector getUpVector();
 };
 
 #endif
