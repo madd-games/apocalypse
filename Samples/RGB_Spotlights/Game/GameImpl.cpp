@@ -39,15 +39,15 @@ void GameImpl::onGameStart()
 	World::setCamera(this);
 	apocRenderHandler->setAmbientLight(Vector(0.0, 0.0, 0.0));
 
-	float a = 30.0*3.14/180.0;
-	SpotLight *red = new SpotLight(Vector(-0.5, 0.0, 0.0), Vector(2.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
-	SpotLight *green = new SpotLight(Vector(0.5, 0.0, 0.0), Vector(0.0, 2.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
-	SpotLight *blue = new SpotLight(Vector(0.0, -0.5, 0.0), Vector(0.0, 0.0, 2.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
+	float a = 5.0*3.14/180.0;
+	SpotLight *red = new SpotLight(Vector(-2.0, 0.0, 0.0), Vector(50.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
+	SpotLight *green = new SpotLight(Vector(2.0, 0.0, 0.0), Vector(0.0, 50.0, 0.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
+	SpotLight *blue = new SpotLight(Vector(0.0, -2.0, 0.0), Vector(0.0, 0.0, 50.0), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0, 0.0), a);
 };
 
 Vector GameImpl::getEye()
 {
-	return Vector(0.0, 0.0, -1.0);
+	return Vector(0.0, 0.0, -10.0);
 };
 
 Vector GameImpl::getRef()

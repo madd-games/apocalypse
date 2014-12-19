@@ -26,6 +26,7 @@
 
 #include <Apoc/Entity/World.h>
 #include <Apoc/Video/RenderHandler.h>
+#include <Apoc/Game.h>
 #include <math.h>
 
 #ifdef ENABLE_OPENAL
@@ -37,6 +38,7 @@
 #endif
 
 extern RenderHandler *apocRenderHandler;
+extern Game *apocGameInstance;
 
 vector<Entity*> World::entities;
 vector<Entity*> World::addQueue;
@@ -123,7 +125,9 @@ void World::render(bool setMatrix)
 		};
 
 		GLint uProjMatrix = apocRenderHandler->getUniformLocation("uProjectionMatrix");
-		Matrix projMatrix = Matrix::Perspective(1366.0, 768.0, 1.0, 1000.0, 60.0*M_PI/180.0);
+		int width, height;
+		apocGameInstance->getScreenSize(width, height);
+		Matrix projMatrix = Matrix::Perspective((float)width, (float)height, 1.0, 1000.0, 60.0*M_PI/180.0);
 		glUniformMatrix4fv(uViewMatrix, 1, GL_FALSE, &viewMatrix[0][0]);
 		glUniformMatrix4fv(uProjMatrix, 1, GL_FALSE, &projMatrix[0][0]);
 	};

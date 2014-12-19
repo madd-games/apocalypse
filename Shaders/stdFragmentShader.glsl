@@ -213,9 +213,9 @@ void computeSpotLight(in int i, in vec3 normal, inout vec4 diffuseLight, inout v
 	vec3 lightDir = -normalize(lightToPoint.xyz);
 
 	vec4 axisAndCosAngle = getSpotLightAxisAndCosAngle(i);
-	vec3 axis = axisAndCosAngle.xyz;				// already normalized by the CPU
+	vec3 axis = normalize(axisAndCosAngle.xyz);
 	float cosAngle = axisAndCosAngle[3];
-	float cosAngleFromLight = dot(axis, normalize(lightToPoint.xyz));
+	float cosAngleFromLight = pow(dot(axis, -lightDir), 0.0);
 	if (cosAngle > cosAngleFromLight)
 	{
 		return;

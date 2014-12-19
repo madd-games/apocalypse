@@ -61,6 +61,7 @@ using namespace std;
 SDL_Window *apocWindow;
 SDL_GLContext apocContext;
 RenderHandler *apocRenderHandler;
+Game *apocGameInstance;
 
 void ApocMoveMouse(int x, int y)
 {
@@ -74,6 +75,7 @@ extern Entity *entTest;
 
 int main(int argc, char *argv[])
 {
+#ifdef CLIENT
 	bool allowCL = true;
 	int i;
 	for (i=1; i<argc; i++)
@@ -107,11 +109,11 @@ int main(int argc, char *argv[])
 	};
 
 	cout << "[APOC] Starting" << endl;
-#ifdef CLIENT
 #ifdef __GNUC__
 	cout << "[APOC] GCC Vector Extensions are enabled" << endl;
 #endif
 	Game *game = new GameImpl;
+	apocGameInstance = game;
 
 #ifdef ENABLE_OPENAL
 	cout << "[APOC] [AUDIO] Initialising OpenAL" << endl;
