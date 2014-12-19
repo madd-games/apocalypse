@@ -113,7 +113,7 @@ Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(tr
 		APM_Header *header = (APM_Header*) data;
 		if (memcmp(header->magic, "APM", 3) != 0)
 		{
-			ApocFail(string(entname) + " does not have a valid APM header");
+			ApocFail(entname + " does not have a valid APM header");
 		};
 
 		map<uint32_t, Texture*> modelTextures;
@@ -169,7 +169,12 @@ Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(tr
 			if (objHeader->idxColor != 0)
 			{
 				obj.textures[0] = modelTextures[objHeader->idxColor];
+			}
+			else
+			{
+				ApocFail(entname + " contains an object with no color map");
 			};
+
 			if (objHeader->idxSpecular != 0)
 			{
 				obj.textures[4] = modelTextures[objHeader->idxSpecular];
