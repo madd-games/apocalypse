@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 
 	int flagsFullscreen = game->isFullscreen() ? SDL_WINDOW_FULLSCREEN:0;
 
-	apocWindow = SDL_CreateWindow("Apocalypse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+	apocWindow = SDL_CreateWindow(game->getCaption(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			screenWidth, screenHeight, SDL_WINDOW_OPENGL | flagsFullscreen);
 	if (apocWindow == NULL)
 	{

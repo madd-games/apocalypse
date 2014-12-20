@@ -62,3 +62,8 @@ bool Game::isFullscreen()
 void Game::onOverlay(Display &disp)
 {
 };
+
+const char *Game::getCaption()
+{
+	return "Apocalypse";
+};

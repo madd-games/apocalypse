@@ -37,6 +37,7 @@ public:
 	virtual Vector getEye();
 	virtual Vector getRef();
 	virtual Vector getUpVector();
+	virtual const char *getCaption();
 };
 
 #endif

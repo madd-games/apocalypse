@@ -83,6 +83,11 @@ public:
 	 * \param disp The overlay Display.
 	 */
 	virtual void onOverlay(Display &disp);
+
+	/**
+	 * \brief Return the desired window caption for this game.
+	 */
+	virtual const char *getCaption();
 };
 
 #endif

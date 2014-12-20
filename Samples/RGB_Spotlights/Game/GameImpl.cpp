@@ -59,3 +59,8 @@ Vector GameImpl::getUpVector()
 {
 	return Vector(0.0, 1.0, 0.0);
 };
+
+const char *GameImpl::getCaption()
+{
+	return "Apocalypse sample: RGB Spotlights!";
+};
