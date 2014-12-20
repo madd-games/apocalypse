@@ -75,7 +75,6 @@ extern Entity *entTest;
 
 int main(int argc, char *argv[])
 {
-#ifdef CLIENT
 	bool allowCL = true;
 	int i;
 	for (i=1; i<argc; i++)
@@ -276,7 +275,6 @@ int main(int argc, char *argv[])
 	SDL_GL_DeleteContext(apocContext);
 	SDL_DestroyWindow(apocWindow);
 	SDL_Quit();
-#endif
 
 	cout << "[APOC] Exiting" << endl;
 	return 0;
