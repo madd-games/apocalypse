@@ -172,7 +172,7 @@ Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(tr
 			}
 			else
 			{
-				ApocFail(entname + " contains an object with no color map");
+				cerr << "[APOC] [MODEL] WARNING: " << entname << " contains an object (" << name << ") with no color map" << endl;
 			};
 
 			if (objHeader->idxSpecular != 0)
