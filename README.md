@@ -46,6 +46,6 @@ To build the engine, you need SDL2, GLEW, OpenGL (which should be installed by d
 ## Building a game
 To build a game on Windows, you must actually copy the `Game` directory to the main directory of the Apocalypse source package and run the build script directly.
 
-To build a game on Linux, you should install the SDK - you can do this by running the `install-sdk` script in its directory. Next, go to an empty directroy, or a directory that already contains a `Game` subdirectroy you want to build, and run `apoc-setup-workspace`. You can then build by running `make` - if there is no `Game` directory, then `make` will automatically generate a template for your game.
+To build a game on Linux, you should install the SDK - you can do this by running the `./build.py --install`. Next, go to an empty directroy, or a directory that already contains a `Game` subdirectroy you want to build, and run `apoc-setup-workspace`. You can then build by running `make` - if there is no `Game` directory, then `make` will automatically generate a template for your game.
 
 Passing command-line arguments to `apoc-setup-workspace` causes them to be passed to `build.py` when `make` is ran.

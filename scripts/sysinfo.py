@@ -7,13 +7,17 @@ system_suffix = ">/dev/null 2>&1"
 if sys.platform.startswith("win"):
         system_suffix = "2>NUL"
 
-def getCompiler():
+def getCompiler(sysinfo):
 	print ">Deciding what C++ compiler to use"
 	compiler = "g++"
+	sysinfo["ar"] = "ar"
+	sysinfo["ranlib"] = "ranlib"
 	for token in sys.argv:
 		if token.startswith("--host="):
 			host = token[7:]
 			compiler = host + "-g++"
+			sysinfo["ar"] = host + "-ar"
+			sysinfo["ranlib"] = host + "-ranlib"
 	print "--Chosen compiler: " + compiler
 	return compiler
 
@@ -83,8 +87,8 @@ def loadSystemInfo(target):
 	except:
 		pass
 
-	if not sysinfo.has_key("cpp_compiler"):
-		sysinfo["cpp_compiler"] = getCompiler()
+	if not (sysinfo.has_key("cpp_compiler") and sysinfo.has_key("ar") and sysinfo.has_key("ranlib")):
+		sysinfo["cpp_compiler"] = getCompiler(sysinfo)
 
 	if not sysinfo.has_key("is_windows"):
 		sysinfo["is_windows"] = checkWindows(sysinfo["cpp_compiler"])

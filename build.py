@@ -44,6 +44,8 @@ if sys.platform.startswith("win"):
 target = "client"
 if len(sys.argv) > 1:
 	target = sys.argv[1]
+if "--install" in sys.argv:
+	target = "sdk"
 
 def makeDir(name):
         if system == "linux":
@@ -88,8 +90,10 @@ if not os.path.exists("Game/GameImpl.h"):
 	f.write("\n#endif")
 	f.close()
 
-listfiles("Apoc")
-listfiles("Game")
+if "--with-sdk" not in sys.argv:
+	listfiles("Apoc")
+if "--install" not in sys.argv:
+	listfiles("Game")
 
 entityDiary = {}
 try:
@@ -210,7 +214,8 @@ for name in os.listdir("Game/Sounds"):
 f.write("};")
 f.close()
 
-listfiles("cpptemp")
+if "--install" not in sys.argv:
+	listfiles("cpptemp")
 
 rulefile = "linux.rule"
 if sys.platform.startswith("win"):
@@ -222,13 +227,14 @@ f.close()
 depFiles = []
 rules = []
 
-for filename in os.listdir("Shaders"):
-	if filename.endswith(".glsl"):		# which it should
-		shaderName = filename[:-5]
-		objectFiles.append("build-%s/glsl_%s.o" % (target, shaderName))
-		srule = "build-%s/glsl_%s.o: Shaders/%s\n" % (target, shaderName, filename)
-		srule += "\t@python scripts/glsl_embed.py $(CXX) %s %s" % (shaderName, target)
-		rules.append(srule)
+if "--with-sdk" not in sys.argv:
+	for filename in os.listdir("Shaders"):
+		if filename.endswith(".glsl"):		# which it should
+			shaderName = filename[:-5]
+			objectFiles.append("build-%s/glsl_%s.o" % (target, shaderName))
+			srule = "build-%s/glsl_%s.o: Shaders/%s\n" % (target, shaderName, filename)
+			srule += "\t@python scripts/glsl_embed.py $(CXX) %s %s" % (shaderName, target)
+			rules.append(srule)
 
 def makeRule(cppfile):
 	objfile = "build-%s/%s.o" % (target, cppfile.replace("/", "__")[:-4])
@@ -264,10 +270,18 @@ exe = ""
 if sysinfo["is_windows"]:
 	exe = ".exe"
 
+ldapoc = ""
+if "--with-sdk" in sys.argv:
+	ldapoc = "-lapocalypse"
+
+ccapoc = ""
+if "--with-sdk" in sys.argv:
+	ccapoc = "-I/usr/src/madd-games/apoc"
+
 f = open("build.mk", "wb")
 f.write("CXX=%s\n" % sysinfo["cpp_compiler"])
-f.write("CFLAGS=-D_USE_MATH_DEFINES -w -D%s -I. %s -ggdb %s -std=c++11\n" % (target.upper(), sdl_cflags, ccopencl))
-f.write("LDFLAGS=%s %s\n" % (sdl_ldflags, ldopencl))
+f.write("CFLAGS=-D_USE_MATH_DEFINES -w -D%s -I. %s -ggdb %s -std=c++11 %s\n" % (target.upper(), sdl_cflags, ccopencl, ccapoc))
+f.write("LDFLAGS=%s %s %s\n" % (ldapoc, sdl_ldflags, ldopencl))
 f.write("DEPFILES=%s\n" % " ".join(depFiles))
 f.write("OBJFILES=%s\n" % " ".join(objectFiles))
 f.write("\n")
@@ -282,6 +296,13 @@ else:
 	f.write("\t@echo \">Link $@\"\n")
 f.write("\t@$(CXX) -o $@ $(OBJFILES) $(LDFLAGS)\n")
 f.write("\n".join(rules))
+f.write("out/libapocalypse.a: $(OBJFILES)\n")
+if sysinfo["is_windows"]:
+	f.write("\t@echo ^>Bundle out/libapocalypse.a\n")
+else:
+	f.write("\t@echo \">Bundle out/libapocalypse.a\"\n")
+f.write("\t@%s rs out/libapocalypse.a $(OBJFILES)\n" % sysinfo["ar"])
+f.write("\t@%s out/libapocalypse.a\n" % sysinfo["ranlib"])
 f.close()
 
 makeDir("Game/Resources")
@@ -294,4 +315,19 @@ if "--no-make" not in sys.argv:
 	make = "make"
 	if sys.platform.startswith("win"):
 		make = "mingw32-make"
-	sys.exit(os.system("%s -f build.mk" % make))
+	target = "all"
+	if "--install" in sys.argv:
+		target = "out/libapocalypse.a"
+	status = os.system("%s -f build.mk %s" % (make, target))
+	if status != 0:
+		print "!Build failed!"
+		sys.exit(status)
+	if "--install" in sys.argv:
+		print ">Install the SDK"
+		if os.system("cp out/libapocalypse.a /usr/lib/") != 0:
+			print "!Installation failed!"
+			sys.exit(1)
+		if os.system("cd SDK/unix && sh install-sdk") != 0:
+			print "!Installation failed!"
+			sys.exit(1)
+		print "Installation complete."

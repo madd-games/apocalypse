@@ -1,9 +1,7 @@
 #! /bin/sh
-ln -s /usr/src/madd-games/apoc/Apoc Apoc
 ln -s /usr/src/madd-games/apoc/scripts scripts
 ln -s /usr/src/madd-games/apoc/linux.rule linux.rule
-ln -s /usr/src/madd-games/apoc/Shaders Shaders
 
 echo ".PHONY: game">Makefile
 echo "game:">>Makefile
-echo "	@python /usr/src/madd-games/apoc/build.py $@">>Makefile
+echo "	@python /usr/src/madd-games/apoc/build.py game --with-sdk $@">>Makefile
