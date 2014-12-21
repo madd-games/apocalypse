@@ -116,6 +116,13 @@ Entity::Entity(string entname) : bbDirty(true), shouldRemove(false), isStatic(tr
 			ApocFail(entname + " does not have a valid APM header");
 		};
 
+		if (header->rev != 0)
+		{
+			stringstream ss;
+			ss << entname << " has an unsupported revision: " << header->rev;
+			ApocFail(ss.str());
+		};
+		
 		map<uint32_t, Texture*> modelTextures;
 		uint32_t count = header->numTex;
 		APM_TexHeader *texHeader = (APM_TexHeader*) &data[header->offTex];
