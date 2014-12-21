@@ -34,6 +34,7 @@
 #include <string.h>
 #include <iostream>
 #include <stddef.h>
+#include <sstream>
 
 using namespace std;
 
