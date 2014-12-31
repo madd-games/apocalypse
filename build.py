@@ -2,7 +2,7 @@
 # Build the engine and the game.
 
 """
-Copyright (c) 2014, Madd Games.
+Copyright (c) 2014-2015, Madd Games.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
